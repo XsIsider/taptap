@@ -1,0 +1,61 @@
+# Unity project: keep Assets (including .meta files), Packages and ProjectSettings.
+# Generated Unity caches and local editor state
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Build output (keep third-party DLLs and other assets under Assets tracked)
+/[Bb]uild/
+/[Bb]uilds/
+/[Ee]xported[Oo]bj/
+/*_BackUpThisFolder_ButDontShipItWithYourGame/
+/*_BurstDebugInformation_DoNotShip/
+
+# Visual Studio / Rider local state and Unity-generated solution files
+/.vs/
+/.idea/
+/.gradle/
+/.consulo/
+/*.csproj
+/*.unityproj
+/*.sln
+/*.slnx
+/*.suo
+/*.tmp
+/*.user
+/*.userprefs
+/*.pidb
+/*.booproj
+/*.svd
+/*.pdb
+/*.mdb
+/*.opendb
+/*.VC.db
+/sysinfo.txt
+
+# Generated IDE integration plugin
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# Unity crash reports and generated diagnostics
+/mono_crash.*
+/crash.dmp
+/crash.dmp.meta
+
+# Addressables generated data (keep authored settings and groups)
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/[Ss]treamingAssets/aa/
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Ss]erver[Dd]ata/
+
+# Operating system metadata
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Thumbs.db.meta
+Desktop.ini
+Desktop.ini.meta
