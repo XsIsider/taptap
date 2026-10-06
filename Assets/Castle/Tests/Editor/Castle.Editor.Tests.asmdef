@@ -1,0 +1,8 @@
+{
+    "name": "Castle.Editor.Tests",
+    "rootNamespace": "Castle.Editor.Tests",
+    "references": ["Castle.Runtime", "Castle.Editor"],
+    "includePlatforms": ["Editor"],
+    "optionalUnityReferences": ["TestAssemblies"],
+    "autoReferenced": false
+}
