@@ -1,0 +1,7 @@
+{
+    "name": "Castle.Editor",
+    "rootNamespace": "Castle.Editor",
+    "references": ["Castle.Runtime", "Unity.ugui"],
+    "includePlatforms": ["Editor"],
+    "autoReferenced": true
+}
