@@ -26,7 +26,7 @@ namespace Castle.V2
             var state = _session.State; var row = _session.Content.Require(id);
             if (state.Active != null) return false;
             if (replay) { if (!state.CompletedEvents.Contains(id)) return false; }
-            else if (!Available(row) || row.Get("trigger") == "reward" && state.PendingPuzzle == null || row.Get("trigger") == "flow" && !flow) return false;
+            else if (!Available(row) || row.Get("trigger") == "reward" && string.IsNullOrEmpty(state.PendingPuzzle) || row.Get("trigger") == "flow" && !flow) return false;
             state.Active = new EventProgress { Id = id, Started = state.WorldTime, Room = state.Room, Replay = replay };
             if (row.Get("action") == "ending" && !replay) state.EndingStage = "playing";
             ReadCurrent(); _session.Persist(); return true;

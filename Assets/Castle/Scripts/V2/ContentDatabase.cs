@@ -12,7 +12,7 @@ namespace Castle.V2
         public int Line;
         public string[] Headers;
         public string[] Values;
-        public string Get(string key) { int i = Array.IndexOf(Headers, key); return i < 0 ? "" : Values[i]; }
+        public string Get(string key) { int i = Array.IndexOf(Headers, key); return i < 0 ? "" : key == "anchor" ? Values[i].ToLowerInvariant() : Values[i]; }
         public string Id => Get("id");
         public string Name => Get("name");
         public string[] List(string key) => Get(key).Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();

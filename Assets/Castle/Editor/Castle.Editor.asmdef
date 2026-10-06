@@ -1,7 +1,7 @@
 {
     "name": "Castle.Editor",
     "rootNamespace": "Castle.Editor",
-    "references": ["Castle.Runtime", "Unity.ugui"],
+    "references": ["Castle.Runtime", "Unity.ugui", "Unity.TextMeshPro"],
     "includePlatforms": ["Editor"],
     "autoReferenced": true
 }

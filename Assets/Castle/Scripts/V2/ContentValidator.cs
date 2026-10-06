@@ -71,6 +71,7 @@ namespace Castle.V2
                 }
                 if (r.Table == "Record")
                 {
+                    if (r.Get("plot") == "") error(r, "plot", "录音文本组必填");
                     plot(r, "plot");
                     if (r.Get("device") != "" && !devices.Any(d => d.Id == r.Get("device"))) error(r, "device", "设备不存在");
                     if (r.Get("start") != "") { try { ContentFormat.Date(r.Get("start")); } catch { error(r, "start", "日期格式错误"); } }
@@ -81,6 +82,7 @@ namespace Castle.V2
                 }
                 if (r.Table == "Entry")
                 {
+                    if (r.Get("text") == "") error(r, "text", "内容说明必填");
                     if (!new[] { "item", "tape", "clue", "info", "event", "conclusion" }.Contains(r.Get("type"))) error(r, "type", "未知内容类型");
                     reference(r, "record", "Record");
                     if (r.Get("record") != "" && r.Get("type") != "tape") error(r, "record", "仅磁带可配置");
@@ -106,6 +108,18 @@ namespace Castle.V2
             foreach (var d in devices) { if (db.Find(d.Room)?.Table != "Room") errors.Add("DeviceConfig:0 无效房间 " + d.Id); foreach (var p in d.Proof) if (!condition(p)) errors.Add("DeviceConfig:0 无效 proof " + p); }
             foreach (var node in nodes) if (db.Find(node.Room)?.Table != "Room" || !settings.Map.Floors.Any(f => f.Floor == node.Floor)) errors.Add("MapConfig:0 无效地图节点 " + node.Id);
             foreach (var ids in new[] { devices.Select(d => d.Id), chars.Select(c => c.Id), nodes.Select(n => n.Id), settings.Hotspots.Hotspots.Select(h => h.Id) }) if (ids.Distinct().Count() != ids.Count()) errors.Add("Config:0 重复编号");
+            foreach (var room in db.Table("Room")) if (!int.TryParse(room.Get("floor"), out _)) error(room, "floor", "楼层必须为整数");
+            foreach (var group in db.Table("Record").GroupBy(r => r.Get("plot")))
+                if (group.Count() > 1 && db.Plot(group.Key).Any(l => l.Get("anchor") == "true")) error(group.First(), "plot", "含锚点文本组不可被多个文件共用；各文件必须有独立行 ID");
+            foreach (var p in db.Table("Puzzle").Where(p => p.Get("type") == "anchor"))
+            {
+                var groups = ContentFormat.Answers(p).Select(id => db.Find(id)?.Get("group")).ToArray();
+                if (groups.Distinct().Count() < 2) error(p, "answer", "匹配须来自至少两个不同文件");
+            }
+            foreach (var hotspot in settings.Hotspots.Hotspots)
+                if (db.Find(hotspot.Room)?.Table != "Room" || hotspot.Mode == "puzzle" && db.Find(hotspot.PuzzleId)?.Table != "Puzzle") errors.Add("HotspotBinding:0 无效房间/判定引用 " + hotspot.Id);
+            try { ContentFormat.Date(settings.InitialTime); ContentFormat.Minute(settings.WakeTime); } catch (Exception ex) { errors.Add("GameSettings:0 " + ex.Message); }
+            if (settings.ControlMinutes < 0 || settings.CalibrationStep <= 0 || settings.CalibrationTolerance < 0 || settings.DialogueHold <= 0 || settings.EndingHold <= 0) errors.Add("GameSettings:0 时间/容差参数无效");
             ValidateReachability(db, settings, errors);
             return errors;
         }
@@ -121,6 +135,7 @@ namespace Castle.V2
         }
         static void ValidatePuzzle(ContentDatabase db, GameSettings settings, ContentRow r, Action<ContentRow, string, string> error)
         {
+            if (r.Get("fail_text") == "") error(r, "fail_text", "失败反馈必填");
             string type = r.Get("type"); var candidates = r.List("candidates"); var answers = ContentFormat.Answers(r); var slots = r.List("slots");
             if (!new[] { "anchor", "calibrate", "location", "person_path", "timeline", "conclusion" }.Contains(type)) error(r, "type", "未知题型");
             if (db.Find(r.Get("success"))?.Get("trigger") != "reward") error(r, "success", "必须引用奖励事件");

@@ -20,7 +20,7 @@ namespace Castle.Editor
         {
             var previous = AssetDatabase.LoadAssetAtPath<ContentDatabase>(DatabasePath);
             var candidate = ScriptableObject.CreateInstance<ContentDatabase>();
-            candidate.Version = "example-v1";
+            candidate.Version = File.Exists(Path.Combine(folder, "ContentVersion.txt")) ? File.ReadAllText(Path.Combine(folder, "ContentVersion.txt")).Trim() : previous != null ? previous.Version : "example-v1";
             if (plotOnly && previous != null) candidate.Rows.AddRange(previous.Rows.Where(r => r.Table != "Plot"));
             var errors = new List<string>();
             foreach (var schema in CsvContent.Schema.Where(s => !plotOnly || s.Key == "Plot"))
