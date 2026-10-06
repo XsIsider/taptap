@@ -2,7 +2,7 @@
 
 开始工作先读 `Assets/Docs/项目交接.md` 和 `Assets/Docs/协作与同步.md`，检查 Git 状态，保留已有修改。
 
-- 自研类、方法、变量、参数使用清晰的中文名称；Unity 生命周期函数、外部接口、第三方及生成代码保留原名。
+- 类、方法、属性使用英文 PascalCase；参数和局部变量使用 camelCase，私有字段使用 _camelCase；中文用于玩家文案和必要注释；Unity 生命周期函数、外部接口、第三方及生成代码保留原名。
 - 自研文本使用 UTF-8，遵循 .editorconfig；C# 使用 4 空格缩进。公共接口、复杂逻辑和单位添加必要的中文注释。
 - MonoBehaviour、ScriptableObject 的文件名与类名一致。数据 ID 使用稳定标识，不使用显示文案作为主键。
 - 资源和 .meta 一起提交；不要擅自升级 Unity、依赖包或修改第三方代码。
