@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f68f7343ef195e4c9abcca88acfd0fe, type: 3}
+  m_Name: Hotspots
+  m_EditorClassIdentifier: 
+  Hotspots:
+  - Id: HS_VISITOR
+    Room: R_STUDY
+    Mode: event
+    PuzzleId: 
+    Label: "\u8BBF\u5BA2 \xB7 \u4EA4\u8C08"
+    Position: {x: 0, y: 0}
+  - Id: HS_BOOK
+    Room: R_STUDY
+    Mode: event
+    PuzzleId: 
+    Label: "\u7EF4\u62A4\u7C3F \xB7 \u67E5\u770B"
+    Position: {x: 0, y: 0}
+  - Id: HS_DESK
+    Room: R_HALL
+    Mode: event
+    PuzzleId: 
+    Label: "\u767B\u8BB0\u53F0 \xB7 \u67E5\u770B"
+    Position: {x: 0, y: 0}
+  - Id: HS_PLAYER
+    Room: R_HOME
+    Mode: tape_player
+    PuzzleId: 
+    Label: "\u653E\u97F3\u673A"
+    Position: {x: 0, y: 0}
+  - Id: HS_REST
+    Room: R_HOME
+    Mode: rest
+    PuzzleId: 
+    Label: "\u4F11\u606F\u81F3\u6B21\u65E5"
+    Position: {x: 0, y: 0}
+  - Id: HS_CONTROL
+    Room: R_CONTROL
+    Mode: control
+    PuzzleId: 
+    Label: "\u4E2D\u592E\u6863\u6848"
+    Position: {x: 0, y: 0}

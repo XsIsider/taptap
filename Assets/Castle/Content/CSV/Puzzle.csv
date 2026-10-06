@@ -1,0 +1,7 @@
+id,name,type,need,target,map,slots,candidates,answer,reference,success,feedback,fail_text
+Q_ANCHOR,同一次声响,anchor,G_TUTORIAL,,,,L_A_1;L_B_1;L_C_1,L_A_1;L_B_1,,E_REWARD_ANCHOR,,证据尚不支持这组判断。草稿已保留，请重新比对。
+Q_LOCATION,频道B位置,location,C_ROOM,D_B,MAP_CASTLE,,R_HALL;R_STUDY;R_HOME,,,E_REWARD_LOCATION,,证据尚不支持这组判断。草稿已保留，请重新比对。
+Q_CALIBRATE,频道B校时,calibrate,Q_ANCHOR,D_B,,,L_A_1;L_B_1;L_C_1,,D_A;D_C,E_REWARD_CALIBRATE,,证据尚不支持这组判断。草稿已保留，请重新比对。
+Q_PATH,访客路径,person_path,C_PATH;C_REGISTER,CHAR_VISITOR,MAP_CASTLE,A;B;C,N_HALL;N_STUDY;N_HOME,A=N_HALL;B=N_STUDY;C=N_HALL,,E_REWARD_PATH,,证据尚不支持这组判断。草稿已保留，请重新比对。
+Q_TIMELINE,事件时间线,timeline,Q_ANCHOR;Q_LOCATION;Q_CALIBRATE;Q_PATH,,,S1;S2;S3,V_REGISTER;V_STUDY;V_RETURN,S1=V_REGISTER;S2=V_STUDY;S3=V_RETURN,,E_REWARD_TIMELINE,P_REL,证据尚不支持这组判断。草稿已保留，请重新比对。
+Q_CONCLUSION,最终推论,conclusion,Q_TIMELINE,Q_TIMELINE,,,K_TRUE;K_FALSE,K_TRUE,,E_END,,请回看时间线；另一声撞击发生得更晚。

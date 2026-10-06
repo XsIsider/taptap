@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad2326d5173ebcb4f99b25760eb2913f, type: 3}
+  m_Name: GameSettings
+  m_EditorClassIdentifier: 
+  InitialTime: 2026-10-07 18:45:00
+  InitialItems: []
+  ArrivalRoom: R_HALL
+  HomeRoom: R_HOME
+  ControlRoom: R_CONTROL
+  OpeningEvent: E_INVITE
+  ArrivalEvent: E_ARRIVE
+  TapeTutorialEvent: E_TUTORIAL
+  TutorialRecord: REC_TAPE
+  MapEntry: I_MAP
+  WakeTime: 08:00
+  TitleScene: {fileID: 2800000, guid: 7e57cc972a838d34a90d2720ccc7d956, type: 3}
+  ExteriorScene: {fileID: 2800000, guid: 0efc210b16353cf4ab971f769296f765, type: 3}
+  ControlMinutes: 15
+  KeepRecords: 1
+  CalibrationStep: 1
+  CalibrationTolerance: 2
+  DialogueHold: 2
+  SecondsPerCharacter: 0.055
+  EndingHold: 3
+  Devices: {fileID: 11400000, guid: ec9a635220413fa46bb1556992c28d19, type: 2}
+  Characters: {fileID: 11400000, guid: 19257b1f1ca8cd64a82053bf3cd99086, type: 2}
+  Map: {fileID: 11400000, guid: c30308ece37efe6448a5d690daf55a76, type: 2}
+  Hotspots: {fileID: 11400000, guid: 75cb2b1f74ab4f5468e40e2fd4b8ac1c, type: 2}
+  Sounds: []

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be380d86d14052e458aa34c61f92576d, type: 3}
+  m_Name: Devices
+  m_EditorClassIdentifier: 
+  Devices:
+  - Id: D_A
+    Channel: A
+    Label: "\u9891\u9053 A"
+    Room: R_HALL
+    Offset: 0
+    Proof:
+    - C_PROOF
+    Personal: 0
+  - Id: D_B
+    Channel: B
+    Label: "\u9891\u9053 B"
+    Room: R_STUDY
+    Offset: -180
+    Proof: []
+    Personal: 0
+  - Id: D_C
+    Channel: C
+    Label: "\u9891\u9053 C"
+    Room: R_HALL
+    Offset: 0
+    Proof: []
+    Personal: 0
+  - Id: D_PERSONAL
+    Channel: "\u4E2A\u4EBA"
+    Label: "\u5973\u4E3B\u5F55\u97F3\u7B14"
+    Room: R_HOME
+    Offset: 0
+    Proof: []
+    Personal: 1

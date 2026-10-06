@@ -1,0 +1,14 @@
+id,name,type,text,icon,owner,record,source
+I_MAP,地图,item,古堡两层地图。,,,,L_ARRIVE_1
+I_TAPE,剧情磁带,tape,访客留下的录音。,,,REC_TAPE,E_ARRIVE
+I_BLANK,空白磁带,tape,在中控室刻录完整文件。,,,,E_ARRIVE
+C_PROOF,维护记录,clue,频道A已对准标准时钟，原始时间可信。,,,,L_MAINT_1
+C_ROOM,环境记录,clue,窗旁风声、翻书声对应书房设备。,,,,L_MAINT_2;L_B_2
+C_PATH,访客行程,info,访客说先在大厅登记，再去书房，最后回到大厅。,,CHAR_VISITOR,,L_LIVE_1
+C_REGISTER,登记信息,info,访客在前往书房之前已完成登记。,,CHAR_VISITOR,,E_MISS;E_BACK
+C_TIME,已校正时钟,clue,频道B比参考设备慢180秒，已统一修正其文件时间。,,,,Q_CALIBRATE
+V_REGISTER,大厅登记,event,访客首先在大厅登记。,,CHAR_VISITOR,,Q_PATH
+V_STUDY,书房停留,event,访客在书房查阅资料。,,CHAR_VISITOR,,Q_LOCATION
+V_RETURN,返回大厅,event,访客返回大厅，听到第一次金属箱撞击。,,CHAR_VISITOR,,Q_ANCHOR
+K_TRUE,登记 → 书房 → 返回大厅,conclusion,第一次撞击对应返回大厅后的时刻；再次试敲是干扰。,,,,
+K_FALSE,两次撞击属于同一时刻,conclusion,假设试敲与第一次撞击完全相同。,,,,

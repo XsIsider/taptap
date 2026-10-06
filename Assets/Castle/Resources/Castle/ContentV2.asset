@@ -1,0 +1,1698 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5492cffd01badf4980323eeedccdf6d, type: 3}
+  m_Name: ContentV2
+  m_EditorClassIdentifier: 
+  Version: example-v1
+  Rows:
+  - Table: Room
+    Line: 2
+    Headers:
+    - id
+    - name
+    - floor
+    - start
+    - end
+    - need
+    Values:
+    - R_HALL
+    - "\u5927\u5385"
+    - 1
+    - 00:00
+    - 24:00
+    - 
+  - Table: Room
+    Line: 3
+    Headers:
+    - id
+    - name
+    - floor
+    - start
+    - end
+    - need
+    Values:
+    - R_HOME
+    - "\u5973\u4E3B\u623F\u95F4"
+    - 2
+    - 00:00
+    - 24:00
+    - G_ARRIVE
+  - Table: Room
+    Line: 4
+    Headers:
+    - id
+    - name
+    - floor
+    - start
+    - end
+    - need
+    Values:
+    - R_STUDY
+    - "\u4E66\u623F"
+    - 2
+    - 08:00
+    - 22:00
+    - G_TUTORIAL
+  - Table: Room
+    Line: 5
+    Headers:
+    - id
+    - name
+    - floor
+    - start
+    - end
+    - need
+    Values:
+    - R_CONTROL
+    - "\u4E2D\u63A7\u5BA4"
+    - 1
+    - 08:00
+    - 23:00
+    - G_TUTORIAL;I_MAP
+  - Table: Event
+    Line: 2
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_INVITE
+    - "\u9080\u8BF7\u51FD"
+    - 
+    - flow
+    - 
+    - 
+    - 
+    - 
+    - P_INVITE
+    - 0
+    - 
+    - 
+    - G_INVITE
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 3
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_ARRIVE
+    - "\u7BA1\u5BB6\u63A5\u5F85"
+    - 
+    - flow
+    - 
+    - 
+    - 
+    - G_INVITE
+    - P_ARRIVE
+    - 15
+    - I_TAPE;I_BLANK
+    - 
+    - G_ARRIVE
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 4
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_TUTORIAL
+    - "\u623F\u95F4\u78C1\u5E26\u5F15\u5BFC"
+    - 
+    - flow
+    - 
+    - 
+    - 
+    - G_ARRIVE;I_TAPE
+    - P_TUTORIAL
+    - 0
+    - 
+    - 
+    - G_TUTORIAL
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 5
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_LIVE
+    - "\u8BBF\u5BA2\u73B0\u573A\u8BC1\u8BCD"
+    - R_STUDY
+    - interact
+    - HS_VISITOR
+    - 08:00
+    - 22:00
+    - G_TUTORIAL
+    - P_LIVE
+    - 5
+    - C_PATH
+    - 
+    - G_LIVE
+    - 
+    - none
+    - REC_PERSONAL
+  - Table: Event
+    Line: 6
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_MAINT
+    - "\u68C0\u67E5\u7EF4\u62A4\u7C3F"
+    - R_STUDY
+    - interact
+    - HS_BOOK
+    - 08:00
+    - 22:00
+    - G_TUTORIAL
+    - P_MAINT
+    - 5
+    - C_PROOF;C_ROOM
+    - 
+    - G_MAINT
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 7
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_MISS
+    - "\u9650\u65F6\u767B\u8BB0\u4FE1\u606F"
+    - R_HALL
+    - interact
+    - HS_DESK
+    - 18:45
+    - 19:10
+    - G_TUTORIAL
+    - P_MISS
+    - 0
+    - C_REGISTER
+    - 
+    - G_MISS
+    - E_BACK
+    - none
+    - 
+  - Table: Event
+    Line: 8
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_BACK
+    - "\u5907\u7528\u767B\u8BB0\u7559\u8A00"
+    - R_HALL
+    - interact
+    - HS_DESK
+    - 00:00
+    - 24:00
+    - G_TUTORIAL
+    - P_BACK
+    - 0
+    - C_REGISTER
+    - 
+    - G_MISS
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 9
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_REWARD_ANCHOR
+    - "ANCHOR\u9A8C\u8BC1\u5956\u52B1"
+    - 
+    - reward
+    - 
+    - 
+    - 
+    - 
+    - P_REWARD_ANCHOR
+    - 0
+    - V_RETURN
+    - 
+    - G_REWARD_ANCHOR
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 10
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_REWARD_LOCATION
+    - "LOCATION\u9A8C\u8BC1\u5956\u52B1"
+    - 
+    - reward
+    - 
+    - 
+    - 
+    - 
+    - P_REWARD_LOCATION
+    - 0
+    - V_STUDY
+    - 
+    - G_REWARD_LOCATION
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 11
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_REWARD_CALIBRATE
+    - "CALIBRATE\u9A8C\u8BC1\u5956\u52B1"
+    - 
+    - reward
+    - 
+    - 
+    - 
+    - 
+    - P_REWARD_CALIBRATE
+    - 0
+    - C_TIME
+    - 
+    - G_REWARD_CALIBRATE
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 12
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_REWARD_PATH
+    - "PATH\u9A8C\u8BC1\u5956\u52B1"
+    - 
+    - reward
+    - 
+    - 
+    - 
+    - 
+    - P_REWARD_PATH
+    - 0
+    - V_REGISTER
+    - 
+    - G_REWARD_PATH
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 13
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_REWARD_TIMELINE
+    - "TIMELINE\u9A8C\u8BC1\u5956\u52B1"
+    - 
+    - reward
+    - 
+    - 
+    - 
+    - 
+    - P_REWARD_TIMELINE
+    - 0
+    - 
+    - 
+    - G_REWARD_TIMELINE
+    - 
+    - none
+    - 
+  - Table: Event
+    Line: 14
+    Headers:
+    - id
+    - name
+    - room
+    - trigger
+    - target
+    - start
+    - end
+    - need
+    - plot
+    - time
+    - reward
+    - use
+    - goal
+    - plan_b
+    - action
+    - record
+    Values:
+    - E_END
+    - "\u771F\u76F8\u91CD\u6784"
+    - 
+    - reward
+    - 
+    - 
+    - 
+    - 
+    - P_END
+    - 0
+    - 
+    - 
+    - G_END
+    - 
+    - ending
+    - 
+  - Table: Plot
+    Line: 2
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_INVITE_1
+    - P_INVITE
+    - 1
+    - "\u65C1\u767D"
+    - "\u4E00\u5C01\u9080\u8BF7\u51FD\u5C06\u4F60\u5E26\u5230\u53E4\u5821\u3002\u8FD9\u662F\u4E00\u5B97\u7528\u4E8E\u8054\u8C03\u7684\u793A\u4F8B\u6848\u4EF6\uFF1A\u8BBF\u5BA2\u4E3A\u4F55\u4E24\u6B21\u51FA\u73B0\u5728\u5927\u5385\uFF1F"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 3
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_INVITE_2
+    - P_INVITE
+    - 2
+    - "\u65C1\u767D"
+    - "\u8BF7\u7ED3\u5408\u5F55\u97F3\u3001\u7EF4\u62A4\u8BB0\u5F55\u548C\u8BBF\u5BA2\u8BC1\u8BCD\u5B8C\u6210\u8C03\u67E5\u3002\u6B63\u5F0F\u6848\u4EF6\u5267\u60C5\u5F85\u7B56\u5212\u66FF\u6362\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 4
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_ARRIVE_1
+    - P_ARRIVE
+    - 1
+    - "\u7BA1\u5BB6"
+    - "\u8BF7\u6536\u4E0B\u5730\u56FE\u3002\u56DE\u5230\u4E8C\u697C\u623F\u95F4\uFF0C\u5148\u542C\u5267\u60C5\u78C1\u5E26\uFF0C\u518D\u5230\u4E66\u623F\u8C03\u67E5\u3002"
+    - 
+    - false
+    - I_MAP
+  - Table: Plot
+    Line: 5
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_ARRIVE_2
+    - P_ARRIVE
+    - 2
+    - "\u65C1\u767D"
+    - "\u63A5\u5F85\u7528\u65F6\u5341\u4E94\u5206\u949F\uFF1B\u4E2D\u592E\u8BBE\u5907\u4FDD\u7559\u4E86\u4ECA\u665A\u7684\u6D4B\u8BD5\u5F55\u97F3\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 6
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_TUTORIAL_1
+    - P_TUTORIAL
+    - 1
+    - "\u65C1\u767D"
+    - "\u5728\u5973\u4E3B\u623F\u95F4\u4F7F\u7528\u653E\u97F3\u673A\uFF0C\u9009\u62E9\u5267\u60C5\u78C1\u5E26\u3002\u8BF7\u5B8C\u6574\u64AD\u653E\u6307\u5B9A\u5F55\u97F3\u540E\u56DE\u6765\u70B9\u51FB\u7EE7\u7EED\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 7
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_TAPE_1
+    - P_TAPE
+    - 1
+    - "\u65C1\u767D"
+    - "\u8FD9\u91CC\u8BB0\u5F55\u7684\u662F\u8BBF\u5BA2\u7684\u7559\u8A00\u3002"
+    - 0
+    - false
+    - 
+  - Table: Plot
+    Line: 8
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_TAPE_2
+    - P_TAPE
+    - 2
+    - "\u65C1\u767D"
+    - "\u6211\u79BB\u5F00\u5927\u5385\u53BB\u4E86\u4E8C\u697C\u4E66\u623F\uFF0C\u968F\u540E\u53C8\u56DE\u5230\u5927\u5385\u3002"
+    - 3
+    - false
+    - 
+  - Table: Plot
+    Line: 9
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_TAPE_3
+    - P_TAPE
+    - 3
+    - "\u65C1\u767D"
+    - "\u4E66\u623F\u7EF4\u62A4\u7C3F\u8BB0\u5F55\u7740\u53C2\u8003\u8BBE\u5907\u7684\u68C0\u4FEE\u7ED3\u679C\u3002"
+    - 6
+    - false
+    - 
+  - Table: Plot
+    Line: 10
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_LIVE_1
+    - P_LIVE
+    - 1
+    - "\u8BBF\u5BA2"
+    - "\u6211\u5148\u5728\u5927\u5385\u767B\u8BB0\uFF0C\u7136\u540E\u4E0A\u697C\u53BB\u4E66\u623F\uFF0C\u6700\u540E\u8FD4\u56DE\u5927\u5385\u3002"
+    - 0
+    - false
+    - 
+  - Table: Plot
+    Line: 11
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_LIVE_2
+    - P_LIVE
+    - 2
+    - "\u8BBF\u5BA2"
+    - "\u7B2C\u4E8C\u6B21\u56DE\u5230\u5927\u5385\u65F6\uFF0C\u949F\u6572\u8FC7\u4E00\u6B21\uFF1B\u968F\u540E\u624D\u542C\u89C1\u91D1\u5C5E\u7BB1\u843D\u5730\u3002"
+    - 3
+    - false
+    - 
+  - Table: Plot
+    Line: 12
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_LIVE_3
+    - P_LIVE
+    - 3
+    - "\u65C1\u767D"
+    - "\u8FD9\u6BB5\u8BC1\u8BCD\u5DF2\u7531\u968F\u8EAB\u5F55\u97F3\u7B14\u8BB0\u5F55\u3002"
+    - 6
+    - false
+    - 
+  - Table: Plot
+    Line: 13
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_MAINT_1
+    - P_MAINT
+    - 1
+    - "\u8BB0\u5F55"
+    - "\u7EF4\u62A4\u8BB0\u5F55\u8BC1\u660E\u9891\u9053A\u4E0E\u6807\u51C6\u65F6\u949F\u4E00\u81F4\u3002"
+    - 
+    - false
+    - C_PROOF
+  - Table: Plot
+    Line: 14
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_MAINT_2
+    - P_MAINT
+    - 2
+    - "\u65C1\u767D"
+    - "\u9891\u9053B\u7684\u7A97\u65C1\u5F55\u97F3\u542B\u7FFB\u9875\u58F0\uFF0C\u4E0E\u4E66\u623F\u73AF\u5883\u5BF9\u5E94\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 15
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_MISS_1
+    - P_MISS
+    - 1
+    - "\u65C1\u767D"
+    - "\u8BBF\u5BA2\u7559\u4E0B\u4E86\u5927\u5385\u767B\u8BB0\u4FE1\u606F\u3002\u5F53\u5929\u9519\u8FC7\u4E5F\u53EF\u901A\u8FC7\u5907\u7528\u7559\u8A00\u9886\u53D6\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 16
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_BACK_1
+    - P_BACK
+    - 1
+    - "\u65C1\u767D"
+    - "\u8BBF\u5BA2\u5DF2\u7ECF\u79BB\u5F00\uFF0C\u767B\u8BB0\u53F0\u7559\u4E0B\u76F8\u540C\u5185\u5BB9\u7684\u5907\u5FD8\u5F55\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 17
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_A_1
+    - P_A
+    - 1
+    - "\u58F0\u54CD"
+    - "\u6574\u70B9\u949F\u54CD\u4E4B\u540E\uFF0C\u91D1\u5C5E\u7BB1\u7A81\u7136\u5760\u5730\u3002"
+    - 0
+    - true
+    - 
+  - Table: Plot
+    Line: 18
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_A_2
+    - P_A
+    - 2
+    - "\u65C1\u767D"
+    - "\u53C2\u8003\u65F6\u949F\u8BB0\u5F55\u4E86\u8FD9\u6B21\u58F0\u54CD\u3002"
+    - 3
+    - false
+    - 
+  - Table: Plot
+    Line: 19
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_B_1
+    - P_B
+    - 1
+    - "\u58F0\u54CD"
+    - "\u6574\u70B9\u949F\u54CD\u4E4B\u540E\uFF0C\u8FDC\u5904\u4F20\u6765\u540C\u4E00\u6B21\u91D1\u5C5E\u649E\u51FB\u3002"
+    - 0
+    - true
+    - 
+  - Table: Plot
+    Line: 20
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_B_2
+    - P_B
+    - 2
+    - "\u73AF\u5883"
+    - "\u8FD1\u5904\u6709\u4EBA\u5408\u4E0A\u4E66\u672C\uFF1B\u7A97\u8FB9\u98CE\u58F0\u6301\u7EED\u3002"
+    - 3
+    - false
+    - 
+  - Table: Plot
+    Line: 21
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_C_1
+    - P_C
+    - 1
+    - "\u58F0\u54CD"
+    - "\u7A0D\u540E\uFF0C\u5DE5\u4F5C\u4EBA\u5458\u518D\u6B21\u8BD5\u6572\u7A7A\u7BB1\u2014\u2014\u8FD9\u662F\u7B2C\u4E8C\u6B21\u58F0\u54CD\u3002"
+    - 0
+    - true
+    - 
+  - Table: Plot
+    Line: 22
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_C_2
+    - P_C
+    - 2
+    - "\u65C1\u767D"
+    - "\u8BE5\u58F0\u54CD\u5E76\u975E\u8BBF\u5BA2\u542C\u5230\u7684\u7B2C\u4E00\u6B21\u649E\u51FB\u3002"
+    - 3
+    - false
+    - 
+  - Table: Plot
+    Line: 23
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_REL_1
+    - P_REL
+    - 1
+    - "\u65C1\u767D"
+    - "\u5148\u767B\u8BB0\uFF0C\u624D\u6709\u79BB\u5F00\u5927\u5385\u524D\u5F80\u4E66\u623F\u7684\u884C\u7A0B\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 24
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_REL_2
+    - P_REL
+    - 2
+    - "\u65C1\u767D"
+    - "\u4E66\u623F\u505C\u7559\u7ED3\u675F\u540E\uFF0C\u8BBF\u5BA2\u8FD4\u56DE\u5927\u5385\u542C\u89C1\u7B2C\u4E00\u6B21\u649E\u51FB\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 25
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_END_1
+    - P_END
+    - 1
+    - "\u65C1\u767D"
+    - "\u5206\u6563\u7684\u5F55\u97F3\u9010\u6E10\u91CD\u5408\u3002"
+    - 0
+    - false
+    - 
+  - Table: Plot
+    Line: 26
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_END_2
+    - P_END
+    - 2
+    - "\u65C1\u767D"
+    - "\u6821\u6B63\u540E\u7684\u65F6\u949F\u8868\u660E\uFF0C\u8FD9\u4E9B\u7247\u6BB5\u53EF\u4EE5\u653E\u5728\u540C\u4E00\u6761\u65F6\u95F4\u7EBF\u4E0A\u3002"
+    - 3
+    - false
+    - 
+  - Table: Plot
+    Line: 27
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_END_3
+    - P_END
+    - 3
+    - "\u65C1\u767D"
+    - "\u8BBF\u5BA2\u5148\u767B\u8BB0\uFF0C\u968F\u540E\u67E5\u9605\u4E66\u623F\uFF0C\u518D\u8FD4\u56DE\u5927\u5385\uFF1B\u7B2C\u4E8C\u6B21\u8BD5\u6572\u58F0\u4E0D\u5C5E\u4E8E\u8FD9\u6BB5\u884C\u7A0B\u3002"
+    - 6
+    - false
+    - 
+  - Table: Plot
+    Line: 28
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_REWARD_ANCHOR_1
+    - P_REWARD_ANCHOR
+    - 1
+    - "\u65C1\u767D"
+    - "\u5DF2\u9A8C\u8BC1\u540C\u4E00\u6B21\u58F0\u54CD\uFF0C\u5E72\u6270\u58F0\u54CD\u5DF2\u6392\u9664\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 29
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_REWARD_LOCATION_1
+    - P_REWARD_LOCATION
+    - 1
+    - "\u65C1\u767D"
+    - "\u8BBE\u5907\u4F4D\u7F6E\u5DF2\u786E\u8BA4\uFF0C\u4ECA\u540E\u663E\u793A\u5DF2\u77E5\u623F\u95F4\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 30
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_REWARD_CALIBRATE_1
+    - P_REWARD_CALIBRATE
+    - 1
+    - "\u65C1\u767D"
+    - "\u8BBE\u5907B\u6162\u4E86\u4E09\u5206\u949F\uFF0C\u62A5\u544A\u65F6\u95F4\u52A0\u4E09\u5206\u949F\u5F97\u5230\u6821\u6B63\u65F6\u95F4\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 31
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_REWARD_PATH_1
+    - P_REWARD_PATH
+    - 1
+    - "\u65C1\u767D"
+    - "\u5DF2\u9A8C\u8BC1\u8BBF\u5BA2\u7531\u5927\u5385\u5230\u4E66\u623F\u518D\u8FD4\u56DE\u5927\u5385\u3002"
+    - 
+    - false
+    - 
+  - Table: Plot
+    Line: 32
+    Headers:
+    - id
+    - group
+    - order
+    - speaker
+    - text
+    - at
+    - anchor
+    - link_entry
+    Values:
+    - L_REWARD_TIMELINE_1
+    - P_REWARD_TIMELINE
+    - 1
+    - "\u65C1\u767D"
+    - "\u4E8B\u4EF6\u5148\u540E\u5173\u7CFB\u5DF2\u786E\u5B9A\uFF0C\u53EF\u9009\u62E9\u6700\u7EC8\u63A8\u8BBA\u3002"
+    - 
+    - false
+    - 
+  - Table: Record
+    Line: 2
+    Headers:
+    - id
+    - name
+    - device
+    - start
+    - duration
+    - plot
+    - need
+    Values:
+    - REC_A
+    - "\u6863\u6848A"
+    - D_A
+    - 2026-10-07 18:50:00
+    - 10
+    - P_A
+    - G_TUTORIAL
+  - Table: Record
+    Line: 3
+    Headers:
+    - id
+    - name
+    - device
+    - start
+    - duration
+    - plot
+    - need
+    Values:
+    - REC_B
+    - "\u6863\u6848B"
+    - D_B
+    - 2026-10-07 18:47:00
+    - 10
+    - P_B
+    - G_TUTORIAL
+  - Table: Record
+    Line: 4
+    Headers:
+    - id
+    - name
+    - device
+    - start
+    - duration
+    - plot
+    - need
+    Values:
+    - REC_C
+    - "\u6863\u6848C"
+    - D_C
+    - 2026-10-07 18:52:00
+    - 10
+    - P_C
+    - G_TUTORIAL
+  - Table: Record
+    Line: 5
+    Headers:
+    - id
+    - name
+    - device
+    - start
+    - duration
+    - plot
+    - need
+    Values:
+    - REC_PERSONAL
+    - "\u73B0\u573A\u6587\u4EF601"
+    - D_PERSONAL
+    - 
+    - 10
+    - P_LIVE
+    - 
+  - Table: Record
+    Line: 6
+    Headers:
+    - id
+    - name
+    - device
+    - start
+    - duration
+    - plot
+    - need
+    Values:
+    - REC_TAPE
+    - "\u7559\u8A00\u6587\u4EF6"
+    - 
+    - 2026-10-07 18:30:00
+    - 10
+    - P_TAPE
+    - TAPE_ONLY
+  - Table: Entry
+    Line: 2
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - I_MAP
+    - "\u5730\u56FE"
+    - item
+    - "\u53E4\u5821\u4E24\u5C42\u5730\u56FE\u3002"
+    - 
+    - 
+    - 
+    - L_ARRIVE_1
+  - Table: Entry
+    Line: 3
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - I_TAPE
+    - "\u5267\u60C5\u78C1\u5E26"
+    - tape
+    - "\u8BBF\u5BA2\u7559\u4E0B\u7684\u5F55\u97F3\u3002"
+    - 
+    - 
+    - REC_TAPE
+    - E_ARRIVE
+  - Table: Entry
+    Line: 4
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - I_BLANK
+    - "\u7A7A\u767D\u78C1\u5E26"
+    - tape
+    - "\u5728\u4E2D\u63A7\u5BA4\u523B\u5F55\u5B8C\u6574\u6587\u4EF6\u3002"
+    - 
+    - 
+    - 
+    - E_ARRIVE
+  - Table: Entry
+    Line: 5
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - C_PROOF
+    - "\u7EF4\u62A4\u8BB0\u5F55"
+    - clue
+    - "\u9891\u9053A\u5DF2\u5BF9\u51C6\u6807\u51C6\u65F6\u949F\uFF0C\u539F\u59CB\u65F6\u95F4\u53EF\u4FE1\u3002"
+    - 
+    - 
+    - 
+    - L_MAINT_1
+  - Table: Entry
+    Line: 6
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - C_ROOM
+    - "\u73AF\u5883\u8BB0\u5F55"
+    - clue
+    - "\u7A97\u65C1\u98CE\u58F0\u3001\u7FFB\u4E66\u58F0\u5BF9\u5E94\u4E66\u623F\u8BBE\u5907\u3002"
+    - 
+    - 
+    - 
+    - L_MAINT_2;L_B_2
+  - Table: Entry
+    Line: 7
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - C_PATH
+    - "\u8BBF\u5BA2\u884C\u7A0B"
+    - info
+    - "\u8BBF\u5BA2\u8BF4\u5148\u5728\u5927\u5385\u767B\u8BB0\uFF0C\u518D\u53BB\u4E66\u623F\uFF0C\u6700\u540E\u56DE\u5230\u5927\u5385\u3002"
+    - 
+    - CHAR_VISITOR
+    - 
+    - L_LIVE_1
+  - Table: Entry
+    Line: 8
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - C_REGISTER
+    - "\u767B\u8BB0\u4FE1\u606F"
+    - info
+    - "\u8BBF\u5BA2\u5728\u524D\u5F80\u4E66\u623F\u4E4B\u524D\u5DF2\u5B8C\u6210\u767B\u8BB0\u3002"
+    - 
+    - CHAR_VISITOR
+    - 
+    - E_MISS;E_BACK
+  - Table: Entry
+    Line: 9
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - C_TIME
+    - "\u5DF2\u6821\u6B63\u65F6\u949F"
+    - clue
+    - "\u9891\u9053B\u6BD4\u53C2\u8003\u8BBE\u5907\u6162180\u79D2\uFF0C\u5DF2\u7EDF\u4E00\u4FEE\u6B63\u5176\u6587\u4EF6\u65F6\u95F4\u3002"
+    - 
+    - 
+    - 
+    - Q_CALIBRATE
+  - Table: Entry
+    Line: 10
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - V_REGISTER
+    - "\u5927\u5385\u767B\u8BB0"
+    - event
+    - "\u8BBF\u5BA2\u9996\u5148\u5728\u5927\u5385\u767B\u8BB0\u3002"
+    - 
+    - CHAR_VISITOR
+    - 
+    - Q_PATH
+  - Table: Entry
+    Line: 11
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - V_STUDY
+    - "\u4E66\u623F\u505C\u7559"
+    - event
+    - "\u8BBF\u5BA2\u5728\u4E66\u623F\u67E5\u9605\u8D44\u6599\u3002"
+    - 
+    - CHAR_VISITOR
+    - 
+    - Q_LOCATION
+  - Table: Entry
+    Line: 12
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - V_RETURN
+    - "\u8FD4\u56DE\u5927\u5385"
+    - event
+    - "\u8BBF\u5BA2\u8FD4\u56DE\u5927\u5385\uFF0C\u542C\u5230\u7B2C\u4E00\u6B21\u91D1\u5C5E\u7BB1\u649E\u51FB\u3002"
+    - 
+    - CHAR_VISITOR
+    - 
+    - Q_ANCHOR
+  - Table: Entry
+    Line: 13
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - K_TRUE
+    - "\u767B\u8BB0 \u2192 \u4E66\u623F \u2192 \u8FD4\u56DE\u5927\u5385"
+    - conclusion
+    - "\u7B2C\u4E00\u6B21\u649E\u51FB\u5BF9\u5E94\u8FD4\u56DE\u5927\u5385\u540E\u7684\u65F6\u523B\uFF1B\u518D\u6B21\u8BD5\u6572\u662F\u5E72\u6270\u3002"
+    - 
+    - 
+    - 
+    - 
+  - Table: Entry
+    Line: 14
+    Headers:
+    - id
+    - name
+    - type
+    - text
+    - icon
+    - owner
+    - record
+    - source
+    Values:
+    - K_FALSE
+    - "\u4E24\u6B21\u649E\u51FB\u5C5E\u4E8E\u540C\u4E00\u65F6\u523B"
+    - conclusion
+    - "\u5047\u8BBE\u8BD5\u6572\u4E0E\u7B2C\u4E00\u6B21\u649E\u51FB\u5B8C\u5168\u76F8\u540C\u3002"
+    - 
+    - 
+    - 
+    - 
+  - Table: Puzzle
+    Line: 2
+    Headers:
+    - id
+    - name
+    - type
+    - need
+    - target
+    - map
+    - slots
+    - candidates
+    - answer
+    - reference
+    - success
+    - feedback
+    - fail_text
+    Values:
+    - Q_ANCHOR
+    - "\u540C\u4E00\u6B21\u58F0\u54CD"
+    - anchor
+    - G_TUTORIAL
+    - 
+    - 
+    - 
+    - L_A_1;L_B_1;L_C_1
+    - L_A_1;L_B_1
+    - 
+    - E_REWARD_ANCHOR
+    - 
+    - "\u8BC1\u636E\u5C1A\u4E0D\u652F\u6301\u8FD9\u7EC4\u5224\u65AD\u3002\u8349\u7A3F\u5DF2\u4FDD\u7559\uFF0C\u8BF7\u91CD\u65B0\u6BD4\u5BF9\u3002"
+  - Table: Puzzle
+    Line: 3
+    Headers:
+    - id
+    - name
+    - type
+    - need
+    - target
+    - map
+    - slots
+    - candidates
+    - answer
+    - reference
+    - success
+    - feedback
+    - fail_text
+    Values:
+    - Q_LOCATION
+    - "\u9891\u9053B\u4F4D\u7F6E"
+    - location
+    - C_ROOM
+    - D_B
+    - MAP_CASTLE
+    - 
+    - R_HALL;R_STUDY;R_HOME
+    - 
+    - 
+    - E_REWARD_LOCATION
+    - 
+    - "\u8BC1\u636E\u5C1A\u4E0D\u652F\u6301\u8FD9\u7EC4\u5224\u65AD\u3002\u8349\u7A3F\u5DF2\u4FDD\u7559\uFF0C\u8BF7\u91CD\u65B0\u6BD4\u5BF9\u3002"
+  - Table: Puzzle
+    Line: 4
+    Headers:
+    - id
+    - name
+    - type
+    - need
+    - target
+    - map
+    - slots
+    - candidates
+    - answer
+    - reference
+    - success
+    - feedback
+    - fail_text
+    Values:
+    - Q_CALIBRATE
+    - "\u9891\u9053B\u6821\u65F6"
+    - calibrate
+    - Q_ANCHOR
+    - D_B
+    - 
+    - 
+    - L_A_1;L_B_1;L_C_1
+    - 
+    - D_A;D_C
+    - E_REWARD_CALIBRATE
+    - 
+    - "\u8BC1\u636E\u5C1A\u4E0D\u652F\u6301\u8FD9\u7EC4\u5224\u65AD\u3002\u8349\u7A3F\u5DF2\u4FDD\u7559\uFF0C\u8BF7\u91CD\u65B0\u6BD4\u5BF9\u3002"
+  - Table: Puzzle
+    Line: 5
+    Headers:
+    - id
+    - name
+    - type
+    - need
+    - target
+    - map
+    - slots
+    - candidates
+    - answer
+    - reference
+    - success
+    - feedback
+    - fail_text
+    Values:
+    - Q_PATH
+    - "\u8BBF\u5BA2\u8DEF\u5F84"
+    - person_path
+    - C_PATH;C_REGISTER
+    - CHAR_VISITOR
+    - MAP_CASTLE
+    - A;B;C
+    - N_HALL;N_STUDY;N_HOME
+    - A=N_HALL;B=N_STUDY;C=N_HALL
+    - 
+    - E_REWARD_PATH
+    - 
+    - "\u8BC1\u636E\u5C1A\u4E0D\u652F\u6301\u8FD9\u7EC4\u5224\u65AD\u3002\u8349\u7A3F\u5DF2\u4FDD\u7559\uFF0C\u8BF7\u91CD\u65B0\u6BD4\u5BF9\u3002"
+  - Table: Puzzle
+    Line: 6
+    Headers:
+    - id
+    - name
+    - type
+    - need
+    - target
+    - map
+    - slots
+    - candidates
+    - answer
+    - reference
+    - success
+    - feedback
+    - fail_text
+    Values:
+    - Q_TIMELINE
+    - "\u4E8B\u4EF6\u65F6\u95F4\u7EBF"
+    - timeline
+    - Q_ANCHOR;Q_LOCATION;Q_CALIBRATE;Q_PATH
+    - 
+    - 
+    - S1;S2;S3
+    - V_REGISTER;V_STUDY;V_RETURN
+    - S1=V_REGISTER;S2=V_STUDY;S3=V_RETURN
+    - 
+    - E_REWARD_TIMELINE
+    - P_REL
+    - "\u8BC1\u636E\u5C1A\u4E0D\u652F\u6301\u8FD9\u7EC4\u5224\u65AD\u3002\u8349\u7A3F\u5DF2\u4FDD\u7559\uFF0C\u8BF7\u91CD\u65B0\u6BD4\u5BF9\u3002"
+  - Table: Puzzle
+    Line: 7
+    Headers:
+    - id
+    - name
+    - type
+    - need
+    - target
+    - map
+    - slots
+    - candidates
+    - answer
+    - reference
+    - success
+    - feedback
+    - fail_text
+    Values:
+    - Q_CONCLUSION
+    - "\u6700\u7EC8\u63A8\u8BBA"
+    - conclusion
+    - Q_TIMELINE
+    - Q_TIMELINE
+    - 
+    - 
+    - K_TRUE;K_FALSE
+    - K_TRUE
+    - 
+    - E_END
+    - 
+    - "\u8BF7\u56DE\u770B\u65F6\u95F4\u7EBF\uFF1B\u53E6\u4E00\u58F0\u649E\u51FB\u53D1\u751F\u5F97\u66F4\u665A\u3002"
