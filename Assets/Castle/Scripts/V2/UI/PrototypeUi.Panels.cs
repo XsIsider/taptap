@@ -7,10 +7,43 @@ namespace Castle.V2
     {
         void ShowRecords()
         {
-            _session.Recordings.Import(); Page("Records", "中控室 · 录音档案", ShowRoom); float y = 140;
-            foreach (var row in _session.Content.Table("Record")) if (_session.Recordings.CanAccess(row.Id)) { var id = row.Id; _ui.Button(_page, _session.Recordings.Label(id), 130, y, 1240, () => ShowPlayback(id), _session.Recordings.CanAccess(id)); y += 70; }
-            _ui.Text(_page, "进入中控室时增量导入个人录音；退出时一次结算访问耗时。", 130, 740, 1240, 50, 19);
-            _ui.Button(_page, "退出中控室（结算 " + _session.Settings.ControlMinutes + " 分钟）", 1070, 760, 430, () => { _session.Travel(_session.Settings.HomeRoom); Resume(); });
+            _session.Recordings.Import(); Page("Records", "中控室 · 录音工作台", () => Resume());
+            _ui.TabBar(_page, new[] { "录音档案", "锚点与校时", "空间与事件推理", "调查册" }, 0, index =>
+            {
+                if (index == 0) ShowRecords(); else if (index == 3) ShowJournal(); else ShowAnalysis(index == 1);
+            });
+            _ui.Box(_page, "Device panel", 80, 180, 430, 545, UiFactory.Panel);
+            _ui.Text(_page, "设备状态", 110, 200, 370, 45, 27, UiFactory.Gold);
+            float y = 260;
+            foreach (var device in _session.Settings.Devices.Devices)
+            {
+                var knowledge = _session.Knowledge(device.Id);
+                _ui.Text(_page, device.Label + "\n" + (!string.IsNullOrEmpty(knowledge.Room) ? "位置已验证" : "位置待调查") + " · " + (knowledge.Calibrated ? "时钟已校正" : "时钟待校正"), 110, y, 365, 100, 22);
+                y += 130;
+            }
+            var rows = _session.Content.Table("Record").Where(row => _session.Recordings.CanAccess(row.Id)).ToArray();
+            _ui.Text(_page, "可访问录音  /  " + rows.Length + " 份", 560, 190, 920, 50, 27, UiFactory.Gold);
+            var content = _ui.Scroll(_page, 550, 255, 970, 460, rows.Length * 95);
+            y = 0;
+            foreach (var row in rows)
+            {
+                var id = row.Id;
+                _ui.Button(content, _session.Recordings.Label(id) + " · 打开录音", 10, y, 920, () => ShowPlayback(id), true, 78); y += 95;
+            }
+            if (rows.Length == 0) _ui.Text(content, "当前没有可访问录音。探索后再来导入。", 20, 20, 900, 100);
+            _ui.Text(_page, "个人录音进入时自动导入；关闭工作台仍留在中控室。", 90, 755, 930, 70, 21);
+            _ui.Button(_page, "离开中控室（" + _session.Settings.ControlMinutes + " 分钟）", 1080, 760, 430, () => { _session.Travel(_session.Settings.HomeRoom); Resume(); });
+        }
+        void ShowAnalysis(bool audio)
+        {
+            Page("Puzzles", audio ? "声响分析" : "空间与事件推理", ShowRecords);
+            var rows = _session.Content.Table("Puzzle").Where(p => audio == (p.Get("type") == "anchor" || p.Get("type") == "calibrate")).ToArray();
+            var content = _ui.Scroll(_page, 90, 160, 1420, 610, rows.Length * 100);
+            for (int i = 0; i < rows.Length; i++)
+            {
+                var puzzle = rows[i]; bool solved = _session.State.Solved.Contains(puzzle.Id);
+                _ui.Button(content, puzzle.Name + (solved ? " · 已验证" : _session.Puzzles.Available(puzzle) ? " · 待分析" : " · 等待线索"), 20, i * 100, 1360, () => ShowPuzzle(puzzle.Id), solved || _session.Puzzles.Available(puzzle), 80);
+            }
         }
         void ShowTapes()
         {
@@ -66,34 +99,56 @@ namespace Castle.V2
         }
         void ShowJournal()
         {
-            Page("Journal", "调查册 · 仅显示已收录信息", () => Resume());
+            if (_screen != "Journal") _journalBack = CurrentReturn();
+            Page("Journal", "调查册 · 已收录信息", _journalBack);
+            var labels = new[] { "道具", "线索", "人物", "已验证事件", "对话记录" };
+            var types = new[] { "item", "clue", "info", "event" };
+            _ui.TabBar(_page, labels, _journalTab, index => { _journalTab = index; ShowJournal(); });
+            _ui.Box(_page, "Journal paper", 80, 175, 1440, 625, UiFactory.Paper);
             var owned = _session.Content.Table("Entry").Where(e => _session.Has(e.Id)).ToArray();
-            var content = _ui.Scroll(_page, 90, 120, 1420, 670, 450 + owned.Length * 180); float y = 10;
-            foreach (var pair in new[] { "item|道具", "clue|线索", "info|人物信息", "event|已验证事件" })
+            var content = _ui.Scroll(_page, 100, 195, 1400, 580, 580);
+            float y = 10;
+            if (_journalTab == 4)
             {
-                string type = pair.Split('|')[0]; _ui.Text(content, pair.Split('|')[1], 20, y, 1200, 40, 26, UiFactory.Gold); y += 50;
-                foreach (var entry in owned.Where(e => e.Get("type") == type))
+                foreach (var id in _session.State.CompletedEvents)
                 {
-                    var e = entry;
-                    string owners = string.Join("、", e.List("owner").Select(id => _session.Settings.Characters.Characters.First(c => c.Id == id).Name));
-                    _ui.Text(content, e.Name + (type == "item" ? " ×" + _session.Inventory.Count(e.Id) : "") + (owners == "" ? "" : " · " + owners) + "\n" + e.Get("text"), 30, y, 1000, 110, 22);
-                    _ui.Button(content, "查看来源", 1070, y + 15, 270, () => ShowSources(e));
-                    y += 135;
+                    var entry = _session.Content.Require(id);
+                    _ui.Button(content, entry.Name + " · 回看 / 补领", 20, y, 1330, () => { _session.Events.Begin(entry.Id, true, true); ShowDialogue(); }, _session.State.Active == null); y += 75;
                 }
             }
-            foreach (var character in _session.Settings.Characters.Characters.Where(c => owned.Any(e => e.Get("type") == "info" && e.List("owner").Contains(c.Id))))
+            else if (_journalTab == 2)
             {
-                var c = character; _ui.Button(content, c.Name + " · 人物卡", 20, y, 1320, () => ShowCharacter(c)); y += 70;
+                foreach (var character in _session.Settings.Characters.Characters.Where(c => owned.Any(e => e.Get("type") == "info" && e.List("owner").Contains(c.Id))))
+                {
+                    var person = character;
+                    _ui.Button(content, person.Name + " · 打开人物档案", 20, y, 1330, () => ShowCharacter(person), true, 100); y += 120;
+                }
             }
+            else foreach (var entry in owned.Where(e => e.Get("type") == types[_journalTab] || _journalTab == 0 && e.Get("type") == "tape"))
+            {
+                var item = entry;
+                var body = _ui.Text(content, item.Name + ((item.Get("type") == "item" || item.Get("type") == "tape") ? " ×" + _session.Inventory.Count(item.Id) : "") + "\n" + item.Get("text"), 30, y, 970, 115, 24, UiFactory.Ink);
+                float height = Mathf.Max(115, body.GetPreferredValues(body.text, 970, 0).y + 25);
+                body.rectTransform.sizeDelta = new Vector2(970, height);
+                _ui.Button(content, "查看来源", 1060, y + 15, 270, () => ShowSources(item)); y += height + 30;
+            }
+            if (y == 10) _ui.Text(content, "此页还没有记录。调查中获得的内容会收录在这里。", 30, 50, 1300, 100, 26, UiFactory.Ink);
+            content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Max(580, y));
         }
         void ShowCharacter(CharacterDefinition character)
         {
             var modal = Modal(character.Name + " · 已知信息");
-            var content = _ui.Scroll(modal, 410, 290, 780, 320, 700); float y = 0;
+            float top = 290;
+            if (character.Portrait)
+            {
+                var portrait = _ui.Box(modal, "Portrait", 1030, 190, 130, 130, Color.white).GetComponent<UnityEngine.UI.Image>();
+                portrait.sprite = character.Portrait; portrait.preserveAspect = true; portrait.raycastTarget = false; top = 335;
+            }
+            var content = _ui.Scroll(modal, 410, top, 780, 630 - top, 700); float y = 0;
             foreach (var entry in _session.Content.Table("Entry").Where(e => e.Get("type") == "info" && e.List("owner").Contains(character.Id) && _session.Has(e.Id)))
             { _ui.Text(content, entry.Name + "\n" + entry.Get("text"), 10, y, 720, 110, 22); y += 125; }
             var puzzle = _session.Content.Table("Puzzle").FirstOrDefault(p => p.Get("type") == "person_path" && p.Get("target") == character.Id);
-            if (puzzle != null) _ui.Button(content, _session.State.Solved.Contains(puzzle.Id) ? "路径已验证 · 查看" : "验证人物路径", 10, y, 710, () => ShowPuzzle(puzzle.Id), _session.Puzzles.Available(puzzle));
+            if (puzzle != null) _ui.Button(content, _session.State.Solved.Contains(puzzle.Id) ? "路径已验证 · 查看" : "验证人物路径", 10, y, 710, () => ShowPuzzle(puzzle.Id), _session.Puzzles.Available(puzzle) && _session.State.Active == null);
         }
         void ShowSources(ContentRow entry)
         {
@@ -119,9 +174,29 @@ namespace Castle.V2
         }
         void ShowMap()
         {
-            Page("Map", "地图", ShowRoom); _ui.Picture(_page, _session.Settings.Map.Floors.First(f => f.Floor == _floor).Background, 100, 120, 1100, 600); _ui.Text(_page, "楼层 " + _floor, 1240, 150, 240, 45, 25, UiFactory.Gold);
-            foreach (var node in _session.Settings.Map.Nodes.Where(n => n.Floor == _floor)) { var n = node; _ui.Button(_page, _session.Content.Require(n.Room).Name + " · " + _session.RoomStatus(n.Room), n.Position.x, n.Position.y, 330, () => { _session.Travel(n.Room); Resume(); }, _session.RoomStatus(n.Room) == "可进入"); }
-            _ui.Button(_page, "切换楼层", 1240, 240, 240, () => { _floor = _floor == 1 ? 2 : 1; ShowMap(); });
+            if (_screen != "Map") _mapBack = CurrentReturn();
+            Page("Map", "古堡平面图", _mapBack);
+            var floors = _session.Settings.Map.Floors.OrderBy(f => f.Floor).ToArray();
+            if (!floors.Any(f => f.Floor == _floor)) _floor = floors[0].Floor;
+            _ui.TabBar(_page, floors.Select(f => f.Floor + " 楼").ToArray(), Array.FindIndex(floors, f => f.Floor == _floor), index => { _floor = floors[index].Floor; ShowMap(); });
+            _ui.Picture(_page, floors.First(f => f.Floor == _floor).Background, 80, 175, 1120, 600);
+            _ui.Box(_page, "Map legend", 1220, 175, 300, 610, UiFactory.Panel);
+            _ui.Text(_page, "图例与行程", 1240, 200, 265, 45, 26, UiFactory.Gold);
+            _ui.StatusBadge(_page, "可进入", 1250, 265, UiFactory.Gold);
+            _ui.StatusBadge(_page, "时段关闭", 1250, 325, new Color(.65f, .65f, .6f));
+            _ui.StatusBadge(_page, "尚未解锁", 1250, 385, new Color(.45f, .5f, .46f));
+            _ui.Text(_page, "当前位置\n" + _session.Content.Require(_session.State.Room).Name + "\n\n" + _session.Now.ToString("HH:mm") + "\n\n选择可进入的房间前往。", 1240, 450, 260, 210, 23);
+            _ui.Button(_page, "收起地图", 1240, 705, 260, _mapBack);
+            foreach (var node in _session.Settings.Map.Nodes.Where(n => n.Floor == _floor))
+            {
+                var point = node; string status = _session.RoomStatus(point.Room);
+                bool here = point.Room == _session.State.Room;
+                _ui.Button(_page, (here ? "◆ " : "") + _session.Content.Require(point.Room).Name + "\n" + (here ? "当前位置" : status), point.Position.x, Mathf.Max(190, point.Position.y), 330, () =>
+                {
+                    if (_session.State.Active != null) { Notify("请先结束当前交互，再前往其他房间。"); return; }
+                    _session.Travel(point.Room); Resume();
+                }, status == "可进入", 80);
+            }
         }
         void ShowPuzzles()
         {
@@ -129,6 +204,7 @@ namespace Castle.V2
         }
         public void ShowPuzzle(string id)
         {
+            _puzzle = id;
             var puzzle = _session.Content.Require(id);
             Page("Puzzle", puzzle.Name, ShowPuzzles);
             var draft = _session.Puzzles.Draft(id);

@@ -37,13 +37,21 @@ namespace Castle.V2
             var canvas = host.GetComponentInChildren<Canvas>(); canvas.renderMode = RenderMode.ScreenSpaceCamera; canvas.worldCamera = _camera; canvas.planeDistance = 1;
             _folder = Path.Combine(Application.dataPath, "..", "Screenshots", Screen.width + "x" + Screen.height); Directory.CreateDirectory(_folder);
             Application.logMessageReceived += (message, trace, type) => { if (type == LogType.Exception || type == LogType.Error) File.AppendAllText(Path.Combine(_folder, "errors.txt"), message + "\n" + trace + "\n"); };
-            yield return new WaitForSecondsRealtime(.5f); yield return Capture("01-title"); Click("开始调查");
+            yield return new WaitForSecondsRealtime(.5f); yield return Capture("01-title"); Click("设置"); yield return Capture("01a-settings"); Click("关闭 / 取消");
+            Click("制作名单"); yield return Capture("01b-credits"); Click("关闭 / 取消");
+            Click("开始调查"); yield return Capture("01c-outside");
+            Click("阅读邀请函"); yield return Capture("01d-invitation");
+            Click("收好邀请函"); yield return Capture("01e-collected"); Click("进入古堡");
             var s = host.Session;
             yield return new WaitForSecondsRealtime(2.3f); yield return Capture("02-dialogue");
-            Finish(s); ui.Resume(); s.Inventory.Claim("L_ARRIVE_1", "I_MAP"); yield return Capture("03-map-link"); Finish(s);
+            Finish(s); ui.Resume(); s.Inventory.Claim("L_ARRIVE_1", "I_MAP"); yield return Capture("03-map-link"); Finish(s); ui.Resume(); yield return Capture("03a-room");
+            Click("地图 M"); yield return Capture("03b-map"); Click("2 楼"); yield return Capture("03c-map-floor2"); Click("收起地图");
+            Click("调查册 J"); yield return Capture("03d-journal"); Click("返回");
             s.Travel("R_HOME"); ui.Resume(); yield return Capture("04-tutorial"); Click("打开房间放音机"); yield return null; Click("剧情磁带"); Click("播放 / 暂停");
             yield return new WaitForSecondsRealtime(10.5f); yield return Capture("05-playback");
             Finish(s); s.Travel("R_STUDY"); s.Events.Begin("E_LIVE"); Finish(s); s.Events.Begin("E_MAINT"); Finish(s); s.Travel("R_CONTROL"); ui.Resume(); Click("中央档案"); yield return Capture("06-records");
+            Click("调查册 J"); Click("人物"); yield return Capture("06a-characters"); Click("访客"); yield return Capture("06b-character-card"); Click("关闭 / 取消"); Click("返回");
+            Click("锚点与校时"); yield return Capture("06c-analysis"); Click("返回");
             foreach (var id in new[] { "REC_A", "REC_B", "REC_C" }) { s.Recordings.Seek(id, 10); s.Recordings.Mark(s.Content.Plot(s.Content.Require(id).Get("plot"))[0].Id); }
             ui.ShowPlayback("REC_B"); yield return Capture("07-device-hidden");
             Solve(s, "Q_ANCHOR", new[] { "L_A_1", "L_B_1" }); Solve(s, "Q_LOCATION", new[] { "R_STUDY" });

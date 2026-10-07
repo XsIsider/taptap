@@ -26,6 +26,22 @@ namespace Castle.V2
             var rect = Box(parent, title, x, y, width, height, Panel); var button = rect.gameObject.AddComponent<Button>(); button.targetGraphic = rect.GetComponent<Image>(); button.interactable = enabled;
             var label = Text(rect, title, 10, 5, width - 20, height - 10, 21, Gold); label.alignment = TextAlignmentOptions.Midline; button.onClick.AddListener(() => click()); return button;
         }
+        public RectTransform Header(Transform parent, string title, Action back = null)
+        {
+            var bar = Box(parent, "Header", 0, 0, 1600, 82, Panel);
+            Text(bar, title, 35, 16, 720, 48, 29, Gold);
+            if (back != null) Button(bar, "返回", 1410, 14, 140, back, true, 48);
+            return bar;
+        }
+        public RectTransform TabBar(Transform parent, string[] labels, int selected, Action<int> select)
+        {
+            var bar = Box(parent, "Tabs", 70, 92, 1460, 58, new Color(0.08f, 0.14f, 0.11f, .96f));
+            float width = 1460f / labels.Length;
+            for (int i = 0; i < labels.Length; i++) { int index = i; Button(bar, (i == selected ? "◆ " : "") + labels[i], i * width, 4, width - 4, () => select(index), true, 50); }
+            return bar;
+        }
+        public RectTransform StatusBadge(Transform parent, string text, float x, float y, Color color)
+        { var badge = Box(parent, "Status", x, y, 210, 36, color); Text(badge, text, 8, 4, 194, 28, 17, Ink).alignment = TextAlignmentOptions.Center; return badge; }
         public void Picture(Transform parent, Texture texture, float x, float y, float width, float height)
         { if (!texture) return; var image = Rect(parent, "Image", x, y, width, height).gameObject.AddComponent<RawImage>(); image.texture = texture; image.raycastTarget = false; }
         public RectTransform Scroll(Transform parent, float x, float y, float width, float height, float contentHeight)
