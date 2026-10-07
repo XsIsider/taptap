@@ -9,7 +9,6 @@ namespace Castle.V2
 {
     public sealed partial class PrototypeUi
     {
-        readonly CastleGame _host;
         readonly SessionService _session;
         readonly UiFactory _ui;
         readonly RectTransform _root;
@@ -22,13 +21,13 @@ namespace Castle.V2
         AudioSource _audio;
         AudioClip _placeholder;
         readonly List<RectTransform> _waves = new List<RectTransform>();
-        string _screen, _record, _tape, _lastSound, _puzzle;
+        string _screen, _record, _tape, _lastSound;
         int _shownLine = -1, _floor = 1, _slot;
         bool _playing;
         Action _back;
         public PrototypeUi(CastleGame host, SessionService session)
         {
-            _host = host; _session = session;
+            _session = session;
             var font = Resources.Load<TMP_FontAsset>("Castle/ChineseTMP"); _ui = new UiFactory(font);
             var canvas = new GameObject("Castle V2 Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster)); canvas.transform.SetParent(host.transform, false); canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
             var scaler = canvas.GetComponent<CanvasScaler>(); scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; scaler.referenceResolution = new Vector2(1600, 900); scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
@@ -76,7 +75,7 @@ namespace Castle.V2
                 var h = hotspot; _ui.Button(_page, h.Label, 1120, y, 420, () => Hotspot(h)); y += 65;
             }
             _ui.Button(_page, "前往其他房间", 1120, y, 420, ShowTravel); y += 65;
-            if (_session.Has(_session.Settings.MapEntry)) { _ui.Button(_page, "地图 M", 1120, y, 420, () => ShowMap(false)); y += 65; }
+            if (_session.Has(_session.Settings.MapEntry)) { _ui.Button(_page, "地图 M", 1120, y, 420, () => ShowMap()); y += 65; }
             _ui.Button(_page, "调查册 J", 1120, y, 420, ShowJournal); y += 65;
             _ui.Button(_page, "分析与重构", 1120, y, 420, ShowPuzzles); y += 65;
             _ui.Button(_page, "对白回看 / 补领", 1120, y, 420, ShowHistory);
@@ -95,7 +94,7 @@ namespace Castle.V2
             else if (hotspot.Mode == "control") ShowRecords();
             else if (hotspot.Mode == "tape_player") ShowTapes();
             else if (hotspot.Mode == "rest") Confirm("休息到次日 " + _session.Settings.WakeTime + "？", () => { _session.Rest(); Resume(); });
-            else if (hotspot.Mode == "map") ShowMap(false);
+            else if (hotspot.Mode == "map") ShowMap();
             else if (hotspot.Mode == "puzzle") ShowPuzzle(hotspot.PuzzleId);
             else ShowJournal();
         }
@@ -170,7 +169,7 @@ namespace Castle.V2
             if (Input.GetKeyDown(KeyCode.Escape)) { if (_modal) CloseModal(); else _back?.Invoke(); }
             if (_modal) return;
             if (_screen == "Room" && Input.GetKeyDown(KeyCode.J)) ShowJournal();
-            if (_screen == "Room" && Input.GetKeyDown(KeyCode.M) && _session.Has(_session.Settings.MapEntry)) ShowMap(false);
+            if (_screen == "Room" && Input.GetKeyDown(KeyCode.M) && _session.Has(_session.Settings.MapEntry)) ShowMap();
             if (_screen == "Dialogue")
             {
                 _session.Events.Tick(delta); var active = _session.State.Active;

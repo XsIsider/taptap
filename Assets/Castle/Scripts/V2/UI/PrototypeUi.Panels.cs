@@ -117,11 +117,11 @@ namespace Castle.V2
                 y += 85;
             }
         }
-        void ShowMap(bool modal)
+        void ShowMap()
         {
             Page("Map", "地图", ShowRoom); _ui.Picture(_page, _session.Settings.Map.Floors.First(f => f.Floor == _floor).Background, 100, 120, 1100, 600); _ui.Text(_page, "楼层 " + _floor, 1240, 150, 240, 45, 25, UiFactory.Gold);
             foreach (var node in _session.Settings.Map.Nodes.Where(n => n.Floor == _floor)) { var n = node; _ui.Button(_page, _session.Content.Require(n.Room).Name + " · " + _session.RoomStatus(n.Room), n.Position.x, n.Position.y, 330, () => { _session.Travel(n.Room); Resume(); }, _session.RoomStatus(n.Room) == "可进入"); }
-            _ui.Button(_page, "切换楼层", 1240, 240, 240, () => { _floor = _floor == 1 ? 2 : 1; ShowMap(false); });
+            _ui.Button(_page, "切换楼层", 1240, 240, 240, () => { _floor = _floor == 1 ? 2 : 1; ShowMap(); });
         }
         void ShowPuzzles()
         {
@@ -129,7 +129,6 @@ namespace Castle.V2
         }
         public void ShowPuzzle(string id)
         {
-            _puzzle = id;
             var puzzle = _session.Content.Require(id);
             Page("Puzzle", puzzle.Name, ShowPuzzles);
             var draft = _session.Puzzles.Draft(id);

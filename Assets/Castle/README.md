@@ -1,6 +1,6 @@
 # 古堡调查原型 · 第一版
 
-打开 `Scenes/CastlePrototype.unity` 后 Play，或运行本地 `Builds/CastleV2/Castle.exe`。这是最新《程序说明文档》的独立示例案件，正式剧情待替换。
+打开 `Scenes/CastlePrototype.unity` 后 Play，或运行本地 `Builds/CastleV2/Castle.exe`。这是最新《程序说明文档》的独立示例案件，正式剧情待替换。运行时内容来自 `ContentV2.asset`，配置来自 `GameSettings.asset`；旧版 `CastleDatabase` 已移除。
 
 ## 体验路线
 

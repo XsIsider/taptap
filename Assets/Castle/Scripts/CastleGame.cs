@@ -5,7 +5,6 @@ namespace Castle
 {
     public sealed class CastleGame : MonoBehaviour
     {
-        public CastleDatabase database;
         public GameSettings Settings;
         public ContentDatabase Content;
         public SessionService Session { get; private set; }
