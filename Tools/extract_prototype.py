@@ -14,6 +14,7 @@ names = ['Chinese', 'ControlRoom', 'Castle', 'Outside', 'Lounge', 'Held',
          'Floor1', 'Floor2', 'Title', 'EmptyRoom']
 matches = list(re.finditer(r'data:([^;,]+);base64,([A-Za-z0-9+/=]+)', source))
 for name, match in zip(names, matches):
+    # The UI-specific source crops are maintained by extract_ui_art.py.
     if name in ('PortraitSource', 'ItemSource', 'JournalSource'):
         continue
     data = base64.b64decode(match[2])

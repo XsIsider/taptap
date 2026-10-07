@@ -46,6 +46,25 @@ namespace Castle.V2
             return null;
         }
         public bool Exists => _path != null && (File.Exists(_path) || File.Exists(_path + ".bak"));
+        // 调试重置先归档原始文件；任何备份失败均拒绝重置。
+        public bool Reset(SessionSave fresh)
+        {
+            try
+            {
+                if (_path != null)
+                {
+                    string archive = _path + ".reset-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff") + "-" + Guid.NewGuid().ToString("N");
+                    foreach (string suffix in new[] { "", ".bak" })
+                        if (File.Exists(_path + suffix)) File.Copy(_path + suffix, archive + suffix);
+                }
+                bool protectedBefore = _protectExisting;
+                _protectExisting = false;
+                if (Write(fresh)) return true;
+                _protectExisting = protectedBefore;
+                return false;
+            }
+            catch (Exception ex) { LastError = "重置已取消，原存档保留：" + ex.Message; return false; }
+        }
     }
 
 }

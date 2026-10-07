@@ -24,6 +24,7 @@ namespace Castle.V2
         public Button Button(Transform parent, string title, float x, float y, float width, Action click, bool enabled = true, float height = 50)
         {
             var rect = Box(parent, title, x, y, width, height, Panel); var button = rect.gameObject.AddComponent<Button>(); button.targetGraphic = rect.GetComponent<Image>(); button.interactable = enabled;
+            foreach (var edge in new[] { Box(rect, "Top border", 0, 0, width, 1, Gold), Box(rect, "Bottom border", 0, height - 1, width, 1, Gold), Box(rect, "Left border", 0, 0, 1, height, Gold), Box(rect, "Right border", width - 1, 0, 1, height, Gold) }) edge.GetComponent<Image>().raycastTarget = false;
             var label = Text(rect, title, 10, 5, width - 20, height - 10, 21, Gold); label.alignment = TextAlignmentOptions.Midline; button.onClick.AddListener(() => click()); return button;
         }
         public RectTransform Header(Transform parent, string title, Action back = null)
@@ -32,6 +33,16 @@ namespace Castle.V2
             Text(bar, title, 35, 16, 720, 48, 29, Gold);
             if (back != null) Button(bar, "返回", 1410, 14, 140, back, true, 48);
             return bar;
+        }
+        public Button ArtButton(Transform parent, string title, float x, float y, float width, Action click, bool enabled = true, bool primary = false)
+        {
+            var rect = Rect(parent, title, x, y, width, 62);
+            var image = rect.gameObject.AddComponent<RawImage>();
+            image.texture = Resources.Load<Texture2D>("Castle/UiArt/" + (primary ? "MenuPrimary" : "MenuSecondary"));
+            var button = rect.gameObject.AddComponent<Button>(); button.targetGraphic = image; button.interactable = enabled;
+            Text(rect, title, 20, 10, width - 40, 42, 25, primary ? Ink : Gold).alignment = TextAlignmentOptions.Midline;
+            var colors = button.colors; colors.disabledColor = new Color(.45f, .45f, .45f); button.colors = colors;
+            button.onClick.AddListener(() => click()); return button;
         }
         public RectTransform TabBar(Transform parent, string[] labels, int selected, Action<int> select)
         {

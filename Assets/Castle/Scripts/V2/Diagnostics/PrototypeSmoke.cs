@@ -50,7 +50,7 @@ namespace Castle.V2
             s.Travel("R_HOME"); ui.Resume(); yield return Capture("04-tutorial"); Click("打开房间放音机"); yield return null; Click("剧情磁带"); Click("播放 / 暂停");
             yield return new WaitForSecondsRealtime(10.5f); yield return Capture("05-playback");
             Finish(s); s.Travel("R_STUDY"); s.Events.Begin("E_LIVE"); Finish(s); s.Events.Begin("E_MAINT"); Finish(s); s.Travel("R_CONTROL"); ui.Resume(); Click("中央档案"); yield return Capture("06-records");
-            Click("调查册 J"); Click("人物"); yield return Capture("06a-characters"); Click("访客"); yield return Capture("06b-character-card"); Click("关闭 / 取消"); Click("返回");
+            Click("调查册 J"); Click("人物"); yield return Capture("06a-characters"); Click("打开人物档案"); yield return Capture("06b-character-card"); Click("关闭 / 取消"); Click("返回");
             Click("锚点与校时"); yield return Capture("06c-analysis"); Click("返回");
             foreach (var id in new[] { "REC_A", "REC_B", "REC_C" }) { s.Recordings.Seek(id, 10); s.Recordings.Mark(s.Content.Plot(s.Content.Require(id).Get("plot"))[0].Id); }
             ui.ShowPlayback("REC_B"); yield return Capture("07-device-hidden");
@@ -71,6 +71,12 @@ namespace Castle.V2
             s.Puzzles.Edit("Q_CONCLUSION", new[] { "K_TRUE" }); if (s.Puzzles.Submit("Q_CONCLUSION") != null) throw new Exception("Conclusion failed"); ui.Resume(); yield return new WaitForSecondsRealtime(3.2f); yield return Capture("12-ending");
             s.Events.SkipEnding(); ui.Resume();
             File.WriteAllText(Path.Combine(_folder, "result.txt"), "PASS full example + UI timeline swaps + playback + screenshots; " + s.State.Solved.Count + " puzzles solved");
+            Click("设置"); Click("调试：重置进度"); yield return Capture("13-reset-confirm"); Click("关闭 / 取消");
+            if (s.State.Solved.Count != 6) throw new Exception("Reset cancel modified progress");
+            Click("设置"); Click("调试：重置进度"); Click("确认");
+            if (s.State.Started || s.State.Solved.Count != 0 || s.State.Active != null) throw new Exception("Reset failed");
+            yield return Capture("14-reset-title");
+            File.AppendAllText(Path.Combine(_folder, "result.txt"), "; reset cancel/confirm passed");
             Debug.Log("CASTLE V2 PLAYER SMOKE PASSED"); Application.Quit(0);
         }
     }

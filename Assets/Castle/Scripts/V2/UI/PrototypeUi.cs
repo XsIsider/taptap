@@ -78,23 +78,22 @@ namespace Castle.V2
         public void ShowTitle()
         {
             Page("Title", "声音留在墙壁之间");
-            _ui.Picture(_page, _session.Settings.TitleScene, 0, 82, 1600, 748);
-            _ui.Box(_page, "Title Card", 635, 165, 350, 590, UiFactory.Ink);
-            _ui.Text(_page, "时差档案", 655, 190, 310, 85, 40, UiFactory.Gold);
-            _ui.Text(_page, "听见片段 · 校正时钟 · 重构真相", 655, 280, 310, 65, 20);
-            _ui.Button(_page, "开始调查", 650, 360, 320, BeginIntroduction, !_session.State.Started);
-            _ui.Button(_page, "继续调查", 650, 425, 320, Resume, _session.State.Started);
-            _ui.Button(_page, "设置", 650, 490, 320, ShowSettings);
-            _ui.Button(_page, "制作名单", 650, 555, 320, ShowCredits);
-            _ui.Button(_page, "退出游戏", 650, 620, 320, RequestExit);
-            if (_session.State.Started) _ui.Text(_page, "已有调查进度，请选择继续。", 650, 690, 310, 55, 19);
+            _ui.Picture(_page, Resources.Load<Texture2D>("Castle/Castle"), 0, 0, 1600, 900);
+            _ui.Text(_page, "castle", 590, 170, 420, 115, 80, UiFactory.Paper).alignment = TextAlignmentOptions.Center;
+            _ui.Text(_page, "时差档案", 590, 275, 420, 50, 30, UiFactory.Gold).alignment = TextAlignmentOptions.Center;
+            _ui.ArtButton(_page, "开始调查", 660, 350, 280, BeginIntroduction, !_session.State.Started, true);
+            _ui.ArtButton(_page, "继续调查", 660, 425, 280, Resume, _session.State.Started);
+            _ui.ArtButton(_page, "设置", 660, 500, 280, ShowSettings);
+            _ui.ArtButton(_page, "制作名单", 660, 575, 280, ShowCredits);
+            _ui.ArtButton(_page, "退出游戏", 660, 650, 280, RequestExit);
+            _ui.Text(_page, _session.State.Started ? "调查进度已保存 · 继续调查" : "古堡 · 声音与时间的谜题", 50, 835, 1100, 45, 23, UiFactory.Gold);
             if (_session.Storage.LastError != null) _session.Notice = _session.Storage.LastError;
             UpdateStatus();
         }
         void BeginIntroduction()
         {
             Page("Outside", "古堡门前", ShowTitle);
-            _ui.Picture(_page, _session.Settings.ExteriorScene, 0, 82, 1600, 748);
+            _ui.Picture(_page, Resources.Load<Texture2D>("Castle/Held"), 0, 82, 1600, 748);
             _ui.Button(_page, "阅读邀请函", 590, 720, 420, ShowInvitation);
         }
         void ShowInvitation()
@@ -116,7 +115,18 @@ namespace Castle.V2
             var speed = _ui.Text(panel, "对白速度 ×" + _dialogueSpeed.ToString("0.0"), 420, 425, 730, 45);
             _ui.Slider(panel, 430, 480, 730, .5f, 2, _dialogueSpeed, value => { _dialogueSpeed = value; speed.text = "对白速度 ×" + value.ToString("0.0"); PlayerPrefs.SetFloat("Castle.DialogueSpeed", value); });
             _ui.Text(panel, "M 地图 / J 调查册 / Esc 返回或关闭\n设置只影响播放体验，不改变世界时间。", 420, 550, 730, 90, 22);
+            if (Application.isEditor || Debug.isDebugBuild) _ui.Button(panel, "调试：重置进度（Ctrl+Shift+F9）", 420, 615, 740, RequestReset, true, 44);
             if (_session.State.Started) _ui.Button(panel, "保存并返回标题", 400, 680, 350, () => { _session.Persist(); ShowTitle(); });
+        }
+        void RequestReset()
+        {
+            if (!Application.isEditor && !Debug.isDebugBuild) return;
+            Confirm("重置本次调查？\n现有 v2 存档会先另存为带时间戳的备份。\n道具、录音、推理草稿和剧情进度将回到初始状态；旧 v1 存档和设置保留。", () =>
+            {
+                if (!_session.ResetProgress()) { Notify(_session.Notice); return; }
+                _audio.Stop(); _journalTab = 0; _floor = 1; _slot = 0; _record = _tape = _puzzle = null;
+                _journalBack = _mapBack = null; ShowTitle();
+            });
         }
         void ShowCredits()
         {
@@ -240,6 +250,7 @@ namespace Castle.V2
         { for (int i = 0; i < 90; i++) _waves.Add(_ui.Box(_page, "Wave", x + i * width / 90, y, 5, 30, UiFactory.Gold)); }
         public void Tick(float delta)
         {
+            if ((Application.isEditor || Debug.isDebugBuild) && Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.F9)) { RequestReset(); return; }
             if (Input.GetKeyDown(KeyCode.Escape)) { if (_modal) CloseModal(); else _back?.Invoke(); }
             if (_modal) return;
             if ((_screen == "Room" || _screen == "Dialogue") && Input.GetKeyDown(KeyCode.J)) ShowJournal();

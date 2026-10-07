@@ -16,3 +16,4 @@ MonoBehaviour:
   - Id: CHAR_VISITOR
     Name: "\u8BBF\u5BA2"
     Portrait: {fileID: 0}
+    Illustration: {fileID: 2800000, guid: 3062932da8984ec59292f7c84779e5ab, type: 3}

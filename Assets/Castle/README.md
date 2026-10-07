@@ -29,3 +29,11 @@
 - 规则/界面分离，代码在 Scripts/V2；六表和配置说明见 Content/README.md。
 
 保存位于 Unity persistentDataPath 的 `castle-save-v2.json`，独立于旧 v1。不要把 Library、Temp、Logs、Builds 或玩家存档提交到仓库。
+
+## 调试重置与 UI 美术
+
+编辑器 Play 模式或 Development Build 中：打开设置，选择“调试：重置进度”，或按左 Ctrl+左 Shift+F9。确认后回到标题，重新点击开始调查。取消不改变进度。正式非开发构建隐藏入口。
+
+重置会先复制 v2 主存档和 .bak 到同目录 `.reset-时间戳-唯一编号` 文件，再写入初始进度；备份失败拒绝重置。旧 v1、声音/对白设置不变。此操作只重置游戏数据，不操作 Git 或 Unity 工程文件。
+
+网页美术新增提取在 `Resources/Castle/UiArt`：按钮皮肤、邀请函道具图、调查册背景与两张人物裁切。示例访客暂配网页伯爵夫人插画，仅作表现占位，正式身份未确认；另一张人物图留作 Inspector 配置。主菜单使用已有干净 Castle 背景，消除旧图片上烘焙按钮造成的重复控件。

@@ -6,3 +6,4 @@ Font metadata (copyright and license):
 This Font Software is licensed under the SIL Open Font License, Version 1.1. This Font Software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the SIL Open Font License for the specific language, permissions and limitations governing your use of this Font Software.
 
 http://scripts.sil.org/OFL
+UiArt: crops derived from the user-provided extended HTML prototype (3).html. Button labels removed using adjacent texture; no AI-generated assets. PortraitCountess is a temporary illustration for the example visitor, not a confirmed story identity. PortraitLady is available for future character configuration.

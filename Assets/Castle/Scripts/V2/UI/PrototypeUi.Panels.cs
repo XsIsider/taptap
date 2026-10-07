@@ -101,10 +101,11 @@ namespace Castle.V2
         {
             if (_screen != "Journal") _journalBack = CurrentReturn();
             Page("Journal", "调查册 · 已收录信息", _journalBack);
+            _ui.Picture(_page, Resources.Load<Texture2D>("Castle/UiArt/JournalBackdrop"), 0, 160, 1600, 660);
             var labels = new[] { "道具", "线索", "人物", "已验证事件", "对话记录" };
             var types = new[] { "item", "clue", "info", "event" };
             _ui.TabBar(_page, labels, _journalTab, index => { _journalTab = index; ShowJournal(); });
-            _ui.Box(_page, "Journal paper", 80, 175, 1440, 625, UiFactory.Paper);
+            _ui.Box(_page, "Journal paper", 80, 175, 1440, 625, new Color(.92f, .88f, .8f, .94f));
             var owned = _session.Content.Table("Entry").Where(e => _session.Has(e.Id)).ToArray();
             var content = _ui.Scroll(_page, 100, 195, 1400, 580, 580);
             float y = 10;
@@ -121,7 +122,11 @@ namespace Castle.V2
                 foreach (var character in _session.Settings.Characters.Characters.Where(c => owned.Any(e => e.Get("type") == "info" && e.List("owner").Contains(c.Id))))
                 {
                     var person = character;
-                    _ui.Button(content, person.Name + " · 打开人物档案", 20, y, 1330, () => ShowCharacter(person), true, 100); y += 120;
+                    _ui.Box(content, "Character card", 20, y, 1330, 235, UiFactory.Panel);
+                    if (person.Illustration) _ui.Picture(content, person.Illustration, 35, y + 10, 160, 210);
+                    _ui.Text(content, person.Name, 240, y + 30, 780, 50, 32, UiFactory.Gold);
+                    _ui.Text(content, "已获得的信息与行程线索", 240, y + 95, 780, 50, 23);
+                    _ui.Button(content, "打开人物档案", 1000, y + 140, 310, () => ShowCharacter(person)); y += 260;
                 }
             }
             else foreach (var entry in owned.Where(e => e.Get("type") == types[_journalTab] || _journalTab == 0 && e.Get("type") == "tape"))
@@ -132,6 +137,15 @@ namespace Castle.V2
                 body.rectTransform.sizeDelta = new Vector2(970, height);
                 _ui.Button(content, "查看来源", 1060, y + 15, 270, () => ShowSources(item)); y += height + 30;
             }
+            if (_journalTab == 0 && _session.State.CompletedEvents.Contains(_session.Settings.OpeningEvent))
+            {
+                _ui.Picture(content, Resources.Load<Texture2D>("Castle/UiArt/InvitationItem"), 30, y, 245, 175);
+                _ui.Text(content, "邀请函\n随身收好的入堡邀请。", 320, y + 20, 660, 110, 25, UiFactory.Ink);
+                _ui.Button(content, "阅读邀请函", 1060, y + 25, 270, () =>
+                {
+                    var modal = Modal("邀请函"); _ui.Picture(modal, Resources.Load<Texture2D>("Castle/Invitation"), 405, 290, 790, 370);
+                }); y += 205;
+            }
             if (y == 10) _ui.Text(content, "此页还没有记录。调查中获得的内容会收录在这里。", 30, 50, 1300, 100, 26, UiFactory.Ink);
             content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Max(580, y));
         }
@@ -139,7 +153,11 @@ namespace Castle.V2
         {
             var modal = Modal(character.Name + " · 已知信息");
             float top = 290;
-            if (character.Portrait)
+            if (character.Illustration)
+            {
+                _ui.Picture(modal, character.Illustration, 1030, 180, 125, 160); top = 355;
+            }
+            else if (character.Portrait)
             {
                 var portrait = _ui.Box(modal, "Portrait", 1030, 190, 130, 130, Color.white).GetComponent<UnityEngine.UI.Image>();
                 portrait.sprite = character.Portrait; portrait.preserveAspect = true; portrait.raycastTarget = false; top = 335;

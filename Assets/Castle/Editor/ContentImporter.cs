@@ -59,7 +59,7 @@ namespace Castle.Editor
                 new DeviceDefinition { Id = "D_PERSONAL", Label = "女主录音笔", Channel = "个人", Room = "R_HOME", Personal = true }
             };
             settings.Characters = Asset<CharacterConfig>("Characters");
-            settings.Characters.Characters = new[] { new CharacterDefinition { Id = "CHAR_VISITOR", Name = "访客" } };
+            settings.Characters.Characters = new[] { new CharacterDefinition { Id = "CHAR_VISITOR", Name = "访客", Illustration = Resources.Load<Texture2D>("Castle/UiArt/PortraitCountess") } };
             settings.Map = Asset<MapConfig>("Map");
             settings.Map.Nodes = new[]
             {

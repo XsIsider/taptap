@@ -24,6 +24,14 @@ namespace Castle.V2
             Inventory = new InventoryService(this); Events = new EventService(this); Recordings = new RecordingService(this); Puzzles = new PuzzleService(this);
         }
         public void Persist() { if (!Storage.Write(State)) Notice = Storage.LastError; }
+        public bool ResetProgress()
+        {
+            var fresh = new SessionSave { ContentVersion = Content.Version, WorldTime = Settings.InitialTime, Room = Settings.ArrivalRoom };
+            if (!Storage.Reset(fresh)) { Notice = Storage.LastError; return false; }
+            State = fresh;
+            Notice = "调查进度已重置；原 v2 存档已备份（如存在）。";
+            return true;
+        }
         public void Start()
         {
             if (State.Started) return;
