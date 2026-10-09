@@ -10,10 +10,10 @@ namespace Castle.Editor
 {
     public static class CastleProjectTools
     {
-        const string ScenePath = "Assets/Castle/Scenes/CastlePrototype.unity";
+        const string ScenePath = "Assets/Castle/Scenes/CastleEditable.unity";
         static int checkCount;
 
-        [MenuItem("Tools/Castle/Open Prototype Scene")]
+        [MenuItem("Tools/Castle/Open Editable Scene")]
         public static void OpenScene()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -30,18 +30,7 @@ namespace Castle.Editor
                 db = ScriptableObject.CreateInstance<CastleDatabase>();
                 AssetDatabase.CreateAsset(db, "Assets/Castle/Resources/Castle/Database.asset");
             }
-            if (!File.Exists(ScenePath))
-            {
-                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-                var camera = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
-                camera.tag = "MainCamera";
-                var cam = camera.GetComponent<Camera>();
-                cam.orthographic = true; cam.clearFlags = CameraClearFlags.SolidColor; cam.backgroundColor = Color.black;
-                camera.transform.position = new Vector3(0, 0, -10);
-                var game = new GameObject("Castle Game").AddComponent<CastleGame>();
-                game.database = db;
-                EditorSceneManager.SaveScene(scene, ScenePath);
-            }
+            CastleSceneUiBuilder.CreateIfMissing();
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) }
                 .Concat(EditorBuildSettings.scenes.Where(s => s.path != ScenePath)).ToArray();
             AssetDatabase.SaveAssets();

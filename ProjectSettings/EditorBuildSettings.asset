@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Castle/Scenes/CastleEditable.unity
+    guid: cfb408b5385e78741a91f73f6ce65c7e
+  - enabled: 1
     path: Assets/Castle/Scenes/CastlePrototype.unity
     guid: 248cd719af5a77041be6aebc15834e26
   - enabled: 1
