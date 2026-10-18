@@ -1,0 +1,272 @@
+using System;
+using System.Collections;
+using System.Linq;
+using Castle.Flow;
+using UnityEngine;
+using UnityEngine.UI;
+namespace Castle.V24
+{
+    public sealed partial class CastleV24Controller
+    {
+        public Image PathLinePrefab;
+        private bool SpaceAvailable => !Engine.IntroDone && Engine.Need(_data.PuzzleById(_data.GameSettings.IntroSoundPath).Need);
+        private void OpenSpace(){if(SpaceAvailable){_puzzle=_data.GameSettings.IntroSoundPath;Page("Space");}}
+        private void Tabs(CastleUiView v)
+        {
+            Btn(v,"Recordings",()=>{_playTape=0;Page("Recordings");},"录音文本");Btn(v,"Anchors",()=>Page("Anchors"),Engine.IntroDone?"文本对照":"锚点对齐");
+            foreach(var tab in new[]{"Recordings","Anchors","Space"})
+            {
+                var label=v.Get<Button>(tab).GetComponentInChildren<Text>(true);
+                label.color=v.Id==tab?Color.white:new Color(.62f,.67f,.59f);
+            }
+            Show(v,"Space",SpaceAvailable);Btn(v,"Space",OpenSpace,"空间推演",SpaceAvailable);
+        }
+        private void Recordings()
+        {
+            var v=V("Recordings");_playing=false;Tabs(v);Show(v,"PreviousPuzzle",false);Show(v,"NextPuzzle",false);Show(v,"PuzzleName",false);
+            var root=v.Get<RectTransform>("List");Clear(root);
+            var records=_data.Record.Where(Engine.Accessible).OrderBy(x=>x.Device).ThenBy(x=>x.Id).ToArray();
+            if(!records.Any(x=>x.Id==_record))
+            {
+                _record=records.FirstOrDefault()?.Id??0;_position=0;
+                if(_record!=0&&!S.ExpandedDevices.Contains(_data.RecordById(_record).Device))S.ExpandedDevices.Add(_data.RecordById(_record).Device);
+            }
+            foreach(var group in records.GroupBy(x=>x.Device))
+            {
+                int device=group.Key;bool expanded=S.ExpandedDevices.Contains(device);
+                var folder=Card(root,_data.DeviceConfig.First(x=>x.Id==device).Label,"",()=>{if(expanded)S.ExpandedDevices.Remove(device);else S.ExpandedDevices.Add(device);Recordings();},template:RecordingFolderPrefab);
+                folder.Get<Image>("Icon").sprite=expanded?FolderOpen:FolderClosed;
+                if(!expanded)continue;
+                foreach(var record in group)
+                {
+                    int id=record.Id;
+                    var card=Card(root,record.Name,"",()=>{_record=id;_position=0;_playing=false;Recordings();},template:RecordingFilePrefab);card.name="Record"+id;
+                    card.Get<Image>("Icon").sprite=id==_record?PauseIcon:PlayIcon;
+                    card.Get<Text>("Title").color=id==_record?new Color(1,.87f,.5f):Color.white;
+                }
+            }
+            Btn(v,"Done",()=>Page("Anchors"),"标记完成");PlaybackRender();Save();
+        }
+        private void PlaybackRender()
+        {
+            var v=V(_page=="Tape"?"Tape":"Recordings");
+            Clear(v.Get<RectTransform>("Lines"));
+            if(_record==0){Txt(v,"FileInfo","暂无可访问录音");Btn(v,"Play",null,"播放",false);return;}
+            var record=_data.RecordById(_record);_position=Mathf.Clamp(_position,0,record.Duration);
+            Txt(v,"FileInfo",record.Name+" · "+Engine.DeviceName(record.Device));
+            foreach(var plot in _data.Lines(record.Plot).Where(x=>_page!="Tape" || x.At<=_position))
+            {
+                if(!S.Shown.Contains(plot.Id))S.Shown.Add(plot.Id);
+                if(_page=="Tape")Line(v.Get<RectTransform>("Lines"),plot,true);
+                else RecordingLine(v.Get<RectTransform>("Lines"),plot);
+            }
+            Btn(v,"Play",()=>{if(_page=="Tape")_playing=!_playing;}," ");
+            Slide(v,"Progress",0,record.Duration,_position,x=>{_position=x;if(_page=="Tape")PlaybackRender();else {HighlightRecording();PlaybackTick(false);Save();}});
+            Show(v,"Extract",false);PlaybackTick(false);if(_page!="Tape")HighlightRecording();
+        }
+        private void PlaybackTick(bool redraw=true)
+        {
+            var v=V(_page=="Tape"?"Tape":"Recordings");var record=_data.RecordById(_record);if(record==null)return;Txt(v,"FileInfo",record.Name+" · "+Engine.DeviceName(record.Device));
+            if(redraw && _page=="Tape")
+            {
+                int count=_data.Lines(record.Plot).Count(x=>x.At<=_position);
+                if(v.Get<RectTransform>("Lines").childCount!=count){PlaybackRender();return;}
+            }
+            string time="相对进度";var snapshot=S.Recordings.FirstOrDefault(x=>x.Id==_record);
+            if(snapshot!=null)time=new DateTime(Engine.DisplayStart(snapshot,record.Device)).AddSeconds(_position).ToString("HH:mm:ss");
+            Txt(v,"Playback",_page=="Tape"?time+" · "+TimeSpan.FromSeconds(_position).ToString(@"mm\:ss")+" / "+TimeSpan.FromSeconds(record.Duration).ToString(@"mm\:ss"):TimeSpan.FromSeconds(_position).ToString(@"mm\:ss"));
+            if(_page!="Tape")Txt(v,"Duration",TimeSpan.FromSeconds(record.Duration).ToString(@"mm\:ss"));
+            v.Get<Slider>("Progress").SetValueWithoutNotify(_position);v.Get<Button>("Play").GetComponent<Image>().sprite=_playing?PauseIcon:PlayIcon;Txt(v,"PlayLabel","");S.RecordId=_record;S.RecordPosition=_position;
+        }
+        private void RecordingLine(Transform parent,V24Plot plot)
+        {
+            var row=Instantiate(RecordingLinePrefab,parent);row.gameObject.SetActive(true);row.name="Line"+plot.Id;
+            Txt(row,"Time",TimeSpan.FromSeconds(plot.At).ToString(@"mm\:ss"));Txt(row,"Speaker",Engine.CharacterName(plot.SpeakerId)+"：");
+            var body=row.Get<TMPro.TextMeshProUGUI>("Body");body.text=plot.Text;
+            float height=body.GetPreferredValues(plot.Text,850,0).y;
+            body.rectTransform.sizeDelta=new Vector2(850,Mathf.Max(65,height));
+            row.Get<LayoutElement>("Layout").preferredHeight=Mathf.Max(138,70+height);
+            Show(row,"Marker",S.Marked.Contains(plot.Id));Btn(row,"Select",()=>ToggleRecordingLine(plot.Id));
+        }
+        private void HighlightRecording()
+        {
+            var current=_data.Lines(_data.RecordById(_record).Plot).LastOrDefault(x=>x.At<=_position);
+            foreach(var row in V("Recordings").Get<RectTransform>("Lines").GetComponentsInChildren<CastleUiView>())
+                row.Get<Image>("Background").color=row.name=="Line"+current?.Id?new Color(1,1,1,.035f):Color.clear;
+        }
+        private void ToggleRecordingLine(int id)
+        {
+            bool changed=Engine.ToggleMark(id);
+            Toast(changed?(S.Marked.Contains(id)?"已标记信息":"已取消标记"):"这句话似乎没什么用");
+            if(_page=="Tape"){PlaybackRender();return;}
+            foreach(var row in V("Recordings").Get<RectTransform>("Lines").GetComponentsInChildren<CastleUiView>())
+                if(row.name=="Line"+id)Show(row,"Marker",S.Marked.Contains(id));
+        }
+        private V24Puzzle[] AnalysisPuzzles()=>_data.Puzzle.Where(x=>x.Type==(Engine.IntroDone?"logic_match":"anchor_align")).ToArray();
+        private void Anchors()
+        {
+            var v=V("Anchors");Tabs(v);var puzzles=AnalysisPuzzles();if(!puzzles.Any(x=>x.Id==_puzzle))_puzzle=puzzles[0].Id;
+            int index=Array.FindIndex(puzzles,x=>x.Id==_puzzle);var puzzle=_data.PuzzleById(_puzzle);var draft=Engine.Draft(_puzzle);
+            Txt(v,"PuzzleName",puzzle.Name+" "+(index+1)+"/"+puzzles.Length);
+            Btn(v,"PreviousPuzzle",()=>{_puzzle=puzzles[(index+puzzles.Length-1)%puzzles.Length].Id;Anchors();});Btn(v,"NextPuzzle",()=>{_puzzle=puzzles[(index+1)%puzzles.Length].Id;Anchors();});
+            Clear(v.Get<RectTransform>("List"));Clear(v.Get<RectTransform>("Tracks"));
+            foreach(int id in S.Marked)
+            {
+                var plot=_data.Plot.First(x=>x.Id==id);var record=_data.Record.FirstOrDefault(x=>x.Plot==plot.Group);
+                var card=Card(v.Get<RectTransform>("List"),"锚点 "+(S.Marked.IndexOf(id)+1),plot.Text,()=>{_selectedLine=id;Toast(plot.Text+"\n"+Engine.DeviceName(record?.Device??0));},template:AnchorCardPrefab);
+                var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="evidence";drag.Id=id.ToString();
+            }
+            int capacity=puzzle.Answer.Split('|').Length;
+            v.Get<FlowDrag>("DropZone").Dropped=drag=>{if(drag.Kind=="evidence")AddEvidence(int.Parse(drag.Id),capacity);};
+            if(v.TryGet<Button>("Add",out _))Btn(v,"Add",()=>AddEvidence(_selectedLine,capacity));
+            foreach(int id in draft.Values.ToArray())
+            {
+                var plot=_data.Plot.First(x=>x.Id==id);var record=_data.Record.First(x=>x.Plot==plot.Group);
+                var track=Instantiate(Ui.TrackPrefab,v.Get<RectTransform>("Tracks"));track.gameObject.SetActive(true);
+                track.GetComponent<FlowDrag>().Dropped=drag=>
+                {
+                    if(drag.Kind!="evidence")return;int value=int.Parse(drag.Id);if(draft.Values.Contains(value))return;
+                    int slot=draft.Values.IndexOf(id);draft.Values[slot]=value;if(draft.Reference==id)draft.Reference=0;Engine.Commit();Anchors();
+                };
+                Txt(track,"Name",record.Name);Txt(track,"Offset",Engine.DeviceName(record.Device));
+                Btn(track,"Remove",()=>{draft.Values.Remove(id);if(draft.Reference==id)draft.Reference=0;Engine.Commit();Anchors();});
+                bool anchor=puzzle.Type=="anchor_align";Show(track,"Reference",anchor);Show(track,"OffsetSlider",anchor);
+                if(anchor)
+                {
+                    Btn(track,"Reference",()=>{draft.Reference=id;draft.Shift=0;Engine.Commit();Anchors();},draft.Reference==id?"参考轨":"设为参考");
+                    float delta=draft.Reference==0?0:(float)(AnchorSeconds(id)-AnchorSeconds(draft.Reference));
+                    Slide(track,"OffsetSlider",-600,600,draft.Reference==id?0:draft.Shift+delta,x=>{draft.Shift=Mathf.Round(x-delta);Txt(track,"Offset",AnchorClock(id,draft.Reference==id?0:draft.Shift));Engine.Commit();});
+                    track.Get<Slider>("OffsetSlider").interactable=draft.Reference!=id;
+                    track.Get<Text>("Offset").fontSize=18;Txt(track,"Offset",AnchorClock(id,draft.Reference==id?0:draft.Shift));
+                }
+                else {Txt(track,"Offset",plot.Text);var body=track.Get<Text>("Offset");body.rectTransform.anchoredPosition=new Vector2(18,-50);body.rectTransform.sizeDelta=new Vector2(850,160);body.fontSize=21;body.verticalOverflow=VerticalWrapMode.Overflow;track.GetComponent<LayoutElement>().preferredHeight=Mathf.Max(180,body.preferredHeight+70);Txt(track,"Name",record.Name+" · "+Engine.DeviceName(record.Device));track.Get<Text>("Name").rectTransform.sizeDelta=new Vector2(740,36);track.Get<Text>("Name").fontSize=18;}
+            }
+            for(int i=draft.Values.Count;i<3;i++)
+            {
+                bool usable=i<capacity;var empty=Instantiate(Ui.TrackPrefab,v.Get<RectTransform>("Tracks"));empty.gameObject.SetActive(true);
+                Txt(empty,"Name",puzzle.Type=="anchor_align"?(i==0?"（参考轨道）":"（校准轨道）"):"槽位 "+(i+1));Txt(empty,"Offset",usable?"拖入已标记片段":"本题不使用");Show(empty,"Reference",false);Show(empty,"OffsetSlider",false);Show(empty,"Remove",false);
+                empty.GetComponent<FlowDrag>().Dropped=drag=>{if(usable&&drag.Kind=="evidence")AddEvidence(int.Parse(drag.Id),capacity);};
+            }
+            Txt(v,"Status",S.Puzzles.Contains(_puzzle)?"已完成":Engine.Need(puzzle.Need)?"拖入片段后验证":"尚缺前置证据");
+            Btn(v,"Check",()=>SubmitPuzzle("Anchors"),puzzle.Type=="anchor_align"?"检查对齐":"验证关联",draft.Values.Count==capacity&&Engine.Need(puzzle.Need));
+            if(v.TryGet<Button>("Next",out _)){Show(v,"Next",SpaceAvailable);Btn(v,"Next",OpenSpace,"声音路径 →",SpaceAvailable);}
+        }
+        private double AnchorSeconds(int id)
+        {
+            var line=_data.Plot.First(x=>x.Id==id);var record=_data.Record.First(x=>x.Plot==line.Group);var snapshot=S.Recordings.First(x=>x.Id==record.Id);
+            return new TimeSpan(Engine.DisplayStart(snapshot,record.Device)).TotalSeconds+line.At;
+        }
+        private string AnchorClock(int id,float shift)=>new DateTime((long)((AnchorSeconds(id)+shift)*TimeSpan.TicksPerSecond)).ToString("HH:mm:ss")+" ("+shift.ToString("+0;-0;0")+"秒)";
+        private void AddEvidence(int id,int capacity)
+        {
+            if(id==0||!S.Marked.Contains(id))return;var d=Engine.Draft(_puzzle);
+            if(d.Values.Contains(id)){Toast("该片段已加入");return;}
+            if(d.Values.Count>=capacity){Toast("请先移除一个片段");return;}
+            d.Values.Add(id);Engine.Commit();Anchors();
+        }
+        private void SubmitPuzzle(string source)
+        {
+            S.ReturnPage=source=="Path"?"Explore":source;if(source=="Path")S.ReturnPath=_puzzle;string result=Engine.ValidatePuzzle(_puzzle);Toast(result);
+            if(result!="成功"){if(source=="Path")S.ReturnPath=0;return;}
+            if(S.Ending){CloseAll();Page("Timeline");StartCoroutine(RevealEnding());return;}
+            Engine.ContinuePuzzleReward();Refresh();
+        }
+        private IEnumerator RevealEnding()
+        {
+            for(float t=0;t<1.6f;){if(_modal.Count==0&&_page=="Timeline")t+=Time.unscaledDeltaTime;yield return null;}
+            S.EndingTransitionDone=true;Engine.Commit();Engine.ContinuePuzzleReward();Refresh();
+        }
+        private void PathPage(){if(!SpaceAvailable){Page("Recordings");return;}_puzzle=_data.GameSettings.IntroSoundPath;Tabs(V("Space"));PathRender(V("Space"));}
+        private void PathRender(CastleUiView v)
+        {
+            var puzzle=_data.PuzzleById(_puzzle);var draft=Engine.Draft(_puzzle);_floor=draft.Floor;string[] labels=puzzle.Answer.Split('|').Select(x=>x.Split('=')[0]).ToArray();
+            while(draft.Values.Count<labels.Length)draft.Values.Add(0);
+            if(v.Id=="Path")Btn(v,"Close",Pop);
+            else {Txt(v,"PuzzleName",puzzle.Name);Show(v,"PreviousPuzzle",false);Show(v,"NextPuzzle",false);}
+            draft.Floor=_floor=Mathf.Clamp(draft.Floor,1,2);MapArt(v,_floor);
+            Btn(v,"Floor1",()=>{draft.Floor=1;PathRender(v);});Btn(v,"Floor2",()=>{draft.Floor=2;PathRender(v);});
+            var root=v.Get<RectTransform>("Rooms");Clear(root);var list=v.Get<RectTransform>("List");Clear(list);
+            var map=_data.MapConfig.First(x=>x.Id==puzzle.Map);
+            for(int i=0;i<labels.Length;i++)
+            {
+                int slot=i;int value=draft.Values[i];var node=map.Nodes.FirstOrDefault(x=>x.Id==value);
+                var card=Card(list,labels[i],node==null?"拖到地图地点":Engine.RoomName(node.Room)+" "+node.Floor+"F",()=>{_slot=slot;Txt(v,"Details","已选择标签 "+labels[slot]+"，点击或拖放到地点。");},template:v.Id=="Space"?SpaceCardPrefab:null);
+                var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="path";drag.Id=slot.ToString();
+            }
+            foreach(var node in map.Nodes.Where(x=>x.Floor==_floor&&puzzle.Candidates.Contains(x.Id)))
+            {
+                var room=_data.Room.First(x=>x.Id==node.Room);string placed=string.Join(" ",Enumerable.Range(0,labels.Length).Where(i=>draft.Values[i]==node.Id).Select(i=>labels[i]));
+                var card=Card(root,Engine.RoomName(room.Id),"",()=>{draft.Values[_slot]=node.Id;Engine.Commit();PathRender(v);},true);card.name="Node"+node.Id;
+                PlaceMapRegion(card,root,room.Id);card.Get<Image>("Background").color=v.Id=="Space"?Color.clear:new Color(.15f,.25f,.18f,.5f);
+                card.Get<FlowDrag>("Drag").Dropped=drag=>{if(drag.Kind=="path"){draft.Values[int.Parse(drag.Id)]=node.Id;Engine.Commit();PathRender(v);}};
+                card.Get<FlowPointer>("Pointer").Enter=()=>{if(v.Id=="Space")Txt(v,"Details",Engine.RoomName(room.Id)+"\n"+placed);if(FlowDrag.PathDragging)card.Get<Image>("Background").color=new Color(.5f,.4f,.15f);};
+                card.Get<FlowPointer>("Pointer").Exit=()=>card.Get<Image>("Background").color=v.Id=="Space"?Color.clear:new Color(.15f,.25f,.18f);
+                if(v.Id=="Space")Show(card,"Title",false);
+                int order=0;
+                foreach(int slot in Enumerable.Range(0,labels.Length).Where(i=>draft.Values[i]==node.Id))
+                {
+                    var badge=Card(card.transform,labels[slot],"",()=>_slot=slot,true);badge.name="Label"+slot;
+                    var badgeRect=(RectTransform)badge.transform;badgeRect.anchorMin=badgeRect.anchorMax=new Vector2(0,0);badgeRect.pivot=new Vector2(0,1);badgeRect.anchoredPosition=new Vector2(order++*44,0);badgeRect.sizeDelta=new Vector2(40,38);
+                    if(v.Id=="Space"){var mark=badge.Get<Image>("Background");mark.sprite=PathMarkerIcon;mark.color=Color.white;mark.preserveAspect=true;badge.Get<Text>("Title").color=new Color(.1f,.2f,.1f);}
+                    var title=badge.Get<Text>("Title");title.rectTransform.anchoredPosition=new Vector2(4,-2);title.rectTransform.sizeDelta=new Vector2(-8,30);
+                    var drag=badge.Get<FlowDrag>("Drag");drag.Kind="path";drag.Id=slot.ToString();drag.CanDrag=true;drag.Dropped=card.Get<FlowDrag>("Drag").Dropped;
+                }
+            }
+            for(int i=1;i<draft.Values.Count;i++)
+            {
+                var a=map.Nodes.FirstOrDefault(x=>x.Id==draft.Values[i-1]);var b=map.Nodes.FirstOrDefault(x=>x.Id==draft.Values[i]);
+                if(a==null||b==null||a.Floor!=_floor||b.Floor!=_floor)continue;
+                var line=Instantiate(PathLinePrefab,root);line.transform.SetAsFirstSibling();var r=line.rectTransform;r.anchorMin=r.anchorMax=new Vector2(0,1);
+                var ap=MapPoint(a.Room);var bp=MapPoint(b.Room);
+                Vector2 from=new Vector2(ap.x*root.rect.width,-ap.y*root.rect.height),to=new Vector2(bp.x*root.rect.width,-bp.y*root.rect.height);
+                r.pivot=new Vector2(0,.5f);r.anchoredPosition=from;r.sizeDelta=new Vector2(Vector2.Distance(from,to),3);r.localRotation=Quaternion.Euler(0,0,Mathf.Atan2(to.y-from.y,to.x-from.x)*Mathf.Rad2Deg);
+            }
+            var state=S.Views.FirstOrDefault(x=>x.Puzzle==_puzzle&&x.Floor==_floor);
+            if(state==null){state=new V24MapView{Puzzle=_puzzle,Floor=_floor};S.Views.Add(state);}
+            var pan=v.Get<V24MapPan>("MapPan");pan.Changed=null;pan.Zoom=state.Zoom;pan.Content.anchoredPosition=new Vector2(state.X,state.Y);pan.Apply();
+            pan.Changed=(zoom,pos)=>{state.Zoom=zoom;state.X=pos.x;state.Y=pos.y;Save();};
+            Btn(v,"ZoomIn",()=>pan.ZoomAtCenter(.25f));Btn(v,"ZoomOut",()=>pan.ZoomAtCenter(-.25f));
+            var note=v.Get<InputField>("Hypothesis");note.onValueChanged.RemoveAllListeners();note.SetTextWithoutNotify(draft.Hypothesis);note.onValueChanged.AddListener(text=>{draft.Hypothesis=text;Engine.Commit();});
+            Btn(v,"ResetView",()=>{pan.Zoom=1;pan.Content.anchoredPosition=Vector2.zero;pan.Apply();},"复位视图");
+            Txt(v,"Details",puzzle.Name+"\n标签按顺序连线；跨层路径见左侧楼层。\n滚轮缩放，右键平移。\n当前："+_floor+"F");
+            Btn(v,"Verify",()=>SubmitPuzzle(v.Id=="Path"?"Path":"Space"),v.Id=="Space"?"验证对齐":"提交路径",draft.Values.All(x=>x!=0)&&Engine.Need(puzzle.Need));
+            if(v.Id=="Space")
+            {
+                Txt(v,"Details","声源\n"+string.Join(" → ", draft.Values.Select(x=>map.Nodes.FirstOrDefault(n=>n.Id==x)).Select(x=>x==null?"待放置":Engine.RoomName(x.Room))));
+                foreach(var floorId in new[]{"Floor1","Floor2"})v.Get<Button>(floorId).GetComponentInChildren<Text>(true).color=(_floor==1)==(floorId=="Floor1")?Color.white:new Color(.65f,.7f,.65f);
+                var underline=v.transform.Find("FloorUnderline");if(underline)((RectTransform)underline).anchoredPosition=new Vector2(_floor==1?1042:1130,-300);
+            }
+            if(v.Id=="Path")Txt(v,"Details",puzzle.Name+"\n"+PuzzleRequirements(puzzle));
+            Show(v,"TooltipPanel",false);
+        }
+        private void Timeline()
+        {
+            var v=V("Timeline");var puzzle=_data.Puzzle.First(x=>x.Type=="timeline");_puzzle=puzzle.Id;var draft=Engine.Draft(puzzle.Id);int count=puzzle.Answer.Split('|').Length;
+            if(v.TryGet<Text>("Requirements",out var requirementLabel))requirementLabel.gameObject.SetActive(!S.Ending);
+            Show(v,"SortRoot",!S.Ending);Show(v,"RevealRoot",S.Ending);
+            if(S.Ending)
+            {
+                Txt(v,"EndingStatus",S.Finished?"未完待续":"真相正在显现");Txt(v,"EndingText",S.Finished?"本次调查告一段落。":"事件时间线已还原……");Show(v,"Progress",false);Show(v,"Play",false);Show(v,"Replay",false);return;
+            }
+            while(draft.Values.Count<count)draft.Values.Add(0);
+            Clear(v.Get<RectTransform>("Clues"));Clear(v.Get<RectTransform>("Slots"));
+            foreach(int id in puzzle.Candidates.Where(Engine.Has))
+            {
+                var entry=_data.EntryById(id);var card=Card(v.Get<RectTransform>("Clues"),entry.Name,entry.Text,()=>_selectedEntry=id);
+                var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="event";drag.Id=id.ToString();
+            }
+            for(int i=0;i<count;i++)
+            {
+                int slot=i;var entry=_data.EntryById(draft.Values[i]);var card=Card(v.Get<RectTransform>("Slots"),(i+1).ToString(),entry?.Name??"拖入事件",()=>PlaceTimeline(slot,_selectedEntry));
+                card.Get<FlowDrag>("Drag").Dropped=drag=>{if(drag.Kind=="event")PlaceTimeline(slot,int.Parse(drag.Id));};
+                card.Get<FlowDrag>("Drag").CanDrag=entry!=null;card.Get<FlowDrag>("Drag").Kind="event";card.Get<FlowDrag>("Drag").Id=draft.Values[i].ToString();
+            }
+            if(v.TryGet<Text>("Requirements",out var requirements))requirements.text=PuzzleRequirements(puzzle);
+            Btn(v,"Submit",()=>SubmitPuzzle("Timeline"),"提交时间线",draft.Values.All(x=>x!=0)&&Engine.Need(puzzle.Need));
+        }
+        private void PlaceTimeline(int slot,int id)
+        {
+            if(id==0)return;var draft=Engine.Draft(_puzzle);int old=draft.Values.IndexOf(id);if(old>=0)draft.Values[old]=draft.Values[slot];draft.Values[slot]=id;Engine.Commit();Timeline();
+        }
+    }
+}

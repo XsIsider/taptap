@@ -1,0 +1,560 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b88282405c49991459edd71495afbf4c, type: 3}
+  m_Name: FlowContent
+  m_EditorClassIdentifier: 
+  InvitationId: item_invitation
+  MapId: item_map
+  TapeId: item_tape
+  OpeningDialogue: dlg_butler
+  InitialRoom: east
+  ControlRoom: 110
+  InitialMinutes: 1138
+  AutoSeconds: 3
+  Rooms:
+  - Id: 101
+    Name: "\u4F1A\u5BA2\u5385"
+    DeviceId: 
+    Floor: 1
+    Opens: 0
+    Closes: 1440
+    InitiallyUnlocked: 1
+    Navigable: 1
+    ExploreMinutes: 2
+    Bounds: {x: 0.13636364, y: 0.50903296, z: 0.1638756, w: 0.23166844}
+  - Id: 102
+    Name: "\u95E8\u5385"
+    DeviceId: 
+    Floor: 1
+    Opens: 0
+    Closes: 1440
+    InitiallyUnlocked: 1
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.44049042, y: 0.62274176, z: 0.12141148, w: 0.1360255}
+  - Id: 103
+    Name: "\u4E66\u623F"
+    DeviceId: device_b
+    Floor: 1
+    Opens: 1140
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 1
+    ExploreMinutes: 2
+    Bounds: {x: 0.16626795, y: 0.20510095, z: 0.14832535, w: 0.18703507}
+  - Id: 104
+    Name: "\u9910\u5385"
+    DeviceId: device_a
+    Floor: 1
+    Opens: 1140
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 1
+    ExploreMinutes: 2
+    Bounds: {x: 0.4138756, y: 0.36556855, z: 0.16866028, w: 0.16153029}
+  - Id: 105
+    Name: "\u53A8\u623F"
+    DeviceId: 
+    Floor: 1
+    Opens: 1140
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.6722488, y: 0.21572796, z: 0.14832535, w: 0.18916047}
+  - Id: 106
+    Name: "\u5BB4\u4F1A\u5385"
+    DeviceId: 
+    Floor: 1
+    Opens: 1140
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.68899524, y: 0.4102019, z: 0.1770335, w: 0.32306057}
+  - Id: 107
+    Name: "\u97F3\u4E50\u5BA4"
+    DeviceId: 
+    Floor: 1
+    Opens: 1140
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.1653708, y: 0.3841658, z: 0.1513158, w: 0.1285866}
+  - Id: 108
+    Name: "\u4F11\u606F\u5BA4"
+    DeviceId: device_c
+    Floor: 1
+    Opens: 1140
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 1
+    ExploreMinutes: 2
+    Bounds: {x: 0.60406697, y: 0.5791711, z: 0.15191388, w: 0.20403826}
+  - Id: 109
+    Name: "\u50A8\u85CF\u5BA4"
+    DeviceId: 
+    Floor: 1
+    Opens: 1140
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.32057416, y: 0.21785335, z: 0.08851675, w: 0.17003188}
+  - Id: 110
+    Name: "\u4E2D\u63A7\u5BA4"
+    DeviceId: 
+    Floor: 1
+    Opens: 1140
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 1
+    ExploreMinutes: 2
+    Bounds: {x: 0.5944976, y: 0.23645058, z: 0.08971292, w: 0.16684379}
+  - Id: 201
+    Name: "\u4E3B\u5367"
+    DeviceId: 
+    Floor: 2
+    Opens: 1260
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.13456938, y: 0.5079703, z: 0.17224881, w: 0.23804463}
+  - Id: 203
+    Name: "\u5BA2\u623F"
+    DeviceId: 
+    Floor: 2
+    Opens: 1260
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.17583732, y: 0.3703507, z: 0.14354067, w: 0.1455898}
+  - Id: 204
+    Name: "\u4E8C\u5C42\u4E66\u623F"
+    DeviceId: 
+    Floor: 2
+    Opens: 1260
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.31967703, y: 0.21785335, z: 0.08433014, w: 0.17215727}
+  - Id: 205
+    Name: "\u5973\u7235\u5367\u5BA4"
+    DeviceId: 
+    Floor: 2
+    Opens: 1260
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.66566986, y: 0.18597236, z: 0.1638756, w: 0.22954305}
+  - Id: 206
+    Name: "\u753B\u5ECA"
+    DeviceId: 
+    Floor: 2
+    Opens: 1140
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 1
+    ExploreMinutes: 2
+    Bounds: {x: 0.41626793, y: 0.3682253, z: 0.16507177, w: 0.1604676}
+  - Id: 207
+    Name: "\u6536\u85CF\u5BA4"
+    DeviceId: 
+    Floor: 2
+    Opens: 1260
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.6895933, y: 0.4102019, z: 0.17583732, w: 0.3209352}
+  - Id: 208
+    Name: "\u8863\u5E3D\u95F4"
+    DeviceId: 
+    Floor: 2
+    Opens: 1260
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.5959928, y: 0.21785335, z: 0.09389952, w: 0.17003188}
+  - Id: 209
+    Name: "\u50A8\u7269\u5BA4"
+    DeviceId: 
+    Floor: 2
+    Opens: 1260
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.60944974, y: 0.62274176, z: 0.12679426, w: 0.12964931}
+  - Id: 210
+    Name: "\u5854\u697C"
+    DeviceId: 
+    Floor: 2
+    Opens: 1260
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.14174642, y: 0.19128586, z: 0.16626795, w: 0.20616366}
+  - Id: stairs1
+    Name: "\u697C\u68AF"
+    DeviceId: 
+    Floor: 1
+    Opens: 0
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.4327153, y: 0.19872476, z: 0.12978469, w: 0.15940489}
+  - Id: stairs2
+    Name: "\u697C\u68AF"
+    DeviceId: 
+    Floor: 2
+    Opens: 0
+    Closes: 1440
+    InitiallyUnlocked: 0
+    Navigable: 0
+    ExploreMinutes: 2
+    Bounds: {x: 0.4327153, y: 0.19872476, z: 0.12978469, w: 0.15940489}
+  - Id: east
+    Name: "\u8D70\u5ECA"
+    DeviceId: 
+    Floor: 1
+    Opens: 0
+    Closes: 1440
+    InitiallyUnlocked: 1
+    Navigable: 1
+    ExploreMinutes: 2
+    Bounds: {x: 0.3256579, y: 0.531881, z: 0.35586125, w: 0.06907545}
+  Entries:
+  - Id: person_butler
+    Name: "\u7BA1\u5BB6"
+    Kind: 0
+    Body: "\u53E4\u5821\u7684\u7BA1\u5BB6\u3002\u8D1F\u8D23\u63A5\u5F85\u5BBE\u5BA2\uFF0C\u5E76\u5411\u4F60\u4EA4\u4ED8\u5730\u56FE\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  - Id: person_guest
+    Name: "\u8BBF\u5BA2"
+    Kind: 0
+    Body: "\u5728\u8D70\u5ECA\u9047\u89C1\u7684\u8BBF\u5BA2\u3002\u6B64\u89D2\u8272\u7528\u4E8E\u5C55\u793A\u81EA\u7531\u4EA4\u8AC7\u548C\u5BF9\u767D\u9009\u9879\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  - Id: person_lady
+    Name: "\u5973\u7235"
+    Kind: 0
+    Body: "\u53E4\u5821\u7684\u4E3B\u4EBA\u3002\u4EBA\u7269\u5185\u5BB9\u4E3A\u754C\u9762\u793A\u4F8B\uFF0C\u6B63\u5F0F\u4ECB\u7ECD\u5F85\u8865\u5145\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  - Id: person_guard
+    Name: "\u5B88\u536B"
+    Kind: 0
+    Body: "\u5728\u8D70\u5ECA\u503C\u5B88\u3002\u7528\u4E8E\u6F14\u793A\u591A\u4EBA\u4EA4\u8C08\u5BF9\u8C61\u5207\u6362\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  - Id: person_cook
+    Name: "\u53A8\u5E08"
+    Kind: 0
+    Body: "\u793A\u4F8B\u89D2\u8272\uFF0C\u7528\u4E8E\u6F14\u793A\u4EBA\u7269\u8C03\u67E5\u518C\u7FFB\u9875\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  - Id: item_invitation
+    Name: "\u9080\u8BF7\u51FD"
+    Kind: 1
+    Body: "\u81F4\u62C9\u5E15\u8389\u4E9A\uFF1A\n\u8BDA\u9080\u60A8\u4ECA\u665A\u6765\u5230\u53E4\u5821\u3002\u62B5\u8FBE\u540E\uFF0C\u8BF7\u5411\u8D70\u5ECA\u7684\u7BA1\u5BB6\u51FA\u793A\u6B64\u51FD\u3002\n\n\u6B64\u51FD\u5DF2\u59A5\u5584\u6536\u5165\u8C03\u67E5\u518C\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  - Id: item_map
+    Name: "\u53E4\u5821\u5730\u56FE"
+    Kind: 1
+    Body: "\u6807\u6709\u53E4\u5821\u5404\u5C42\u7684\u5730\u70B9\u3002\u6253\u5F00\u540E\u53EF\u67E5\u770B\u5F00\u653E\u65F6\u95F4\u548C\u5F53\u524D\u4F4D\u7F6E\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  - Id: item_tape
+    Name: "\u6F14\u793A\u78C1\u5E26"
+    Kind: 1
+    Body: "\u53EF\u5728\u8D70\u5ECA\u53CD\u590D\u64AD\u653E\u7684\u6F14\u793A\u78C1\u5E26\u3002\u70B9\u51FB\u5373\u53EF\u4F7F\u7528\u3002"
+    IconResource: 
+    UseRoom: east
+    UsePerson: 
+    UseDialogue: dlg_tape
+  - Id: clue_steps
+    Name: "\u8D70\u5ECA\u7684\u811A\u6B65"
+    Kind: 2
+    Body: "21:20\uFF0C\u4E09\u5904\u5F55\u97F3\u6355\u6349\u5230\u4E00\u4E32\u811A\u6B65\u3002\u951A\u70B9\u4E0E\u8BBE\u5907\u7A7A\u95F4\u4F4D\u7F6E\u5DF2\u5339\u914D\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  - Id: clue_impact
+    Name: "\u78B0\u649E\u4E0E\u788E\u88C2"
+    Kind: 2
+    Body: "21:30\uFF0C\u77ED\u4FC3\u7684\u91D1\u5C5E\u78B0\u649E\u540E\u4F20\u6765\u73BB\u7483\u788E\u88C2\u3002\u951A\u70B9\u4E0E\u8BBE\u5907\u7A7A\u95F4\u4F4D\u7F6E\u5DF2\u5339\u914D\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  - Id: clue_door
+    Name: "\u5173\u95E8\u4E4B\u540E"
+    Kind: 2
+    Body: "21:40\uFF0C\u4E00\u58F0\u5173\u95E8\u540E\uFF0C\u8D70\u5ECA\u91CD\u65B0\u5B89\u9759\u3002\u951A\u70B9\u4E0E\u8BBE\u5907\u7A7A\u95F4\u4F4D\u7F6E\u5DF2\u5339\u914D\u3002"
+    IconResource: 
+    UseRoom: 
+    UsePerson: 
+    UseDialogue: 
+  Dialogues:
+  - Id: dlg_butler
+    Participants:
+    - person_butler
+    Forced: 1
+    Lines:
+    - Speaker: "\u7BA1\u5BB6"
+      Text: "\u6B22\u8FCE\u6765\u5230\u53E4\u5821\u3002\u6211\u662F\u8FD9\u91CC\u7684\u7BA1\u5BB6\u3002"
+      Keywords:
+      - Word: "\u7BA1\u5BB6"
+        Target: person_butler
+        Kind: 0
+      Choices: []
+    - Speaker: "\u7BA1\u5BB6"
+      Text: "\u8BF7\u6536\u4E0B\u8FD9\u4EFD\u53E4\u5821\u5730\u56FE\u3002\u60A8\u53EF\u4EE5\u7528\u5B83\u67E5\u770B\u5404\u5904\u7684\u5F00\u653E\u65F6\u95F4\u3002"
+      Keywords:
+      - Word: "\u53E4\u5821\u5730\u56FE"
+        Target: item_map
+        Kind: 2
+      Choices: []
+    - Speaker: "\u7BA1\u5BB6"
+      Text: "\u4E2D\u63A7\u5BA4\u5341\u4E5D\u70B9\u5F00\u653E\u3002\u4E66\u623F\u3001\u9910\u5385\u548C\u4F11\u606F\u5BA4\u4E5F\u5728\u5730\u56FE\u4E0A\u3002"
+      Keywords:
+      - Word: "\u4E2D\u63A7\u5BA4"
+        Target: 110
+        Kind: 3
+      - Word: "\u4E66\u623F"
+        Target: 103
+        Kind: 3
+      - Word: "\u9910\u5385"
+        Target: 104
+        Kind: 3
+      - Word: "\u4F11\u606F\u5BA4"
+        Target: 108
+        Kind: 3
+      Choices: []
+    - Speaker: "\u7BA1\u5BB6"
+      Text: "\u4E8C\u697C\u8FD8\u6709\u753B\u5ECA\u3002\u5BF9\u767D\u65F6\u53EF\u4EE5\u67E5\u770B\u5730\u56FE\uFF0C\u7ED3\u675F\u4EA4\u8C08\u540E\u518D\u524D\u5F80\u3002"
+      Keywords:
+      - Word: "\u753B\u5ECA"
+        Target: 206
+        Kind: 3
+      Choices: []
+    - Speaker: "\u7BA1\u5BB6"
+      Text: "\u8FD9\u76D8\u6F14\u793A\u78C1\u5E26\u4E5F\u4EA4\u7ED9\u60A8\u3002\u5728\u8D70\u5ECA\u6253\u5F00\u8C03\u67E5\u518C\uFF0C\u70B9\u51FB\u78C1\u5E26\u5373\u53EF\u53CD\u590D\u64AD\u653E\u3002"
+      Keywords:
+      - Word: "\u6F14\u793A\u78C1\u5E26"
+        Target: item_tape
+        Kind: 2
+      - Word: "\u8D70\u5ECA"
+        Target: east
+        Kind: 3
+      Choices: []
+    - Speaker: "\u62C9\u5E15\u8389\u4E9A"
+      Text: "\u8C22\u8C22\uFF0C\u6211\u5148\u5728\u8D70\u5ECA\u63A2\u7D22\u4E00\u4E0B\uFF0C\u518D\u53BB\u4E2D\u63A7\u5BA4\u3002"
+      Keywords:
+      - Word: "\u8D70\u5ECA"
+        Target: east
+        Kind: 3
+      - Word: "\u4E2D\u63A7\u5BA4"
+        Target: 110
+        Kind: 3
+      Choices: []
+  - Id: dlg_guest
+    Participants:
+    - person_guest
+    - person_lady
+    Forced: 0
+    Lines:
+    - Speaker: "\u8BBF\u5BA2"
+      Text: "\u5973\u7235\u6B63\u5728\u8FD9\u91CC\u3002\u60A8\u60F3\u5148\u4E86\u89E3\u54EA\u4E00\u4EF6\u4E8B\uFF1F"
+      Keywords:
+      - Word: "\u5973\u7235"
+        Target: person_lady
+        Kind: 0
+      Choices: []
+    - Speaker: "\u62C9\u5E15\u8389\u4E9A"
+      Text: "\u6211\u60F3\u95EE\u2026\u2026"
+      Keywords: []
+      Choices:
+      - Label: "\u8BE2\u95EE\u53E4\u5821\u5730\u56FE"
+        NextLine: 2
+      - Label: "\u8BE2\u95EE\u9080\u8BF7\u51FD"
+        NextLine: 3
+    - Speaker: "\u8BBF\u5BA2"
+      Text: "\u53E4\u5821\u5730\u56FE\u53EF\u4EE5\u968F\u65F6\u67E5\u770B\u3002"
+      Keywords:
+      - Word: "\u53E4\u5821\u5730\u56FE"
+        Target: item_map
+        Kind: 1
+      Choices:
+      - Label: "\u7ED3\u675F\u8BDD\u9898"
+        NextLine: 4
+    - Speaker: "\u5973\u7235"
+      Text: "\u9080\u8BF7\u51FD\u8BB0\u5F55\u7740\u4ECA\u665A\u7684\u7EA6\u5B9A\u3002"
+      Keywords:
+      - Word: "\u9080\u8BF7\u51FD"
+        Target: item_invitation
+        Kind: 1
+      Choices: []
+    - Speaker: "\u62C9\u5E15\u8389\u4E9A"
+      Text: "\u6211\u660E\u767D\u4E86\u3002"
+      Keywords: []
+      Choices: []
+  - Id: dlg_guard
+    Participants:
+    - person_guard
+    - person_cook
+    - person_butler
+    Forced: 0
+    Lines:
+    - Speaker: "\u5B88\u536B"
+      Text: "\u8FD9\u91CC\u53EF\u4EE5\u9009\u62E9\u4E0D\u540C\u7684\u4EA4\u8C08\u5BF9\u8C61\uFF1B\u5207\u6362\u540E\u4ECD\u4FDD\u7559\u4E4B\u524D\u8BFB\u5230\u7684\u4F4D\u7F6E\u3002"
+      Keywords: []
+      Choices: []
+    - Speaker: "\u53A8\u5E08"
+      Text: "\u9910\u5385\u5728\u8D70\u5ECA\u5317\u4FA7\u3002"
+      Keywords:
+      - Word: "\u9910\u5385"
+        Target: 104
+        Kind: 3
+      Choices: []
+    - Speaker: "\u7BA1\u5BB6"
+      Text: "\u5982\u679C\u5DF2\u7ECF\u6536\u4E0B\u9080\u8BF7\u51FD\uFF0C\u53EF\u4EE5\u5728\u8C03\u67E5\u518C\u4E2D\u91CD\u65B0\u9605\u8BFB\u3002"
+      Keywords:
+      - Word: "\u9080\u8BF7\u51FD"
+        Target: item_invitation
+        Kind: 1
+      Choices: []
+  - Id: dlg_tape
+    Participants:
+    - person_butler
+    Forced: 1
+    Lines:
+    - Speaker: "\u78C1\u5E26\u4E2D\u7684\u58F0\u97F3"
+      Text: "\u8FD9\u662F\u4E00\u6BB5\u6F14\u793A\u5F55\u97F3\u3002\u64AD\u653E\u4E0D\u4F1A\u6D88\u8017\u78C1\u5E26\uFF0C\u4E5F\u4E0D\u4F1A\u63A8\u8FDB\u63A2\u7D22\u65F6\u95F4\u3002"
+      Keywords: []
+      Choices: []
+    - Speaker: "\u78C1\u5E26\u4E2D\u7684\u58F0\u97F3"
+      Text: "\u4E2D\u63A7\u5BA4\u7684\u4E09\u4EFD\u5F55\u97F3\u6765\u81EA\u9910\u5385\u3001\u4E66\u623F\u3001\u4F11\u606F\u5BA4\u3002\u8BBE\u5907
+        B \u6BD4 A \u6162\u4E09\u5206\u949F\uFF0CC \u6BD4 A \u5FEB\u4E00\u5206\u949F\u3002"
+      Keywords:
+      - Word: "\u4E2D\u63A7\u5BA4"
+        Target: 110
+        Kind: 3
+      Choices: []
+    - Speaker: "\u78C1\u5E26\u4E2D\u7684\u58F0\u97F3"
+      Text: "\u8BF7\u6309\u811A\u6B65\u3001\u78B0\u649E\u3001\u5173\u95E8\u7684\u987A\u5E8F\u8FD8\u539F\u793A\u4F8B\u3002\u64AD\u653E\u7ED3\u675F\u540E\u8FD4\u56DE\u8C03\u67E5\u518C\u3002"
+      Keywords: []
+      Choices: []
+  Recordings:
+  - Id: record_a
+    DeviceId: device_a
+    DeviceName: "\u5F55\u97F3\u8BBE\u5907 A"
+    Name: "\u6587\u4EF6 01"
+    RoomId: 104
+    StartSeconds: 76740
+    DurationSeconds: 1320
+    Audio: {fileID: 0}
+    Texts:
+    - "\u4E00\u4E32\u811A\u6B65\u7531\u8FDC\u53CA\u8FD1\uFF0C\u7136\u540E\u505C\u4E0B\u3002"
+    - "\u4E09\u58F0\u91D1\u5C5E\u78B0\u649E\uFF0C\u968F\u540E\u4F20\u6765\u73BB\u7483\u788E\u88C2\u3002"
+    - "\u95E8\u88AB\u5408\u4E0A\uFF0C\u8D70\u5ECA\u91CD\u5F52\u5B89\u9759\u3002"
+    AtSeconds: 3c00000094020000ec040000
+  - Id: record_b
+    DeviceId: device_b
+    DeviceName: "\u5F55\u97F3\u8BBE\u5907 B"
+    Name: "\u6587\u4EF6 02"
+    RoomId: 103
+    StartSeconds: 76560
+    DurationSeconds: 1320
+    Audio: {fileID: 0}
+    Texts:
+    - "\u4E00\u4E32\u811A\u6B65\u7531\u8FDC\u53CA\u8FD1\uFF0C\u7136\u540E\u505C\u4E0B\u3002"
+    - "\u4E09\u58F0\u91D1\u5C5E\u78B0\u649E\uFF0C\u968F\u540E\u4F20\u6765\u73BB\u7483\u788E\u88C2\u3002"
+    - "\u95E8\u88AB\u5408\u4E0A\uFF0C\u8D70\u5ECA\u91CD\u5F52\u5B89\u9759\u3002"
+    AtSeconds: 3c00000094020000ec040000
+  - Id: record_c
+    DeviceId: device_c
+    DeviceName: "\u5F55\u97F3\u8BBE\u5907 C"
+    Name: "\u6587\u4EF6 03"
+    RoomId: 108
+    StartSeconds: 76800
+    DurationSeconds: 1320
+    Audio: {fileID: 0}
+    Texts:
+    - "\u4E00\u4E32\u811A\u6B65\u7531\u8FDC\u53CA\u8FD1\uFF0C\u7136\u540E\u505C\u4E0B\u3002"
+    - "\u4E09\u58F0\u91D1\u5C5E\u78B0\u649E\uFF0C\u968F\u540E\u4F20\u6765\u73BB\u7483\u788E\u88C2\u3002"
+    - "\u95E8\u88AB\u5408\u4E0A\uFF0C\u8D70\u5ECA\u91CD\u5F52\u5B89\u9759\u3002"
+    AtSeconds: 3c00000094020000ec040000
+  Puzzles:
+  - Id: puzzle_0
+    Name: "\u8D70\u5ECA\u7684\u811A\u6B65"
+    ClueId: clue_steps
+    RecordingIds:
+    - record_a
+    - record_b
+    - record_c
+    LineIndex: 0
+    ToleranceSeconds: 2
+  - Id: puzzle_1
+    Name: "\u78B0\u649E\u4E0E\u788E\u88C2"
+    ClueId: clue_impact
+    RecordingIds:
+    - record_a
+    - record_b
+    - record_c
+    LineIndex: 1
+    ToleranceSeconds: 2
+  - Id: puzzle_2
+    Name: "\u5173\u95E8\u4E4B\u540E"
+    ClueId: clue_door
+    RecordingIds:
+    - record_a
+    - record_b
+    - record_c
+    LineIndex: 2
+    ToleranceSeconds: 2
+  EndingOrder:
+  - clue_steps
+  - clue_impact
+  - clue_door
+  EndingLines:
+  - "21:20 \xB7 \u811A\u6B65\u6CBF\u8D70\u5ECA\u800C\u6765\u3002\u4E0D\u540C\u8BBE\u5907\u7684\u8BB0\u5F55\uFF0C\u7EC8\u4E8E\u56DE\u5230\u4E86\u540C\u4E00\u6761\u65F6\u95F4\u7EBF\u4E0A\u3002"
+  - "21:30 \xB7 \u91D1\u5C5E\u78B0\u649E\uFF0C\u63A5\u7740\u73BB\u7483\u788E\u88C2\u3002\u4E09\u4EFD\u5F55\u97F3\u5171\u540C\u6307\u5411\u4E86\u8FD9\u4E00\u523B\u3002"
+  - "21:40 \xB7 \u95E8\u5408\u4E0A\u4E86\u3002\u811A\u6B65\u3001\u78B0\u649E\u4E0E\u5173\u95E8\u7684\u5148\u540E\u5173\u7CFB\uFF0C\u63ED\u5F00\u4E86\u8FD9\u4E00\u6BB5\u7ECF\u8FC7\u3002\n\n\u793A\u4F8B\u6F14\u51FA\u7ED3\u675F\u3002\u6B63\u5F0F\u7ED3\u5C40\u5185\u5BB9\u5F85\u63A5\u5165\u3002"
+  EndingLineSeconds: 4
+  EndingAudio: {fileID: 0}

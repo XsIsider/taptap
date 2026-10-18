@@ -33,6 +33,14 @@ namespace Castle
                 throw new InvalidOperationException("UI 引用类型不匹配：" + Id + "/" + id + "，需要 " + typeof(T).Name);
             return (T)control;
         }
+        // 仅供明确允许省略的装饰或快捷入口使用；必需引用仍由Get严格校验。
+        public bool TryGet<T>(string id, out T target) where T : Component
+        {
+            target = null;
+            foreach (var item in Controls)
+                if (item.Id == id) { target = item.Target as T; return target != null; }
+            return false;
+        }
         public void ValidateBindings()
         {
             _controls = null;

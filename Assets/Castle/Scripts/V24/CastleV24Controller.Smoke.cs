@@ -1,0 +1,214 @@
+using System;
+using System.Collections;
+using System.IO;
+using System.Linq;
+using Castle.Flow;
+using UnityEngine.EventSystems;
+using UnityEngine;
+using UnityEngine.UI;
+namespace Castle.V24
+{
+    public sealed partial class CastleV24Controller
+    {
+        private IEnumerator Smoke()
+        {
+            Directory.CreateDirectory("Logs/V24Screens");
+            var log=new System.Text.StringBuilder();
+            Application.logMessageReceived+=(message,stack,type)=>{if(type==LogType.Exception||type==LogType.Error)File.AppendAllText("Logs/v24-smoke-errors.txt",message+"\n"+stack);};
+            yield return null;StartNew();yield return null;
+            V("Invitation").Get<Button>("Surface").onClick.Invoke();yield return null;
+            if(V("Invitation").Get<Image>("Artwork").sprite!=InvitationOpen)throw new Exception("Invitation unfold artwork");
+            Capture("invitation");
+            V("Invitation").Get<Button>("Surface").onClick.Invoke();yield return null;
+            V("Acquire").Get<Button>("Confirm").onClick.Invoke();yield return null;
+            if(S.ActiveEvent!=900059)throw new Exception("Opening event missing");
+            log.AppendLine("PASS invitation buttons -> arrival event");Capture("opening");
+            if(V("Explore").transform.Find("Backdrop").GetComponent<RawImage>().texture!=CorridorDay)throw new Exception("Reception corridor background");
+            var initialState=JsonUtility.ToJson(S);
+            S.Line=Array.FindIndex(_data.Lines(_data.EventById(S.ActiveEvent).Plot),x=>x.SpeakerId==200001);Explore();
+            if(!V("Explore").Get<Image>("CharacterImage").gameObject.activeSelf || V("Explore").Get<Image>("CharacterImage").sprite!=ButlerPortrait)throw new Exception("Two-person portrait disappeared on protagonist line");
+            log.AppendLine("PASS two-person portrait remains while protagonist speaks");
+            if(V("Explore").Get<Text>("RoomName").gameObject.activeSelf || V("Explore").Get<Text>("Protagonist").gameObject.activeSelf)throw new Exception("Redundant room/portrait label visible");
+            var dialogueFrame=V("Explore").transform.Find("DialoguePanel/Back").GetComponent<Image>();
+            var frameSize=dialogueFrame.rectTransform.rect.size;
+            if(Mathf.Abs(frameSize.x/frameSize.y-653f/991f)>.01f || V("Explore").Get<ScrollRect>("DialogueScroll").verticalScrollbar.GetComponent<Image>().sprite.name!="滑动条底框")throw new Exception("Dialogue reference art layout mismatch");
+            var backing=V("Explore").transform.Find("DialoguePanel/TextBackdrop").GetComponent<Image>().color;
+            log.AppendLine("PASS room labels hidden / dialogue art ratio and scrollbar assets / designer backing retained");
+            Engine.Start(900100,true,false,true);while(S.Line+1<_data.Lines(_data.EventById(900100).Plot).Length)Engine.Reveal();Page("Explore");
+            int choiceLine=S.Line;Settings();V("Settings").Get<Button>("SaveGame").onClick.Invoke();
+            S.ActiveEvent=0;V("Settings").Get<Button>("LoadGame").onClick.Invoke();V("Confirm").Get<Button>("Confirm").onClick.Invoke();yield return null;
+            if(S.ActiveEvent!=900100 || S.Line!=choiceLine || V("Explore").Get<RectTransform>("Choices").GetComponentsInChildren<CastleUiView>().Length!=3)throw new Exception("Manual save failed to restore choices");
+            Capture("choice-save");log.AppendLine("PASS settings manual save and load restore pending choice buttons");
+            Engine.State=JsonUtility.FromJson<V24State>(initialState);CloseAll();
+            Engine.Start(900054,true,false,true);while(S.Line+1<_data.Lines(_data.EventById(900054).Plot).Length)Engine.Reveal();S.AutoSeconds=.05f;Page("Explore");
+            yield return new WaitForSecondsRealtime(.2f);
+            if(!S.CompletedEvents.Contains(900054))throw new Exception("Final dialogue still requires continue");
+            if(!V("Explore").Get<RectTransform>("DialoguePanel").gameObject.activeSelf || V("Explore").Get<RectTransform>("Dialogue").childCount==0)throw new Exception("Completed transcript disappeared");
+            log.AppendLine("PASS final dialogue settles and retains dialogue frame and text");
+            Engine.State=JsonUtility.FromJson<V24State>(initialState);CloseAll();
+            Engine.Grant(300008,"ui-path",false);Journal(0,200006,true);
+            if(!V("Journal").Get<Button>("CharacterPath").interactable)throw new Exception("Path preview disabled");
+            V("Journal").Get<Button>("CharacterPath").onClick.Invoke();
+            if(_modal.LastOrDefault()!="Path" || V("Path").Get<Button>("Verify").interactable)throw new Exception("Path preview bypassed requirements");
+            CloseAll();Engine.Grant(300034,"ui-record",false);Engine.Grant(300041,"ui-clue",false);Journal(2);
+            if(JournalIds().Any(id=>_data.EntryById(id).Type!="event") || V("Journal").Controls.Any(x=>x.Id=="RecordFilter"||x.Id=="Source"))throw new Exception("Journal event-only controls");
+            V("Journal").Get<Button>("Timeline").onClick.Invoke();
+            if(_page!="Timeline"||V("Timeline").Get<Button>("Submit").interactable||V("Timeline").Get<Text>("Requirements").text.Length==0)throw new Exception("Timeline preview requirements");
+            log.AppendLine("PASS path and timeline open before prerequisites; submission stays gated; journal only events");
+            S.ActiveEvent=0;S.Room=100001;Page("Explore");if(V("Explore").transform.Find("Backdrop").GetComponent<RawImage>().texture!=RoomArt.First(x=>x.Room==100001).Day)throw new Exception("Guest background");
+            S.Room=100003;Page("Explore");if(V("Explore").transform.Find("Backdrop").GetComponent<RawImage>().texture!=RoomArt.First(x=>x.Room==100003).Day)throw new Exception("Control background");
+            log.AppendLine("PASS new invitation / corridor / guest / control artwork bindings");
+            if(Mathf.Abs(new V24State().AutoSeconds-1.8f)>.001f)throw new Exception("Default auto speed");
+            S.Now=Engine.Now.Date.AddHours(18).Ticks;SceneBackground(false);
+            if(V("Explore").transform.Find("Backdrop").GetComponent<RawImage>().texture!=RoomArt.First(x=>x.Room==100003).Night)throw new Exception("18:00 night switch");
+            _sceneZoom=1.35f;ApplySceneZoom();if(!V("Explore").Get<Text>("ZoomHint").gameObject.activeSelf)throw new Exception("Zoom hint");
+            _sceneZoom=1;ApplySceneZoom();
+            Page("Recordings");if(Ui.Hud.Get<Transform>("LocationGroup").gameObject.activeSelf)throw new Exception("Location background still visible");
+            Page("Explore");if(!Ui.Hud.Get<Text>("CurrentTime").text.Contains("Day 1 · 18:00"))throw new Exception("Time label");
+            Engine.Start(900080,true,false,true);Page("Explore");
+            if(V("Explore").Get<Image>("HeroineImage").gameObject.activeSelf)throw new Exception("Three-person heroine should hide");
+            var avatars=V("Explore").Get<RectTransform>("People").GetComponentsInChildren<CastleUiView>();
+            if(avatars.Length!=2)throw new Exception("Three-person avatar count");
+            avatars[1].Get<Button>("Select").onClick.Invoke();
+            if(V("Explore").Get<Image>("CharacterImage").sprite!=PortraitSprite(200006))throw new Exception("Three-person selection");
+            Capture("three-person");
+            Engine.State=JsonUtility.FromJson<V24State>(initialState);S.ActiveEvent=0;S.Room=100002;S.Day=2;S.Transcript.Clear();S.Goals.Add(1900085);
+            S.Now=Engine.Now.Date.AddHours(19).Ticks;Page("Explore");
+            if(V("Explore").Get<RectTransform>("DialoguePanel").gameObject.activeSelf || V("Explore").Get<Image>("CharacterImage").gameObject.activeSelf || !V("Explore").Get<Image>("HeroineImage").gameObject.activeSelf)throw new Exception("First group selection presentation");
+            yield return null;Canvas.ForceUpdateCanvases();
+            var stackButton=V("Explore").Get<Button>("AvatarStack");
+            var pointer=new PointerEventData(EventSystem.current){position=RectTransformUtility.WorldToScreenPoint(null,((RectTransform)stackButton.transform).TransformPoint(((RectTransform)stackButton.transform).rect.center))};
+            var hits=new System.Collections.Generic.List<RaycastResult>();EventSystem.current.RaycastAll(pointer,hits);
+            if(hits.Count==0 || hits[0].gameObject.GetComponentInParent<Button>()!=stackButton)throw new Exception("Avatar stack blocked by UI");
+            stackButton.onClick.Invoke();
+            if(V("Explore").Get<RectTransform>("People").GetComponentsInChildren<CastleUiView>().Length!=6)throw new Exception("Expanded avatars");
+            Capture("group-selection");
+            // 注入下一版顺序示例，验证错误角色不推进；并非正式剧情顺序。
+            var savedOrder=ConversationOrder;ConversationOrder=new[]{900086};
+            ChooseConversation(ConversationChoices.First(x=>x.Event==900087));
+            if(S.ActiveEvent!=0 || Ui.Toast.Get<Text>("Body").text!="ta好像正在忙")throw new Exception("Wrong character order");
+            ConversationOrder=savedOrder;
+            ChooseConversation(ConversationChoices.First(x=>x.Event==900086));
+            if(S.ActiveEvent!=900086 || _avatarsExpanded || !V("Explore").Get<RectTransform>("DialoguePanel").gameObject.activeSelf)throw new Exception("Group selection did not start dialogue");
+            Capture("group-dialogue");
+            if(Engine.RoomName(100006)!="收藏厅")throw new Exception("Collection display name");
+            log.AppendLine("PASS scene day/night boundary, HUD group/time, auto default and zoom hint");
+            log.AppendLine("PASS three-person selection and group avatar selection / future order guard");
+
+            Engine.State=JsonUtility.FromJson<V24State>(initialState);CloseAll();
+            // 打开后立即关闭，未播放完成也必须发放奖励。
+            S.ActiveEvent=_data.GameSettings.TapeTutorialEvent;S.Room=_data.GameSettings.HomeRoom;
+            S.Goals.Add(1900063);Engine.Grant(_data.TutorialTape,"smoke-tutorial",false);Engine.Finish();
+            var tutorialTape=S.Tapes.First(x=>x.Entry==_data.TutorialTape);UseTape(tutorialTape.Instance);
+            V("Tape").Get<Button>("Play").onClick.Invoke();
+            Ui.Hud.Get<Button>("Back").onClick.Invoke();
+            yield return new WaitForSecondsRealtime(.2f);
+            if(S.TutorialEvent!=0||_page!="Explore"||_modal.LastOrDefault()!="Acquire"||!S.RewardPopups.Contains(300021))throw new Exception("Tutorial reward hidden after playback");
+            Capture("tutorial-reward");V("Acquire").Get<Button>("Confirm").onClick.Invoke();yield return null;
+            if(S.RewardPopups.Count!=0||S.PlayingTape!=0)throw new Exception("Tutorial reward confirmation failed");
+            log.AppendLine("PASS tutorial close at start shows reward and confirmation releases pending reward");
+            // 隔离测试状态用于逐页检查；完整剧情规则另由编辑器路线验证执行。
+            S.ActiveEvent=0;S.Transcript.Clear();S.InvitationStage=3;
+            foreach(var entry in _data.Entry)Engine.Grant(entry.Id,"smoke:"+entry.Id,false);
+            S.Now=new DateTime(1951,12,4,22,0,0).Ticks;S.Day=4;S.DayBase=new DateTime(1951,12,4).Ticks;Engine.RegisterRecordings();
+            foreach(var ev in _data.Event)if(ev.Goal!=0&&!S.Goals.Contains(ev.Goal))S.Goals.Add(ev.Goal);
+            Engine.RefreshUnlocks();S.Room=_data.GameSettings.ControlRoom;S.ControlCost=60;
+            _record=600014;_position=0;S.ExpandedDevices.Add(_data.RecordById(_record).Device);Page("Recordings");yield return null;Capture("recordings");
+            var recordingRows=V("Recordings").Get<RectTransform>("Lines").GetComponentsInChildren<CastleUiView>();
+            if(recordingRows.Length!=_data.Lines(_data.RecordById(_record).Plot).Length || _playing)throw new Exception("Recording must show all lines without playing");
+            V("Recordings").Get<Button>("Play").onClick.Invoke();yield return null;
+            if(_playing || _position!=0)throw new Exception("Decorative play advanced recording");
+            if(V("Recordings").Get<Button>("Extract").gameObject.activeSelf)throw new Exception("Extract still visible");
+            var anchorRow=recordingRows.First(x=>x.name=="Line500125");anchorRow.Get<Button>("Select").onClick.Invoke();
+            if(!S.Marked.Contains(500125))throw new Exception("Row click failed to mark");
+            anchorRow.Get<Button>("Select").onClick.Invoke();if(S.Marked.Contains(500125))throw new Exception("Second row click failed to unmark");
+            V("Recordings").Get<Slider>("Progress").value=10;
+            if(recordingRows.Count(x=>x.Get<Image>("Background").color.a>0)!=1)throw new Exception("Progress highlight failed");
+            anchorRow.Get<Button>("Select").onClick.Invoke();Capture("recordings-marked");
+            log.AppendLine("PASS complete recording text / inert playback / row mark toggle / progress highlight");
+            foreach(var line in _data.Lines(_data.RecordById(_record).Plot)){if(!S.Shown.Contains(line.Id))S.Shown.Add(line.Id);Engine.Mark(line.Id);}
+            _record=600015;_position=40;PlaybackRender();yield return null;
+            foreach(var line in _data.Lines(_data.RecordById(_record).Plot)){if(!S.Shown.Contains(line.Id))S.Shown.Add(line.Id);Engine.Mark(line.Id);}
+            _puzzle=700003;Page("Anchors");AddEvidence(500125,2);AddEvidence(500128,2);yield return null;Capture("anchors");
+            var track=V("Anchors").Get<RectTransform>("Tracks").GetComponentsInChildren<CastleUiView>().First(x=>x.Id=="Track");
+            track.Get<Button>("Reference").onClick.Invoke();yield return null;
+            var targetTrack=V("Anchors").Get<RectTransform>("Tracks").GetComponentsInChildren<CastleUiView>().Where(x=>x.Id=="Track" && x.Get<Slider>("OffsetSlider").gameObject.activeSelf).Last();
+            targetTrack.Get<Slider>("OffsetSlider").value=0;
+            if(Engine.Draft(700003).Reference!=500125 || Mathf.Abs(Engine.Draft(700003).Shift-180)>2)throw new Exception("Anchor slider / reference binding");
+            log.AppendLine("PASS reference button and target slider align +180 seconds");
+            Capture("anchors-aligned");
+            track=V("Anchors").Get<RectTransform>("Tracks").GetComponentsInChildren<CastleUiView>().First(x=>x.Id=="Track");track.Get<Button>("Remove").onClick.Invoke();yield return null;
+            if(Engine.Draft(700003).Reference!=0)throw new Exception("Removed reference not cleared");log.AppendLine("PASS removing reference requires reselect");
+            Page("Recordings");if(V("Recordings").Get<Button>("Space").gameObject.activeSelf)throw new Exception("Space available before alignment");
+            S.Puzzles.Add(700003);Page("Recordings");if(!V("Recordings").Get<Button>("Space").gameObject.activeSelf)throw new Exception("Space missing after alignment");
+            V("Recordings").Get<Button>("Space").onClick.Invoke();yield return null;Capture("space");
+            var pan=V("Space").Get<V24MapPan>("MapPan");pan.Zoom=3;pan.Apply();
+            var pathSource=V("Space").Get<RectTransform>("List").GetComponentsInChildren<FlowDrag>().First();
+            var nodeTarget=V("Space").Get<RectTransform>("Rooms").GetComponentsInChildren<FlowDrag>().First();
+            var drop=new PointerEventData(EventSystem.current){pointerDrag=pathSource.gameObject,button=PointerEventData.InputButton.Left};nodeTarget.OnDrop(drop);yield return null;
+            if(Engine.Draft(700001).Values[0]==0)throw new Exception("Path drop binding");
+            int placed=Engine.Draft(700001).Values[0];V("Space").Get<Button>("ResetView").onClick.Invoke();yield return null;
+            if(Engine.Draft(700001).Values[0]!=placed)throw new Exception("Reset erased path");log.AppendLine("PASS zoomed path drop and reset preserves node ID");
+            Map(100002);yield return null;Capture("map-1f");
+            if(V("Map").Get<RectTransform>("Rooms").GetComponentsInChildren<CastleUiView>().Length!=9)throw new Exception("First floor must have nine regions");
+            V("Map").Get<Button>("Floor2").onClick.Invoke();yield return null;Capture("map-2f");
+            if(V("Map").Get<RawImage>("FloorImage").texture!=Floor2Background||V("Map").Controls.Any(x=>x.Id=="Floor3"))throw new Exception("Two floor texture binding");
+            if(V("Map").Get<RectTransform>("Rooms").GetComponentsInChildren<CastleUiView>().Length!=9)throw new Exception("Second floor must have nine regions");
+            log.AppendLine("PASS two map textures / nine regions each / no third floor");Pop();
+            S.ActiveEvent=900059;Map(100002);yield return null;
+            int oldRoom=S.Room;var mapNodes=V("Map").Get<RectTransform>("Rooms").GetComponentsInChildren<CastleUiView>();
+            mapNodes[0].Get<Button>("Select").onClick.Invoke();if(S.Room!=oldRoom)throw new Exception("Map moved during dialogue");
+            if(V("Map").Get<Button>("Enter").gameObject.activeSelf||V("Map").Get<Text>("Heading").gameObject.activeSelf)throw new Exception("Map extra controls visible");
+            S.ActiveEvent=0;S.SessionAction=0;
+            var targetRoom=_data.MapConfig[0].Nodes.First(x=>x.Floor==1).Room;
+            mapNodes[0].Get<Button>("Select").onClick.Invoke();if(S.Room!=targetRoom)throw new Exception("Map direct room click failed");
+            log.AppendLine("PASS map direct click / dialogue movement blocked / no Enter or heading");CloseAll();S.Room=_data.GameSettings.ControlRoom;
+            Journal(0);yield return null;Capture("people");V("Journal").Get<Button>("Next").onClick.Invoke();yield return new WaitForSecondsRealtime(.4f);
+            if(S.JournalPage!=1)throw new Exception("Journal pagination");log.AppendLine("PASS journal next page");Pop();
+            Journal(1);yield return null;Capture("items");Pop();
+            Journal(2);yield return null;Capture("records");Pop();
+            S.Puzzles.Add(700001);Page("Anchors");yield return null;Capture("compare");
+            if(V("Anchors").Get<Button>("Space").gameObject.activeSelf || (V("Anchors").TryGet<Button>("Next",out var nextShortcut) && nextShortcut.gameObject.activeSelf))throw new Exception("Space remains after completion");
+            Page("Explore");Page("Recordings");if(V("Recordings").Get<Button>("Space").gameObject.activeSelf)throw new Exception("Space reappears after return");
+            log.AppendLine("PASS space gated by alignment and hidden after completion / return");
+            // 先验证公爵，再从调查册进入人物路径；保持终章禁止离开的门禁。
+            S.SessionAction=_data.FinaleConfig.Action;S.Goals.Remove(1900054);S.Goals.Remove(1900058);S.Goals.Remove(_data.FinaleConfig.EndCard.AfterGoal);
+            _puzzle=700011;var living=_data.PuzzleById(_puzzle);Engine.Draft(_puzzle).Values=living.Answer.Split('|').Select(int.Parse).ToList();
+            foreach(int id in Engine.Draft(_puzzle).Values){if(!S.Shown.Contains(id))S.Shown.Add(id);Engine.Mark(id);}
+            SubmitPuzzle("Anchors");while(S.ActiveEvent!=0)Engine.Advance();Refresh();
+            if(!S.Puzzles.Contains(700011) || Engine.Busy)throw new Exception("Duke puzzle did not settle");
+            if(!Ui.Hud.Get<Button>("Back").interactable)throw new Exception("Local return incorrectly blocked by exit policy");
+            Journal(0,200006,true);V("Journal").Get<Button>("CharacterPath").onClick.Invoke();
+            var personPath=_data.PuzzleById(700010);Engine.Draft(700010).Values=personPath.Answer.Split('|').Select(x=>int.Parse(x.Split('=')[1])).ToList();PathRender(V("Path"));
+            V("Path").Get<Button>("Verify").onClick.Invoke();
+            if(!S.Puzzles.Contains(700010))throw new Exception("Person path blocked after duke puzzle");
+            log.AppendLine("PASS duke-first order keeps local return and journal person-path verification available");CloseAll();S.SessionAction=0;
+            _puzzle=700010;Journal(0,200006,true);Push("Path");PathRender(V("Path"));yield return null;Capture("person-path");CloseAll();
+            Page("Timeline");yield return null;Capture("timeline");
+            S.Room=_data.GameSettings.HomeRoom;UseTape(S.Tapes[0].Instance);yield return null;Capture("tape");_playing=false;CloseAll();
+            S.Room=_data.GameSettings.ControlRoom;Journal(1);_selectedTape=S.Tapes[0].Instance;int oldRecord=S.Tapes[0].Record;BurnSelect();yield return null;Capture("burn");V("Burn").Get<Button>("Close").onClick.Invoke();
+            if(S.Tapes[0].Record!=oldRecord)throw new Exception("Cancel burn changed tape");log.AppendLine("PASS cancel burning preserves tape content");CloseAll();
+            S.ActiveEvent=0;Page("Explore");yield return null;Capture("free-explore");
+            if(V("Explore").Get<Button>("Continue").gameObject.activeSelf)throw new Exception("Redundant final continue visible");
+            log.AppendLine("PASS no redundant continue after dialogue");
+            S.Goals.Remove(_data.FinaleConfig.EndCard.AfterGoal);S.ActiveEvent=900130;S.Line=0;S.SleepStage="ghost";Page("Cutscene");yield return null;Capture("ghost");
+            if(V("Cutscene").Get<Text>("Body").text.Length==0||Ui.Hud.gameObject.activeSelf)throw new Exception("Ghost cutscene binding");
+            S.ActiveEvent=0;S.SleepStage="";S.Finished=true;Page("EndCard");yield return null;Capture("ending");
+            V("EndCard").Get<Button>("Surface").onClick.Invoke();if(_page!="EndCard")throw new Exception("Ending click carried through");
+            yield return new WaitForSecondsRealtime(.5f);V("EndCard").Get<Button>("Surface").onClick.Invoke();if(_page!="Title")throw new Exception("Ending return title");
+            log.AppendLine("PASS black cutscene / ending waits for a fresh click");
+            Page("Explore");yield return null;if(!Music.isPlaying)throw new Exception("Global BGM stopped outside title");log.AppendLine("PASS global BGM stays playing outside title");
+            log.AppendLine("PASS render all primary pages and modal bindings");File.WriteAllText("Logs/v24-smoke.txt",log.ToString());Application.Quit();
+        }
+        private void Capture(string name)
+        {
+            Ui.Toast.gameObject.SetActive(false);
+            var canvas=Ui.GetComponent<Canvas>();var go=new GameObject("SmokeCamera");var camera=go.AddComponent<Camera>();
+            var pipeline=UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline;UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline=null;
+            camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.black;camera.orthographic=true;camera.orthographicSize=5;camera.transform.position=new Vector3(0,0,-10);
+            var render=new RenderTexture(1600,900,24);camera.targetTexture=render;canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=camera;canvas.planeDistance=1;
+            Canvas.ForceUpdateCanvases();camera.Render();var previous=RenderTexture.active;RenderTexture.active=render;var texture=new Texture2D(1600,900,TextureFormat.RGB24,false);texture.ReadPixels(new Rect(0,0,1600,900),0,0);texture.Apply();File.WriteAllBytes("Logs/V24Screens/"+name+".png",texture.EncodeToPNG());
+            RenderTexture.active=previous;canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.worldCamera=null;camera.targetTexture=null;UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline=pipeline;Destroy(texture);render.Release();Destroy(render);Destroy(go);
+        }
+    }
+}
