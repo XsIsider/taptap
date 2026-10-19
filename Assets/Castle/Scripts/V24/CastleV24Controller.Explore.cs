@@ -13,13 +13,15 @@ namespace Castle.V24
         private void Explore()
         {
             var v=V("Explore"); Show(v,"RoomName",false);
+            SetChoiceSpace(v, false);
             // 仅替换有明确对应素材的场景，其他房间恢复原背景，避免沿用上一房间的图。
             bool talk=S.ActiveEvent!=0;
             bool hasText=talk || S.Transcript.Count>0;
             var receptionGroups=_data.Event.Where(x=>x.Id==900059||x.Id==900060||x.Id==900061).Select(x=>x.Plot).ToArray();
             bool reception=S.Room==100002 && (talk?receptionGroups.Contains(_data.EventById(S.ActiveEvent).Plot):S.Transcript.Any(x=>x.Plot!=0&&receptionGroups.Contains(_data.Plot.First(p=>p.Id==x.Plot).Group)));
+            if (_data.Formal) reception = S.SceneContext.Contains("走廊");
             SceneBackground(reception);
-            bool freshSelection = !talk && ConversationAvailable() && !ConversationChoices.Any(x => Engine.Done(_data.EventById(x.Event)));
+            bool freshSelection = !talk && ConversationAvailable() && !CurrentChoices().Any(x => Engine.Done(_data.EventById(x.Event)));
             if (freshSelection) hasText = false;
             Show(v,"DialoguePanel",hasText); Show(v,"FreePanel",!talk); Show(v,"ExitTape",false);
             Txt(v,"RoomHint","选择在场人物或房间热点进行调查。没有可用对白时保持自由探索。");
@@ -30,6 +32,20 @@ namespace Castle.V24
             Show(v,"Talk",false);Show(v,"Map",false);Show(v,"RoomHint",false);
             Show(v,"ExploreRoom",!talk&&S.Room==_data.GameSettings.HomeRoom);Show(v,"Workbench",!talk&&S.Room==_data.GameSettings.ControlRoom);
             var people=v.Get<RectTransform>("People");Clear(people);
+            if (_data.Formal && !talk && !ConversationAvailable())
+            {
+                var activity = _data.DayActivities.FirstOrDefault(x => x.Id == S.Activity);
+                if (activity != null)
+                {
+                    foreach (int id in activity.Events.Where(Engine.CanSelectFormalEvent))
+                    {
+                        int local = id; var ev = _data.EventById(id);
+                        var npc = _data.Lines(ev.Plot).FirstOrDefault(x => x.SpeakerId != 0 && x.SpeakerId != 200001);
+                        Card(people, Engine.CharacterName(npc?.SpeakerId ?? 0), Engine.RoomName(ev.Room), () => { Engine.SelectFormalEvent(local); Refresh(); });
+                    }
+                    if (activity.AllowWaitToFinish) Card(people,"等待晚宴","结束本阶段调查",()=>{Engine.WaitForActivity();Refresh();});
+                }
+            }
             var hotspots=_data.HotspotBinding.Where(x=>x.Room==S.Room && (x.Day==0||x.Day==S.Day) && Engine.Need(x.Need) && Engine.Window(x.Start,x.End,Engine.Now)).ToList();
             // 以事件有效入口补充测试包中时间条件不同的复用热点，避免已有入口被静态绑定挡住。
             var events=_data.Event.Where(x=>x.Trigger=="interact" && Engine.Eligible(x)).ToArray();
@@ -42,7 +58,6 @@ namespace Castle.V24
                 ? _data.Lines(_data.EventById(S.ActiveEvent).Plot).Where(x => x.SpeakerId != 0 && x.SpeakerId != 200001).Select(x => x.SpeakerId).Distinct().ToArray()
                 : hotspots.Where(x => x.Mode == "character").Select(x => x.Character).Where(x => x != 0 && x != 200001).Distinct().ToArray();
             Show(v,"Protagonist",false);
-            if (!participants.Contains(_selectedCharacter)) _selectedCharacter = participants.FirstOrDefault();
             SceneCharacters(talk, participants);
             if (freshSelection) Show(v,"CharacterImage",false);
             Show(v,"Continue",talk);Show(v,"Auto",talk);
@@ -60,17 +75,43 @@ namespace Castle.V24
             if(choices)
             {
                 S.Auto=false;
+                SetChoiceSpace(v, true);
+                bool firstChoice = true;
                 foreach(var choice in _data.PlotChoice.Where(x=>x.Group==active.ChoiceGroup).OrderBy(x=>x.Order))
-                {int id=choice.Id;Card(v.Get<RectTransform>("Choices"),choice.Text,"",()=>{Engine.Advance(id);Refresh();});}
+                {
+                    int id=choice.Id;
+                    var button=Card(v.Get<RectTransform>("Choices"),choice.Text,"",()=>{Engine.Advance(id);Refresh();},template:DialogueChoicePrefab);
+                    if (DialogueChoicePrefab)
+                    {
+                        button.Get<Text>("Title").font=ReadingFont;
+                        button.GetComponent<V24DialogueChoice>().SetFirst(firstChoice);
+                        firstChoice = false;
+                    }
+                }
             }
-            Btn(v,"Continue",()=>Next(),Engine.RequiredAction()!=null?"请点击正文中的地点入口":"继续 →",!choices&&Engine.RequiredAction()==null);
-            Show(v,"Continue",!end);
+            var requiredAction=Engine.RequiredAction();
+            Btn(v,"Continue",()=>{if(requiredAction==null)Next();else {string result=Engine.ExecuteAction(requiredAction.Id);if(result!="成功")Toast(result);Refresh();}},requiredAction!=null?"进入中控室":"继续 →",!choices);
+            Show(v,"Continue",!end||requiredAction!=null);
             Btn(v,"Auto",()=>{S.Auto=!S.Auto;_nextAuto=Time.unscaledTime+S.AutoSeconds;Txt(v,"AutoLabel",S.Auto?"自动：开启":"自动：关闭");Save();},S.Auto?"自动：开启":"自动：关闭");
             StartCoroutine(RestoreScroll(v.Get<ScrollRect>("DialogueScroll"),S.DialogueScroll));
         }
         private void Portrait(int id)
         {
             DrawCharacter("CharacterImage", id, true);
+        }
+        private Vector2 _dialogueScrollSize, _dialogueViewportSize;
+        private bool _choiceLayoutSaved;
+        private void SetChoiceSpace(CastleUiView view, bool choices)
+        {
+            if (!DialogueChoicePrefab) return;
+            var scroll = view.Get<ScrollRect>("DialogueScroll");
+            var rect = (RectTransform)scroll.transform;
+            if (!_choiceLayoutSaved)
+            {
+                _dialogueScrollSize = rect.sizeDelta;_dialogueViewportSize = scroll.viewport.sizeDelta;_choiceLayoutSaved = true;
+            }
+            rect.sizeDelta = new Vector2(_dialogueScrollSize.x, choices ? 480 : _dialogueScrollSize.y);
+            scroll.viewport.sizeDelta = new Vector2(_dialogueViewportSize.x, choices ? 480 : _dialogueViewportSize.y);
         }
         private Sprite PortraitSprite(int id) => CharacterArt.FirstOrDefault(x => x.Character == id)?.Portrait;
         private IEnumerator RestoreScroll(ScrollRect scroll,float position) { yield return null; Canvas.ForceUpdateCanvases();scroll.verticalNormalizedPosition=position; }
@@ -82,12 +123,12 @@ namespace Castle.V24
         private CastleUiView Line(Transform parent,V24Plot plot,bool recording)
         {
             var view=Instantiate(Ui.LinePrefab,parent); view.gameObject.SetActive(true);
-            Txt(view,"Speaker",(recording?TimeSpan.FromSeconds(plot.At).ToString(@"mm\:ss")+" · ":"")+Engine.CharacterName(plot.SpeakerId)+(S.Marked.Contains(plot.Id)?"  ◆":""));
+            Txt(view,"Speaker",(recording?TimeSpan.FromSeconds(plot.At).ToString(@"mm\:ss")+" · ":"")+SpeakerName(plot,recording)+(S.Marked.Contains(plot.Id)?"  ◆":""));
             string body=plot.Text;
             for(int i=0;i<plot.LinkText.Length;i++)
             {
                 string target=plot.LinkTarget[i];
-                if(target.StartsWith("action:") && (recording || Engine.RequiredAction()?.SourcePlot!=plot.Id))continue;
+                if(target.StartsWith("action:") && (recording || (_data.Formal ? !_data.DialogueActionConfig.Any(x=>x.SourcePlot==plot.Id&&x.SourceEvent==S.ActiveEvent&&!S.ConsumedActions.Contains(x.Id)) : Engine.RequiredAction()?.SourcePlot!=plot.Id)))continue;
                 if(target.StartsWith("character:")&&!CharacterUnlocked(int.Parse(target.Substring(10))))continue;
                 body=body.Replace(plot.LinkText[i],"<link=\""+plot.Id+";"+target+"\"><color=#E6BB68><u>"+plot.LinkText[i]+"</u></color></link>");
             }
@@ -97,7 +138,7 @@ namespace Castle.V24
             var layout=view.GetComponent<LayoutElement>();layout.preferredHeight=Mathf.Max(110,65+tmp.GetPreferredValues(body,recording?720:405,0).y);
             return view;
         }
-        private bool CharacterUnlocked(int id) => _data.Entry.Any(x=>x.Type=="info"&&x.Owner.Contains(id)&&Engine.Has(x.Id));
+        private bool CharacterUnlocked(int id) => Engine.KnowsCharacter(id);
         private void Link(string key)
         {
             var pair=key.Split(';');int line=int.Parse(pair[0]);var target=pair[1].Split(':');int id=int.Parse(target[1]);
@@ -135,7 +176,7 @@ namespace Castle.V24
             Btn(v,"Floor1",()=>{_floor=1;_selectedRoom=0;MapRender();});Btn(v,"Floor2",()=>{_floor=2;_selectedRoom=0;MapRender();});
             Txt(v,"Heading","古堡地图 · "+_floor+"F");Show(v,"TooltipPanel",false);
             var root=v.Get<RectTransform>("Rooms");Clear(root);
-            foreach(var node in _data.MapConfig[0].Nodes.Where(x=>x.Floor==_floor))
+            foreach(var node in _data.MapConfig[0].Nodes.Where(x=>x.Floor==_floor&&x.Room!=0))
             {
                 var room=_data.Room.First(x=>x.Id==node.Room);bool unlocked=S.Unlocked.Contains(room.Id),open=unlocked&&Engine.Window(room.Start,room.End,Engine.Now);
                 if(room.Id==_data.GameSettings.ControlRoom)open=unlocked&&Engine.ControlMapOpen();

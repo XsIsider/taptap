@@ -6,7 +6,7 @@ namespace Castle.V24
 {
     [Serializable] public sealed class V24RecordingState
     {
-        public int Id, CapturedOffset, Day; public long TrueStart, RawStart; public bool Complete;
+        public int Id, CapturedOffset, Day; public long TrueStart, RawStart; public bool Complete; public float HeardSeconds;
     }
     [Serializable] public sealed class V24Inventory { public int Entry, Count; }
     [Serializable] public sealed class V24Tape
@@ -15,6 +15,7 @@ namespace Castle.V24
     }
     [Serializable] public sealed class V24Draft
     {
+        public List<string> Doors = new List<string>();
         public string Hypothesis = "";
         public int Id, Reference, Floor = 1; public List<int> Values = new List<int>(); public float Shift;
     }
@@ -29,7 +30,11 @@ namespace Castle.V24
     /// <summary>V2.4 独立存档；时间使用 DateTime ticks，避免跨午夜丢失日期。</summary>
     [Serializable] public sealed class V24State
     {
-        public int Version = 25, Day = 1, Room, ActiveEvent, Line, QueuedItem, PendingPuzzle, TutorialEvent;
+        public int DeferredEvent, PlaybackGate, LastCompletedEvent, WakeEvent;
+        public string Activity = "", SceneContext = "";
+        public bool PathReadyNotice;
+        public List<int> HeardRecords = new List<int>(), ImportedRecords = new List<int>();
+        public int Version = 26, Day = 1, Room, ActiveEvent, Line, QueuedItem, PendingPuzzle, TutorialEvent;
         public int ActionPending, SessionAction;
         public string ControlMode = "";
         public bool RepairNoticeShown;
@@ -38,11 +43,11 @@ namespace Castle.V24
         public int ControlCost, ControlDay, ControlReturn, NextTape = 1, InvitationStage;
         public string ControlSession = "", Page = "Title", ReturnPage = "Explore", SleepStage = "";
         public bool Started, SleepPending, Ending, Finished, Auto, EndingTransitionDone;
-        public float DialogueScroll = 1, AutoSeconds = 1.8f, Volume = .7f;
+        public float DialogueScroll = 1, AutoSeconds = 1.8f, Volume = .7f, EffectsVolume = .7f;
         public int JournalCategory, JournalPage, JournalSelection, RecordId, PlayingTape, ReturnPath;
         public int[] JournalPages = new int[3];
         public List<int> ExpandedDevices = new List<int>();
-        public float RecordPosition;
+        public float RecordPosition, PlaybackHeard;
         public List<int> Entries = new List<int>(), Goals = new List<int>(), CompletedEvents = new List<int>(), Puzzles = new List<int>(), Repaired = new List<int>(), Unlocked = new List<int>(), KnownDevices = new List<int>(), Marked = new List<int>(), Shown = new List<int>(), PlanB = new List<int>(), Choices = new List<int>();
         public List<string> Claims = new List<string>(), Grants = new List<string>();
         public List<int> RewardPopups = new List<int>();
@@ -55,7 +60,7 @@ namespace Castle.V24
     }
     public static class V24Save
     {
-        public static string Path => System.IO.Path.Combine(Application.persistentDataPath, "castle-v24-two-floors.json");
+        public static string Path => System.IO.Path.Combine(Application.persistentDataPath, "castle-formal-20261019.json");
         public static void Write(V24State state, string path = null)
         {
             path = path ?? Path;
@@ -69,7 +74,7 @@ namespace Castle.V24
             path = path ?? Path;
             if (!File.Exists(path)) return new V24State();
             var state = JsonUtility.FromJson<V24State>(File.ReadAllText(path));
-            if (state == null || state.Version != 25) throw new InvalidDataException("存档版本不匹配，请开始双层地图新版调查。");
+            if (state == null || state.Version != 26) throw new InvalidDataException("存档版本不匹配，请开始正式版调查。旧存档保留。");
             return state;
         }
     }

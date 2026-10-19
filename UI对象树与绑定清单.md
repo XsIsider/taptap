@@ -1,3 +1,17 @@
+## 2026-10-20 对话选项绑定
+
+- CastleV24Controller.DialogueChoicePrefab → Assets/Castle/Prefabs/V24/DialogueChoice.prefab；绑定 Title、Body（隐藏）、Select、Background。模板挂 V24DialogueChoice，Border 指向根 Image，Glow 指向 HighlightMask，FirstBorder／RegularBorder 分别绑定 button_talking_01／02。
+- HighlightMask 使用 02 的透明轮廓裁切子级 GoldTexture（03），仅悬停／选中／按下显示，不拦截鼠标。
+- Explore/DialoguePanel/Choices 改为 VerticalLayoutGroup，位置 (50,-586)、尺寸 425×162、间距 8；第一项高 54，其余高 46。选项期间 DialogueScroll／Viewport 高度 480，结束后恢复。
+
+## 2026-10-20 新增绑定与字体
+
+- UIFlow / CastleV24Controller：WorkbenchFont 为点点像素体-方形，ReadingFont 为 I.Ming-7.00，ButtonFont 为万事全兴体。TMP 字库 V24Reading／V24Workbench；中控、阅读与主界面字体按用途分配。
+- Acquire/IconBack 保留原区域 RectTransform，仅在获得道具时停用静态 Image 并显示子级 ItemArt（RawImage）；线索、人物灵感等非道具恢复原固定 Image，隐藏 ItemArt。绑定键 ItemArt 保留。
+- Burn/FilesScroll 的内容使用 RecordingFolder／RecordingFile 预制件；List、Burn、Close 原绑定保持不变。
+- 新增 Overlays/Credits（Image 黑底 + CastleUiView），登记 Ui.Modals；Credits/Close 绑定关闭按钮，标题页 Credits 按钮运行时打开此弹层。Heading、Role0～10、Name0～10 为可编辑的固定白色文本。
+- Space 的 DoorOpen／DoorClosed 按当前标签独立设置；Details 显示各标签状态。已放置房间点击选择、拖放移动。
+
 # V2.4 UI 对象树与绑定清单
 
 固定组件已保存到 CastleEditable.unity；运行时仅复制列表 Prefab。UIFlow 挂 CastleV24Controller（旧 CastleFlowController 已禁用）。Canvas 挂 CastleFlowUi。
@@ -62,6 +76,7 @@
 | HeroineImage | Image | UIFlow/Canvas/Stage/Pages/Explore/HeroineImage |
 | ZoomHint | Text | UIFlow/Canvas/Stage/Pages/Explore/ZoomHint |
 | AvatarStack | Button | UIFlow/Canvas/Stage/Pages/Explore/AvatarStack |
+| StackHead | RawImage | UIFlow/Canvas/Stage/Pages/Explore/AvatarStack/Head |
 
 ## Recordings
 
@@ -151,6 +166,8 @@
 | ZoomIn | Button | UIFlow/Canvas/Stage/Pages/Space/ZoomIn |
 | ZoomOut | Button | UIFlow/Canvas/Stage/Pages/Space/ZoomOut |
 | Hypothesis | InputField | UIFlow/Canvas/Stage/Pages/Space/Hypothesis |
+| DoorOpen | Button | UIFlow/Canvas/Stage/Pages/Space/DoorOpen |
+| DoorClosed | Button | UIFlow/Canvas/Stage/Pages/Space/DoorClosed |
 
 ## Timeline
 
@@ -174,6 +191,9 @@
 | Replay | Button | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/Replay |
 | ReplayLabel | Text | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/Replay/ReplayLabel |
 | Requirements | Text | UIFlow/Canvas/Stage/Pages/Timeline/Requirements |
+| Heroine | Image | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/Heroine |
+| Partner | Image | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/Partner |
+| SoundWave | V24EndingWave | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/SoundWave |
 
 ## Tape
 
@@ -267,6 +287,10 @@
 | FlipSheet | RectTransform | UIFlow/Canvas/Stage/Overlays/Journal/FlipSheet |
 | CharacterPath | Button | UIFlow/Canvas/Stage/Overlays/Journal/CharacterPath |
 | CharacterPathLabel | Text | UIFlow/Canvas/Stage/Overlays/Journal/CharacterPath/Label |
+| CharacterDecoration | RectTransform | UIFlow/Canvas/Stage/Overlays/Journal/Details/CharacterDecoration |
+| DetailHead | RawImage | UIFlow/Canvas/Stage/Overlays/Journal/Details/CharacterDecoration/Head |
+| RecordDecoration | RectTransform | UIFlow/Canvas/Stage/Overlays/Journal/Details/RecordDecoration |
+| DetailScroll | ScrollRect | UIFlow/Canvas/Stage/Overlays/Journal/Details/DetailScroll |
 
 ## Acquire
 
@@ -279,6 +303,7 @@
 | Filed | Text | UIFlow/Canvas/Stage/Overlays/Acquire/Filed |
 | Confirm | Button | UIFlow/Canvas/Stage/Overlays/Acquire/Confirm |
 | ConfirmLabel | Text | UIFlow/Canvas/Stage/Overlays/Acquire/Confirm/ConfirmLabel |
+| ItemArt | RawImage | UIFlow/Canvas/Stage/Overlays/Acquire/IconBack/ItemArt |
 
 ## Letter
 
@@ -287,6 +312,7 @@
 | Body | Text | UIFlow/Canvas/Stage/Overlays/Letter/Body |
 | Close | Button | UIFlow/Canvas/Stage/Overlays/Letter/Close |
 | CloseLabel | Text | UIFlow/Canvas/Stage/Overlays/Letter/Close/CloseLabel |
+| ItemArt | RawImage | UIFlow/Canvas/Stage/Overlays/Letter/ItemArt |
 
 ## Settings
 
@@ -308,6 +334,8 @@
 | SaveGameLabel | Text | UIFlow/Canvas/Stage/Overlays/Settings/SaveGame/Label |
 | LoadGame | Button | UIFlow/Canvas/Stage/Overlays/Settings/LoadGame |
 | LoadGameLabel | Text | UIFlow/Canvas/Stage/Overlays/Settings/LoadGame/Label |
+| EffectsVolume | Slider | UIFlow/Canvas/Stage/Overlays/Settings/SoundEffect |
+| ExitGame | Button | UIFlow/Canvas/Stage/Overlays/Settings/ExitGame |
 
 ## Confirm
 
@@ -406,6 +434,12 @@
 | Burn | Button | UIFlow/Canvas/Stage/Overlays/TapeSelect/Burn |
 | BurnLabel | Text | UIFlow/Canvas/Stage/Overlays/TapeSelect/Burn/Label |
 
+## Credits
+
+| 控件 ID | 组件 | 对象路径 |
+|---|---|---|
+| Close | Button | UIFlow/Canvas/Stage/Overlays/Credits/Close |
+
 ## Hud
 
 | 控件 ID | 组件 | 对象路径 |
@@ -431,23 +465,3 @@
 ## 列表模板
 
 FlowCard：Button、Image、CastleUiView、FlowDrag、FlowPointer、CanvasGroup。FlowTrack：参考／移除按钮及偏移 Slider。DialogueLine：TMP、FlowTextLink、V24LineHit。PathLine：Image。RecordingFolder：可展开设备文件夹。RecordingFile：缩进文件与状态图标。RecordingLine：整条 Button、时间、说话人、正文、标记菱形与分隔线。模板资源均可直接编辑。
-
-## 2026-10-18 场景与交谈绑定说明
-
-| 对象／字段 | 类型 | 用途 |
-|---|---|---|
-| HUD/bg_location → LocationGroup | Transform | 工作台整组隐藏，包含所有装饰和文字 |
-| HUD/bg_location/Location | Text | 当前位置：xxx |
-| HUD/bg_location/CurrentTime | Text | 当前时间：Day X · HH:mm |
-| Explore/HeroineImage | Image | 女主左侧立绘；三人对白隐藏 |
-| Explore/CharacterImage | Image | 右侧NPC，三人头像切换或多人当前交谈对象 |
-| Explore/AvatarStack | Button、Image | 多人堆叠头像入口，使用bg_talking_avatarframe素材 |
-| Explore/People + ConversationPortrait.prefab | ScrollRect、GridLayoutGroup、已保存模板 | 三人两头像或多人展开列表；框底在下，肖像在上 |
-| Explore/ZoomHint | Text | 背景最大1.35倍时提示空格还原 |
-| CastleV24Controller.RoomArt | V24RoomArt[] | 房间ID对应昼夜Texture2D |
-| CastleV24Controller.CharacterArt | V24CharacterArt[] | 角色ID对应Sprite与身高；横向姓名占位图以120高度显示 |
-| CastleV24Controller.CorridorDay／CorridorNight | Texture2D | 开场接待走廊昼夜图 |
-| CastleV24Controller.ConversationChoices | V24ConversationChoice[] | 晚宴事件与角色对应 |
-| CastleV24Controller.ConversationOrder | int[] | 正式唯一顺序待新表，当前留空，不按ID推断 |
-
-本轮入口为Castle.Editor.V24PresentationUpdate.ApplyAndBuild；固定对象已保存进CastleEditable，运行时不创建组件。保留设计师当前对白底板样式，不恢复历史Alpha断言。所有人物Sprite及背景引用可在UIFlow的CastleV24Controller中维护。

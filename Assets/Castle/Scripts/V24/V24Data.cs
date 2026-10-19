@@ -29,6 +29,17 @@ namespace Castle.V24
     }
     [Serializable] public sealed class V24Data
     {
+        public bool Formal;
+        public V24StoryStep[] StoryFlow = Array.Empty<V24StoryStep>();
+        public V24EntryVariant[] EntryVariantConfig = Array.Empty<V24EntryVariant>();
+        public V24PlotEffect[] PlotEffectConfig = Array.Empty<V24PlotEffect>();
+        public V24PlotMeta[] PlotMeta = Array.Empty<V24PlotMeta>();
+        public V24PlaybackGate[] PlaybackGates = Array.Empty<V24PlaybackGate>();
+        public V24ConversationGroup[] ConversationGroups = Array.Empty<V24ConversationGroup>();
+        public V24DayActivity[] DayActivities = Array.Empty<V24DayActivity>();
+        public V24ConditionalRoute[] ConditionalRoutes = Array.Empty<V24ConditionalRoute>();
+        public V24PersonPathPolicy PersonPathPolicy;
+        public V24ItemPolicy ItemPolicy;
         public V24Character[] Character;
         public V24Room[] Room;
         public V24Entry[] Entry;

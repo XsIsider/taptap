@@ -33,10 +33,18 @@ namespace Castle.V24
             if (ev == null) return null;
             var lines = Data.Lines(ev.Plot);
             if (State.Line != lines.Length - 1 || State.Line < 0) return null;
-            return Data.DialogueActionConfig.FirstOrDefault(x => x.Required && x.SourceEvent == ev.Id && x.SourcePlot == lines[State.Line].Id && !State.ConsumedActions.Contains(x.Id));
+            return Data.DialogueActionConfig.FirstOrDefault(x => x.Required && x.SourceEvent == ev.Id && (Data.Formal || x.SourcePlot == lines[State.Line].Id) && State.ActionPending != x.Id && !State.ConsumedActions.Contains(x.Id));
         }
         public string ExecuteAction(int id)
         {
+            if (Data.Formal)
+            {
+                var requested = Data.DialogueActionConfig.FirstOrDefault(x => x.Id == id && x.SourceEvent == State.ActiveEvent && State.Shown.Contains(x.SourcePlot));
+                if (requested == null || requested.Day!=State.Day || State.ConsumedActions.Contains(id)) return "请在对应现场对白中使用入口";
+                State.ActionPending = id;
+                if (State.Line + 1 >= Data.Lines(Data.EventById(State.ActiveEvent).Plot).Length) Finish();
+                Commit(); return "成功";
+            }
             var action = RequiredAction();
             if (action == null || action.Id != id) return "只能在当前现场对白末句使用这个入口";
             var ev = Data.EventById(action.SourceEvent);
@@ -55,6 +63,7 @@ namespace Castle.V24
         {
             if (State.ActionPending == 0 || State.ActiveEvent != 0 || State.RewardPopups.Count != 0) return;
             var action = Data.DialogueActionConfig.First(x => x.Id == State.ActionPending);
+            if (Data.Formal) SetClock(action.EnterClock);
             State.Room = Data.GameSettings.ControlRoom; State.Page = "Recordings";
             State.ControlSession = Guid.NewGuid().ToString("N"); State.ControlEntered = State.Now;
             State.ControlCost = action.ExitMinutes; State.ControlReturn = action.ReturnRoom; State.ControlDay = State.Day;
@@ -74,6 +83,7 @@ namespace Castle.V24
         }
         public void ResumeSleep()
         {
+            if (Data.Formal) { ResumeFormalSleep(); return; }
             if (State.SleepStage == "" || State.ActiveEvent != 0 || State.RewardPopups.Count > 0) return;
             var ghost = Data.SleepPolicy.Day3Ghost;
             if (State.Day == ghost.Day && !State.Goals.Contains(ghost.OnceGoal))

@@ -1,0 +1,923 @@
+{
+  "Clips": [
+    {
+      "Key": "butler-cx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/butler-cx.wav",
+      "Sha256": "c81d3e63ef3a537d1634f14ad066e0bad27c1117bcd9b32568a1886a784c61f5"
+    },
+    {
+      "Key": "butler-fj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/butler-fj.wav",
+      "Sha256": "f84a264141f054a95edec28f6fcf92838fa88e815a80e4f08ed8276e2eb013e1"
+    },
+    {
+      "Key": "butler-jj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/butler-jj.wav",
+      "Sha256": "e168c20d4d1cc8ebbd184f0c8578f087dcb29ddf00914b2d55dbda6fdf0cdfc1"
+    },
+    {
+      "Key": "butler-ks",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/butler-ks.wav",
+      "Sha256": "5807cfeae192fb0d3269e878b7d3f5d9e27bd9fc425b44383392c2fbe73d0ecc"
+    },
+    {
+      "Key": "butler-lj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/butler-lj.wav",
+      "Sha256": "2c94884f2255548354a9179cf186ed7e9286f033f3e56570af45bcb2d2c78706"
+    },
+    {
+      "Key": "butler-tq",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/butler-tq.wav",
+      "Sha256": "d3d5c9d4ae95bde6bae953c137d2e1d781b90e94e01af9c6b9c2623e059398d1"
+    },
+    {
+      "Key": "child-fj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-fj.wav",
+      "Sha256": "4d2e7b84cd8587518962f122695fe532273875dd3f89f0400e40f26a56274edb"
+    },
+    {
+      "Key": "child-fj2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-fj2.wav",
+      "Sha256": "1b902d703009e22150a5e2ee4e1ec832cb8f94aa26a3cc310d7249b731b5382d"
+    },
+    {
+      "Key": "child-gt",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-gt.wav",
+      "Sha256": "77a39241522b81a2571a877aa2965e61695f1853ffb3e533fc6c66a7a8935a25"
+    },
+    {
+      "Key": "child-hc",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-hc.wav",
+      "Sha256": "35c307a9bf8cc9893f2f80e3526000f2edd1acd99e27bf2a4705ce3b4a5bff9b"
+    },
+    {
+      "Key": "child-hy",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-hy.wav",
+      "Sha256": "89b40f24b11e68dbe7306af13789d1a1d73f41000117b0fd0eb52570b28f52ae"
+    },
+    {
+      "Key": "child-jh",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-jh.wav",
+      "Sha256": "ed1ccddac3e56f9169b0224fa9883db0f3082e1c501c512376a39bb540a17e44"
+    },
+    {
+      "Key": "child-jh2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-jh2.wav",
+      "Sha256": "65983daf4897b5632798db5c7b91a361632e253de916e3287f7088f00a783171"
+    },
+    {
+      "Key": "child-jj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-jj.wav",
+      "Sha256": "dc46941b524a8c585a20f6da2c904345d31094703f563db902205dfe99068c91"
+    },
+    {
+      "Key": "child-jt",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-jt.wav",
+      "Sha256": "b088e027319613c044455ff94f07c32e5c81e313a8dd4a20dc112deca02f0a12"
+    },
+    {
+      "Key": "child-jw",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-jw.wav",
+      "Sha256": "0eb4d696264af9fa9033c0f55baccdcd0506371e5de2cb72eb94dce2906f5b91"
+    },
+    {
+      "Key": "child-jx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-jx.wav",
+      "Sha256": "9c0768f62d0900bacf05f292b1afd10386764af820816bea39dbf92d879bedb9"
+    },
+    {
+      "Key": "child-kx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-kx.wav",
+      "Sha256": "4842a6faeafcb317d530f9660b5f96211d8b578a9e723e02f0bd8f6381ae9950"
+    },
+    {
+      "Key": "child-kx2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-kx2.wav",
+      "Sha256": "0733797da275a5ee3319580a4407ab4f13a9f323b1f6fc1e4d83820474cade05"
+    },
+    {
+      "Key": "child-kx3",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-kx3.wav",
+      "Sha256": "a55dc3386fb0ecb55a99aa7c62501c5255e37f0713e74ab8d2ba1e01758e781f"
+    },
+    {
+      "Key": "child-kx4",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-kx4.wav",
+      "Sha256": "97500f8a8ac22edb7002e9883ae1d6496fc3a549098cbaa24557c593864ebddc"
+    },
+    {
+      "Key": "child-kx5",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-kx5.wav",
+      "Sha256": "736cd6f61e1aea43abdae35a84230c64699e7b2b31cba8122be4dbf330578f20"
+    },
+    {
+      "Key": "child-lj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-lj.wav",
+      "Sha256": "36095f29229e081a08a5ba718555d070824f0b609e38da341a15b4afd678ad1a"
+    },
+    {
+      "Key": "child-sk",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-sk.wav",
+      "Sha256": "d83cd98da74a324563b03c70de4afc79da43616d9ad8b0cfd47cd6494254358b"
+    },
+    {
+      "Key": "child-sk2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-sk2.wav",
+      "Sha256": "a7d8d1f83a2d485cf2f61b51c5e7d80e18c1c33a7bf173c6c8f714e1bcfeb48f"
+    },
+    {
+      "Key": "child-tq",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-tq.wav",
+      "Sha256": "b825e4798d0c606f95cfebc4fb62f675cfd7c3cef5bff261aa18fb432ed5e60d"
+    },
+    {
+      "Key": "child-tq2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-tq2.wav",
+      "Sha256": "7b7b251e8211921780566977092a5d2789043e1b42ca6f3abd3f8d5da0f23789"
+    },
+    {
+      "Key": "child-tq3",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-tq3.wav",
+      "Sha256": "a85af27cce20d173d6f5143524dc70c3ceca8551864285d53e6afd4d9e7f037a"
+    },
+    {
+      "Key": "child-yw",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-yw.wav",
+      "Sha256": "079477edbf58994b182629020986c92ede784e846f7ffc94839791010373d583"
+    },
+    {
+      "Key": "child-yw2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-yw2.wav",
+      "Sha256": "078fa72ddcec15c7d078250bead8b33b48f25d6542ab250c3c1b25375a935a78"
+    },
+    {
+      "Key": "child-yw3",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/child-yw3.wav",
+      "Sha256": "5961a7ef8d11a222f13b42af5aa641df7b60d7cb57f48ba6547ef9f2257933e0"
+    },
+    {
+      "Key": "doctor-bx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-bx.wav",
+      "Sha256": "6ca72d96627b7075d70f313e255d5c88cb17d4f15cb4d80fc581f9596b72875f"
+    },
+    {
+      "Key": "doctor-bx2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-bx2.wav",
+      "Sha256": "4ad33b94011ecfbbedb1df2ad266590beaa9bc9e080a80aeb5c3224ef64bb85b"
+    },
+    {
+      "Key": "doctor-cf",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-cf.wav",
+      "Sha256": "7ae29512cd03b9936f90a546b678b6de6c7b565ca5754f0be0322c1b41a02bdc"
+    },
+    {
+      "Key": "doctor-qs",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-qs.wav",
+      "Sha256": "407efe3c9a6ad3268abb3fdf84be4e6315dd9d39fd6504361d6a463a6264d7a8"
+    },
+    {
+      "Key": "doctor-qs2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-qs2.wav",
+      "Sha256": "b6ccc3a8a71a513abea401cc2983d6b3f45adffb9296bc289ca5ea3403ec7bed"
+    },
+    {
+      "Key": "doctor-qs3",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-qs3.wav",
+      "Sha256": "d6a7dea1531949286b7b2f32760b19d94ff08f954d05c984816cce3e0a73e190"
+    },
+    {
+      "Key": "doctor-wn",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-wn.wav",
+      "Sha256": "9c8c21cda59f353760e0c7c825563258167752045acacbb318e9c115afafc004"
+    },
+    {
+      "Key": "doctor-wn2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-wn2.wav",
+      "Sha256": "5656245df7e57ddfb3aeaacc6a0229c19488b05f0e3d4be3367c643e7b1dbdb7"
+    },
+    {
+      "Key": "doctor-yw",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-yw.wav",
+      "Sha256": "c53346afefc03a0883585433861b9b6a8db76db751f1b363d9ce394507ba0a98"
+    },
+    {
+      "Key": "doctor-yw2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/doctor-yw2.wav",
+      "Sha256": "50def73b354c882062ea84f2aa0f89da9426a90dea87ca1416cbdbb548dbe3a2"
+    },
+    {
+      "Key": "duchess-cs",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/duchess-cs.wav",
+      "Sha256": "d73ad4369144d8e8549a66db5dd8f91ee6335a8d99034168952ae1a27ff24ec2"
+    },
+    {
+      "Key": "duchess-cx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/duchess-cx.wav",
+      "Sha256": "2de60e7ffabc3113090cfa1a967512aa5a614fc298353a2d3d84e6c0ac9d4ff8"
+    },
+    {
+      "Key": "duchess-jx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/duchess-jx.wav",
+      "Sha256": "a227b8a5b7a2c1cbb3864c05fe0f1fd571a8bc35e2bfe4f8df0428f9d6664120"
+    },
+    {
+      "Key": "duchess-ks",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/duchess-ks.wav",
+      "Sha256": "bae1008186766e1c13b013571be9cb96eb8723761c9121820422e30e03df0e4b"
+    },
+    {
+      "Key": "duchess-my",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/duchess-my.wav",
+      "Sha256": "f78c18f41a55c82cfc5460d321b6fcd2b9dd0621e0706e39bf80a7549a975e44"
+    },
+    {
+      "Key": "duchess-sk",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/duchess-sk.wav",
+      "Sha256": "a434490f6aaf9d19f4f8180c3c13a1317077e631b3870cf4fb4c7ba52faccb60"
+    },
+    {
+      "Key": "duchess-tq",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/duchess-tq.wav",
+      "Sha256": "f52f468a5a38317bcd76c3720816c6b0477f4a785aebe23a211c9b746980fba2"
+    },
+    {
+      "Key": "duchess-tq2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/duchess-tq2.wav",
+      "Sha256": "6c822817c0242fa6b1a12a4f345f293bf1f26c3904569d529fb432ca890dbd74"
+    },
+    {
+      "Key": "duchess-yw",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/duchess-yw.wav",
+      "Sha256": "c87359631cf1d444f929b65019fadbdb27a0a6d39bdf1a401de95fcac4902ac9"
+    },
+    {
+      "Key": "heroine-fj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/heroine-fj.wav",
+      "Sha256": "a3c1f1ee2620e1a630d1b8d3f026612bf880e937c5bd57f9edca8fea99d1faf5"
+    },
+    {
+      "Key": "heroine-fj2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/heroine-fj2.wav",
+      "Sha256": "2566e9c3217f56b27453a564a7ead7b08253f7711e725a4b0a8f31c6041ff45e"
+    },
+    {
+      "Key": "heroine-jj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/heroine-jj.wav",
+      "Sha256": "1f832d5eeb19f7c76ef10bc03c48e25388161d485d863d01106c5cc39a0b3c99"
+    },
+    {
+      "Key": "heroine-jx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/heroine-jx.wav",
+      "Sha256": "83d430fbb73114f4a9e2f9d11092b3b195593021248139e701220ca76d18d70e"
+    },
+    {
+      "Key": "heroine-yw",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/heroine-yw.wav",
+      "Sha256": "ee183bf0e81ea34a779e0f3dc1f8b37df01c998c79a4afcf7647a89ff813c79c"
+    },
+    {
+      "Key": "heroine-yw2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/heroine-yw2.wav",
+      "Sha256": "b013d278642be5628056c1301fcfc018474e3360e8ce4c3a0b66a25fffe9297c"
+    },
+    {
+      "Key": "housemaid-1-dy",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-dy.wav",
+      "Sha256": "6090212da0bdc15c47abcb678b9b6b990c43c81a5a61d8576b56a694e75038b2"
+    },
+    {
+      "Key": "housemaid-1-jh",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-jh.wav",
+      "Sha256": "7a2d9df76f7b876f2415ffbd57e5c2f1cc7a0b484f4c742e37a95588f0728805"
+    },
+    {
+      "Key": "housemaid-1-jj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-jj.wav",
+      "Sha256": "4ec86ea2fcc4403e0a11310c38e1de5678ab968b40a7b13527e91921d324cb09"
+    },
+    {
+      "Key": "housemaid-1-jj2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-jj2.wav",
+      "Sha256": "9844a49c2669d77efcae69e5818d2e094ef51181edbdee81d30744cc9a9dbd69"
+    },
+    {
+      "Key": "housemaid-1-jj3",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-jj3.wav",
+      "Sha256": "56abe965179ec75cc8635e6bbaef3cb4bd60d7334020aa310991055721dd36cb"
+    },
+    {
+      "Key": "housemaid-1-jx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-jx.wav",
+      "Sha256": "268fdc7bfbcdd70d3326f6f93837e1504ab9c8913dabbf9ac04be442f9ac6962"
+    },
+    {
+      "Key": "housemaid-1-qh",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-qh.wav",
+      "Sha256": "e11acc894d3b8bab470d8f3ab3b5483d57ae30f5f0dee385678f26ccd9c3d0ae"
+    },
+    {
+      "Key": "housemaid-1-qh2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-qh2.wav",
+      "Sha256": "b55677a950848489a6f52bec8382f473ff3734423131508dc7e7f60cc691bcfc"
+    },
+    {
+      "Key": "housemaid-1-qs",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-qs.wav",
+      "Sha256": "66c51b353d18efac58fcba88e8b74198908d3c3260210046e21be8f5959b3148"
+    },
+    {
+      "Key": "housemaid-1-qs2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-qs2.wav",
+      "Sha256": "db65169984eff747b9b7d3e91eaedc174c7b75765467c5c103e1592c5ee5580f"
+    },
+    {
+      "Key": "housemaid-1-qs3",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-qs3.wav",
+      "Sha256": "d9fda48b966ed644e088f07ce503d96fcad3675a855f217da83876eae9aa5bfa"
+    },
+    {
+      "Key": "housemaid-1-wn",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-wn.wav",
+      "Sha256": "cb96379647b056137e3bcb08670b4254d99b4fa2ecae50413ffd412c9a6b1297"
+    },
+    {
+      "Key": "housemaid-1-wn2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-wn2.wav",
+      "Sha256": "89ed91bfdd8015f62e51b39a7e080e80e10785d0b4e07af2724f651a58230df0"
+    },
+    {
+      "Key": "housemaid-1-yw",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-yw.wav",
+      "Sha256": "2be9979d665e32b5f5ec45e08756f1190a7f00b53f638ee0b347741013a4ee40"
+    },
+    {
+      "Key": "housemaid-1-yw2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-yw2.wav",
+      "Sha256": "cdebab9fe9f64f728912c8863c580d00689c158525460863075243ef2b98b9c0"
+    },
+    {
+      "Key": "housemaid-1-yw3",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-yw3.wav",
+      "Sha256": "bf69c283703a201be8bb7e3ad1202af0cac5874068be90f36cc9428a4e4d1e86"
+    },
+    {
+      "Key": "housemaid-1-yw4",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-1-yw4.wav",
+      "Sha256": "1ab717f386a93178f58d3414284ab36b170eb3542ce159854151998794f2ad1e"
+    },
+    {
+      "Key": "housemaid-2-jj",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-2-jj.wav",
+      "Sha256": "3e81e5729b5ab7c8734d9cff3c46650cbd9f796972dac5467f85e38614c6d342"
+    },
+    {
+      "Key": "housemaid-2-jx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-2-jx.wav",
+      "Sha256": "772e01287bb1c281dc56597d4e1496c6e36185decfdfd6763435459fcb8b8c32"
+    },
+    {
+      "Key": "housemaid-2-qh",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-2-qh.wav",
+      "Sha256": "ebb85427a1c06e8332224927abc5103bcc7ed07bb10b5f95c1fca8aaadbed1ca"
+    },
+    {
+      "Key": "housemaid-2-qs",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-2-qs.wav",
+      "Sha256": "0aeb88cd8cc8603baee17a892f85d207c6354e4e3c86a6dffc17494b74cf2460"
+    },
+    {
+      "Key": "housemaid-2-tq",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-2-tq.wav",
+      "Sha256": "413727dcbae92b0094ddee3764569255aa05c8557e5bc4567ed07c4431516977"
+    },
+    {
+      "Key": "housemaid-2-yw",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-2-yw.wav",
+      "Sha256": "1eabba6b1a4e6614fee61c31ae76152735ce36c78a9aef154153bf9c9616d7ab"
+    },
+    {
+      "Key": "housemaid-2-yw2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/housemaid-2-yw2.wav",
+      "Sha256": "2188f6970e3abfae91fe6b9cd5688fa120508673ded690b59f9a69f3e8e65247"
+    },
+    {
+      "Key": "painter_fd",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/painter_fd.wav",
+      "Sha256": "fb5025c77f91ae0e59745bea791a924735d27467f5b773a0f06299f7053b6d1e"
+    },
+    {
+      "Key": "painter_jy",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/painter_jy.wav",
+      "Sha256": "b44e635738d266f2a80943247d46ae39cdb4934ab93db55702ac23c26957ccfc"
+    },
+    {
+      "Key": "painter_my",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/painter_my.wav",
+      "Sha256": "653f908e959c93876f4b85c9cce734700820244e5c3db117e2457b23068e1622"
+    },
+    {
+      "Key": "painter_qs",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/painter_qs.wav",
+      "Sha256": "bcc2aae2602c8a06caa6eb085f5fbb1d222368070c9151a90da6e444d3cc14cd"
+    },
+    {
+      "Key": "painter_sk",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/painter_sk.wav",
+      "Sha256": "148060d1814f8acd4919eb5e358b9ac0386be89268c115f174ad9517df951332"
+    },
+    {
+      "Key": "painter_tq",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/painter_tq.wav",
+      "Sha256": "fc229ce62bc9358f8f4228ff7b914f334f43657ec1d41d25ad6bd9e9be4ff446"
+    },
+    {
+      "Key": "painter_yh",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/painter_yh.wav",
+      "Sha256": "08065e1709ecf2464a468eecdb4d4db840bcde5ea40bf2f8e3802b939cd804ec"
+    },
+    {
+      "Key": "Tailor-cx",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/Tailor-cx.wav",
+      "Sha256": "ba2be05f768ab81e727f76fbf3ae03286880d3f7d1a2b885abc2eea1b70a802c"
+    },
+    {
+      "Key": "Tailor-fd",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/Tailor-fd.wav",
+      "Sha256": "9d5472f0e6000e2cbe18481b29f12f4f1b9452d33916cc555ff09d9389c5c5e3"
+    },
+    {
+      "Key": "Tailor-jf",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/Tailor-jf.wav",
+      "Sha256": "a79a6ec34fed52ef0365e1e5850b3bcc9156961b7e2b4e96c81c1ee1c862dd3b"
+    },
+    {
+      "Key": "Tailor-ks",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/Tailor-ks.wav",
+      "Sha256": "229319745faff7a1bec60bdafe7ea06fef0b0349bb61b501256357efdadf4fda"
+    },
+    {
+      "Key": "Tailor-qr",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/Tailor-qr.wav",
+      "Sha256": "6156945eb578133422e8f014e24e7cdb614917bc8f8545bd2c6ef7898de8ee6d"
+    },
+    {
+      "Key": "Tailor-yw",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/Tailor-yw.wav",
+      "Sha256": "9a29df7ab0784410931ff8541546358355f54462d258a5b8e462715ecc9dda1a"
+    },
+    {
+      "Key": "vintner_gk",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/vintner_gk.wav",
+      "Sha256": "04f991c0850d3c1d32f15469c964205d5f16ee116a3f8b0de4d112c6771fff56"
+    },
+    {
+      "Key": "vintner_lh",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/vintner_lh.wav",
+      "Sha256": "c5bcb04f641a2136f45d942a2f1a8c0a1fedee4b18ff01d2dd3083bf86efb9ce"
+    },
+    {
+      "Key": "vintner_qs",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/vintner_qs.wav",
+      "Sha256": "32bab4878e247d5864d2a37a370b5f21a929f92aa30d748697da24bdd0db19f2"
+    },
+    {
+      "Key": "vintner_sk",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/vintner_sk.wav",
+      "Sha256": "30d95aba064fad6c673afaab432c3539b98ce1dbd96dc1fcf05c48bbf480f2a2"
+    },
+    {
+      "Key": "vintner_tq",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/vintner_tq.wav",
+      "Sha256": "afab4dfa75644f184ba61b4c0bfab952bd31c34623d1f5d16657953fafde0b75"
+    },
+    {
+      "Key": "vintner_xs",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/vintner_xs.wav",
+      "Sha256": "6916c4575162672b4b07a5e46ec544becff5d926b815a44131011ac39c542c21"
+    },
+    {
+      "Key": "vintner_yh",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/vintner_yh.wav",
+      "Sha256": "923c60c89de56bf3770657af7c8e806c5233e5aef7d5b4b670f3c170046b9918"
+    },
+    {
+      "Key": "vintner_yh2",
+      "Bus": "CV",
+      "Path": "Assets/Castle/Art/V24/audio/CV/vintner_yh2.wav",
+      "Sha256": "99687e20d553a6222895a574b883b4f215f67758746fc3a5c9b53e42b03832b1"
+    },
+    {
+      "Key": "gamejam用 - 倒水",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 倒水.wav",
+      "Sha256": "9ada2508a71838ba5d3a8c87a0db6ce4a854487ea249d7695068e52818f10c10"
+    },
+    {
+      "Key": "gamejam用 - 关门",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 关门.wav",
+      "Sha256": "a482b6aacf53713d30e94a9545a4fff169f7efac302d266fbf9f6e008a858f12"
+    },
+    {
+      "Key": "gamejam用 - 勺子划餐盘",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 勺子划餐盘.wav",
+      "Sha256": "a1ab19cee48cd62f9b7bc44f45d14f14ab33145f0db36ab3a7a30f80953f2da6"
+    },
+    {
+      "Key": "gamejam用 - 勺子刮剩饭（清理）",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 勺子刮剩饭（清理）.wav",
+      "Sha256": "95c3856177ae1e8e427f6442abffbf3eee5a1318559eba7cc8ff082d6d43b905"
+    },
+    {
+      "Key": "gamejam用 - 开门",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 开门.wav",
+      "Sha256": "d4e830ef0a620940cfc0befe5f20c6d40ad128f413929806760a1725d9b5ee72"
+    },
+    {
+      "Key": "gamejam用 - 摩擦 2",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 摩擦 2.wav",
+      "Sha256": "57464051bdcefd6e9a48842721293a7525e26019ea255517b1f9fd1d44f70ba9"
+    },
+    {
+      "Key": "gamejam用 - 摩擦 3",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 摩擦 3.wav",
+      "Sha256": "5ec7cc6b6971ab226ce7312c0927fb6c3a0ce3115a05feeb21235c84e466d404"
+    },
+    {
+      "Key": "gamejam用 - 摩擦 4",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 摩擦 4.wav",
+      "Sha256": "314a53400175b313941eb50a5342df2a1be56924642741abd1e05799b87929c6"
+    },
+    {
+      "Key": "gamejam用 - 摩擦",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 摩擦.wav",
+      "Sha256": "129fc6dda8c188e9481b63c0579fbbd346ad8b111f59ad27c8c072e12562bc1e"
+    },
+    {
+      "Key": "gamejam用 - 敲门",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 敲门.wav",
+      "Sha256": "7b7c623a536f8134546cba0b6abcfee64e1f5a3d2be0fb38e6c928c326f8dbc0"
+    },
+    {
+      "Key": "gamejam用 - 整理盘子",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 整理盘子.wav",
+      "Sha256": "c4fca437505f6f7cd668c41142022d9b20d83947aa17254068805301f6b37e9b"
+    },
+    {
+      "Key": "gamejam用 - 整理碗筷 2",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 整理碗筷 2.wav",
+      "Sha256": "c607c52c841a72496b383bfb547dae6a76023a5eb312eb0e0c347f22f705ba86"
+    },
+    {
+      "Key": "gamejam用 - 整理碗筷 3",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 整理碗筷 3.wav",
+      "Sha256": "3d7a8056d4ae627c2efeaffcfd5078593ad01a7340840757e21d4e8e044abb14"
+    },
+    {
+      "Key": "gamejam用 - 整理碗筷",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 整理碗筷.wav",
+      "Sha256": "a63841dbe389ed94d6973edd6c50f47f7c0660ed04dc36e6c84c24d7fb49b052"
+    },
+    {
+      "Key": "gamejam用 - 整理锅",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 整理锅.wav",
+      "Sha256": "c9e460373d3169801aa04281caf57afe6c28f8848381f522a9587bef9df72f43"
+    },
+    {
+      "Key": "gamejam用 - 整理锅2",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 整理锅2.wav",
+      "Sha256": "d9da380147c87c3f70281d91738d43d2d01360043c4001b51bda8475973be67c"
+    },
+    {
+      "Key": "gamejam用 - 整理锅盘",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 整理锅盘.wav",
+      "Sha256": "973636002db4ed1ea28fb2d74ada935f2181826af62f9bde9720d596155d5d2f"
+    },
+    {
+      "Key": "gamejam用 - 水龙头",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 水龙头.wav",
+      "Sha256": "1ee740a903a6fadc0a5c91b7945586fcb1bc86b1eb68a8ff23336495ae0fdc9c"
+    },
+    {
+      "Key": "gamejam用 - 洗碗 2",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 洗碗 2.wav",
+      "Sha256": "33fd4e14e66066c317e808d05e29c718fd65f867e0b6e791d8606c117056ed82"
+    },
+    {
+      "Key": "gamejam用 - 洗碗",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 洗碗.wav",
+      "Sha256": "e726a89f21bf7e3b4967b2ba4521daea9b9a7dd0879652dd67e2b12a4f701af5"
+    },
+    {
+      "Key": "gamejam用 - 甩勺子砸锅",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 甩勺子砸锅.wav",
+      "Sha256": "291fd97c2b70d95c292a71024ff595d5b9f369f28cdfdce2106273de6fd59872"
+    },
+    {
+      "Key": "gamejam用 - 破碎1",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 破碎1.wav",
+      "Sha256": "376b9ef62688431febefc3a3864cd937bc8349baf59d01e62a53ac3d1e364f62"
+    },
+    {
+      "Key": "gamejam用 - 破碎2",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 破碎2.wav",
+      "Sha256": "9a7d3f20ff9168db4ed8de034f7588a268bd2ca40e8544dd635636466c2af270"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 10",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 10.wav",
+      "Sha256": "bf9a4b940d73cd8d3d02aa6cbc94574f6088352d7ee7af0ea73ba87014d71344"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 11",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 11.wav",
+      "Sha256": "84d9d7c1e5b073cb179712e5d8f4c22d5c5a7a60a2168bf36f61d933bd4c4a5c"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 12",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 12.wav",
+      "Sha256": "7a696e9ec7771270fd688624cb154f13f7e3589e9f208aa7a9b342ae0f0ecfc0"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 13",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 13.wav",
+      "Sha256": "47cbe6f107815783e5d91935f0dd2cc0a949881ccab850133a619a29b82605c0"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 14",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 14.wav",
+      "Sha256": "d0a5b5ec17ecc28e984352f4d3ca3bbab71e2a5e6ce02fe64591e0893793a549"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 15",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 15.wav",
+      "Sha256": "0b49486317b7601c53cc349e38b15fbc537bc07b367406fb478aadf8e6fe3e35"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 16",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 16.wav",
+      "Sha256": "b86083ae9612b18c6ace4afa61e385ec291239dbddfcf28077a755e8c14619a5"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 17",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 17.wav",
+      "Sha256": "12937752e86ffa3f65d1b078b5f189f4b9aa4cc3b995039fcb59e9c9c3f87a7f"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 18",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 18.wav",
+      "Sha256": "5c075cb8b520ea8dda570d00028146e64a10a62e19cbe249b69acb3fb33f73f1"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 2",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 2.wav",
+      "Sha256": "61d5cdcb9a8becd2ffc8b1bd79f31d3a290b93528fe769d94aa267321454cff6"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 3",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 3.wav",
+      "Sha256": "bb2bfd63a230110dfe18a45021144221f37fba1a869d2773fad42103ea1b63f1"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 4",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 4.wav",
+      "Sha256": "e5f7fde0916dca911f56af38f48486a66f5b1fa91429d0fe12946a1346ada877"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 5",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 5.wav",
+      "Sha256": "c13d2d4ed76dcb770130a0cd88420531123b9d87c0b7fcfce30f66947b4d6e65"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 6",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 6.wav",
+      "Sha256": "273b4398a1950a72aff877ac3350ada8c9184347356ac1e8f63454df6a684711"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 7",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 7.wav",
+      "Sha256": "d12f128256f47caf7ad06f35febb5afd537be0a63beb364a9ecacbb1597857cd"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 8",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 8.wav",
+      "Sha256": "a681b324b1ac1015228698bd14018e60acaa01c7a5b8a84d23959a954a2bd93d"
+    },
+    {
+      "Key": "gamejam用 - 碰杯 9",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯 9.wav",
+      "Sha256": "46d858a44016041715faee04a18192ea3c8e924e33e2bb450df880142aff232c"
+    },
+    {
+      "Key": "gamejam用 - 碰杯",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 碰杯.wav",
+      "Sha256": "4b58638e3f5ec0524773d99f05a88a5628e0968bca36920337c1453fa130cb00"
+    },
+    {
+      "Key": "gamejam用 - 翻书1",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 翻书1.wav",
+      "Sha256": "b2085d84921aa34bf93d8b27bc633d4dedb2b7a38ebef0195c650a56554b4f46"
+    },
+    {
+      "Key": "gamejam用 - 翻书2",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 翻书2.wav",
+      "Sha256": "540975cb5a521f294a61503bf9b080516113c3c8c7e32d630e7afa798bb9ae94"
+    },
+    {
+      "Key": "gamejam用 - 翻书3",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 翻书3.wav",
+      "Sha256": "75e98361facbab959ba342c82028c28fe63adf9d2145a6270ac33d6e40830620"
+    },
+    {
+      "Key": "gamejam用 - 翻书4",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 翻书4.wav",
+      "Sha256": "ca2bb7b52fcbce4ccb5903ed72e720e15a14f423e7d49d7bc61daf3f64ff82d4"
+    },
+    {
+      "Key": "gamejam用 - 翻书5",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 翻书5.wav",
+      "Sha256": "f8fef74f28e923969bcf76027fdb46efe439f78171f86d4b2e7c0f6d8045b066"
+    },
+    {
+      "Key": "gamejam用 - 翻书6",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 翻书6.wav",
+      "Sha256": "a65a7c72011fad93ba14a5ed99df3497fa6b451ddea0e4ac3cc293b71d0b328b"
+    },
+    {
+      "Key": "gamejam用 - 锅碗瓢盆刀",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 锅碗瓢盆刀.wav",
+      "Sha256": "66ca7988f437ebf502386d742f8fba5bebed7110151e36634f83869f3f0343cb"
+    },
+    {
+      "Key": "gamejam用 - 锅铲刮锅",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 锅铲刮锅.wav",
+      "Sha256": "a4e3735041704c653d3e15ce9a6067b322ec7916cc9a010c251186a2cf500747"
+    },
+    {
+      "Key": "gamejam用 - 门上锁",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 门上锁.wav",
+      "Sha256": "1ea87548b329b30367108ebf2c9ca985f456db807353169161a4ac8ff47081f2"
+    },
+    {
+      "Key": "gamejam用 - 门吱呀",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 门吱呀.wav",
+      "Sha256": "6a3847e8d8ca7ccfb0b67f42e9cc6b2b988779fa19fb3d81d2ea248a9ff798ea"
+    },
+    {
+      "Key": "gamejam用 - 餐刀切",
+      "Bus": "SFX",
+      "Path": "Assets/Castle/Art/V24/audio/SFX/gamejam用 - 餐刀切.wav",
+      "Sha256": "218e9ed3e69611bc410ecbb5289ef5b89ea2805bc723f7183e30ff7f2356ac18"
+    }
+  ],
+  "Missing": []
+}

@@ -7,7 +7,8 @@ namespace Castle.V24
     { public int Room; public V24ControlDay[] Days; public string RepairToast; }
     [Serializable] public sealed class V24Action
     {
-        public int Id, SourceEvent, SourcePlot, Day, OnEnterEvent, ReturnRoom, ExitMinutes;
+        public int Id, SourceEvent, SourcePlot, Day, OnEnterEvent, ReturnRoom, ExitMinutes, ExitEvent;
+        public string EnterClock, ExitClock;
         public bool Required; public string Start, End, SessionMode;
         public string[] Need, ExitNeed;
     }

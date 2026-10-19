@@ -10,22 +10,24 @@ namespace Castle.V24
         public readonly V24Data Data;
         public V24State State;
         public Action Changed;
+        public Action<int> PlotRevealed;
         public Func<V24Event, bool> WaitForSelection;
         public V24Engine(V24Data data, V24State state) { Data = data; State = state; }
         public DateTime Now => new DateTime(State.Now);
         public DateTime BaseDate => new DateTime(State.DayBase);
         public DateTime Cutoff => BaseDate.AddDays(1).Add(TimeSpan.Parse(Data.GameSettings.ForceSleepTime));
-        public bool Busy => State.ActiveEvent != 0 || State.PendingPuzzle != 0 || State.RewardPopups.Count > 0 || State.TutorialEvent != 0;
+        public bool Busy => State.ActiveEvent != 0 || State.PendingPuzzle != 0 || State.RewardPopups.Count > 0 || State.TutorialEvent != 0 || State.PlaybackGate != 0;
         public bool IntroDone => State.Puzzles.Contains(Data.GameSettings.IntroSoundPath);
         public void Commit() { RefreshUnlocks(); Changed?.Invoke(); }
         public void NewGame()
         {
             var time = DateTime.Parse(Data.GameSettings.InitialTime, CultureInfo.InvariantCulture);
             State = new V24State { Started = true, Room = Data.GameSettings.ArrivalRoom, Now = time.Ticks, DayBase = (time.TimeOfDay < TimeSpan.FromHours(10) ? time.Date.AddDays(-1) : time.Date).Ticks, Page = "Invitation" };
+            if (Data.Formal) State.SceneContext="一层走廊";
             foreach (var id in Data.GameSettings.InitialItems) Grant(id, "initial:" + id, false);
             RegisterRecordings(); Commit();
         }
-        public bool Has(int id) => State.Entries.Contains(id);
+        public bool Has(int id) => State.Entries.Contains(id) || Data.EntryVariantConfig.Any(x => x.ConditionAlias == id && x.Entries.Any(State.Entries.Contains));
         public bool Need(IEnumerable<string> needs)
         {
             if (needs == null) return true;
@@ -58,7 +60,7 @@ namespace Castle.V24
             if (ev == null || Done(ev)) return false;
             if (ev.Trigger == "reward") return direct;
             if (!Need(ev.Need)) return false;
-            if (ev.Trigger == "flow") return direct;
+            if (ev.Trigger == "flow") return direct || Data.Formal && CanSelectFormalEvent(ev.Id);
             if (State.SleepPending) return false;
             if (ev.Room != 0 && ev.Room != State.Room) return false;
             if (ev.Day != 0 && ev.Day != State.Day) return false;
@@ -70,7 +72,7 @@ namespace Castle.V24
         public void RefreshUnlocks()
         {
             foreach (var room in Data.Room) if (!State.Unlocked.Contains(room.Id) && Need(room.UnlockNeed)) State.Unlocked.Add(room.Id);
-            foreach (var device in Data.DeviceConfig) if (State.PendingPuzzle != Data.GameSettings.IntroSoundPath && !State.KnownDevices.Contains(device.Id) && Need(device.LocationNeed)) State.KnownDevices.Add(device.Id);
+            foreach (var device in Data.DeviceConfig) if (State.PendingPuzzle != Data.GameSettings.IntroSoundPath && !State.KnownDevices.Contains(device.Id) && (!Data.Formal || device.Id == 1100001 || device.LocationNeed != null && device.LocationNeed.Length > 0) && Need(device.LocationNeed)) State.KnownDevices.Add(device.Id);
         }
         public string CharacterName(int id)
         {
@@ -81,6 +83,7 @@ namespace Castle.V24
         {
             var d = Data.DeviceConfig.FirstOrDefault(x => x.Id == id);
             if (d == null) return "外来磁带";
+            if (Data.Formal && (id==1190001||id==1190002)) return d.Label;
             return d.Label + " · " + (State.KnownDevices.Contains(id) ? RoomName(d.Room) : "位置未知");
         }
         public bool CanEnter(int id)
@@ -94,6 +97,12 @@ namespace Castle.V24
         public bool Move(int id)
         {
             if (!CanEnter(id)) return false;
+            if (Data.Formal && State.Room == Data.GameSettings.ControlRoom && State.SessionAction != 0 && id != State.Room)
+            {
+                var action = Data.DialogueActionConfig.First(x => x.Id == State.SessionAction);
+                SetClock(action.ExitClock); State.SessionAction = 0; State.ControlSession = "";
+                State.Page = "Explore"; Start(action.ExitEvent, true); Commit(); return true;
+            }
             if (State.Room == Data.GameSettings.ControlRoom && id != State.Room && !string.IsNullOrEmpty(State.ControlSession))
             {
                 long target = new DateTime(State.ControlEntered).AddMinutes(State.ControlCost).Ticks;
@@ -112,6 +121,7 @@ namespace Castle.V24
         }
         public void Scan()
         {
+            if (Data.Formal) { ResumeFormal(); return; }
             if (Busy || State.SleepPending || State.Finished || State.ActionPending != 0 || State.SleepStage != "") return;
             var ev = Data.Event.FirstOrDefault(x => x.Trigger == "auto" && Eligible(x))
                 ?? Data.Event.FirstOrDefault(x => x.Trigger == "interact" && Eligible(x));
@@ -142,13 +152,19 @@ namespace Castle.V24
             bool repeat = State.Line == 0 && State.Transcript.LastOrDefault()?.Reply == line.Text;
             if (!repeat) State.Transcript.Add(new V24Transcript { Plot = line.Id });
             if (!State.Shown.Contains(line.Id)) State.Shown.Add(line.Id);
-            if (State.Line == lines.Length - 1 && ev.Record != 0) State.Recordings.First(x => x.Id == ev.Record).Complete = true;
+            PlotRevealed?.Invoke(line.Id);
+            if (!Data.Formal && State.Line == lines.Length - 1 && ev.Record != 0) State.Recordings.First(x => x.Id == ev.Record).Complete = true;
             Commit();
         }
         public void Advance(int choice = 0)
         {
             var ev = Data.EventById(State.ActiveEvent); if (ev == null) return;
             if (RequiredAction() != null) return;
+            if (Data.Formal && State.Line >= 0)
+            {
+                ApplyEffects("plot_complete", Data.Lines(ev.Plot)[State.Line].Id);
+                if (State.RewardPopups.Count > 0) { Commit(); return; }
+            }
             if (State.Line + 1 < Data.Lines(ev.Plot).Length) { Reveal(); return; }
             if (ev.ChoiceGroup != 0 && State.QueuedItem == 0 && choice == 0) return;
             if (choice != 0)
@@ -160,6 +176,7 @@ namespace Castle.V24
         }
         public void Finish(int choice = 0)
         {
+            if (Data.Formal) { FinishFormal(choice); return; }
             var ev = Data.EventById(State.ActiveEvent); if (ev == null) return;
             if (ev.Id == Data.GameSettings.TapeTutorialEvent && State.TutorialEvent == 0)
             {
@@ -198,6 +215,7 @@ namespace Castle.V24
             if (State.Goals.Contains(Data.FinaleConfig.EndCard.AfterGoal))
             { State.Finished = true; State.Page = "EndCard"; State.SleepPending = false; return; }
             if (State.SleepStage != "") { ResumeSleep(); return; }
+            if (Data.Formal) { ResumeFormal(); if(State.SleepStage!=""||State.ActiveEvent!=0)return; }
             if (State.SleepPending && !State.Ending) Sleep();
             RefreshUnlocks();
         }
@@ -213,7 +231,14 @@ namespace Castle.V24
             var entry = Data.EntryById(id); if (entry == null) throw new InvalidOperationException("未知奖励 " + id);
             State.Grants.Add(key);
             bool owned = Has(id);
+            if (Data.Formal)
+            {
+                var variant = Data.EntryVariantConfig.FirstOrDefault(x => x.Entries.Contains(id));
+                if (variant != null && Array.IndexOf(variant.Entries, BestEntry(id)) > Array.IndexOf(variant.Entries, id)) return;
+                owned = State.Entries.Contains(id);
+            }
             if (!owned) State.Entries.Add(id);
+            if (Data.Formal && owned && !key.StartsWith("event_complete:")) return;
             if (entry.Type == "item" || entry.Type == "tape")
             {
                 var inventory = State.Inventory.FirstOrDefault(x => x.Entry == id);
@@ -221,12 +246,14 @@ namespace Castle.V24
                 inventory.Count++;
             }
             if (entry.Type == "tape") State.Tapes.Add(new V24Tape { Instance = State.NextTape++, Entry = id, Record = entry.Record });
-            if (popup && (entry.Type == "item" || entry.Type == "tape") && (!owned || entry.Type == "tape")) State.RewardPopups.Add(id);
+            if (popup && (Data.Formal || entry.Type == "item" || entry.Type == "tape") && (!owned || entry.Type == "tape")) State.RewardPopups.Add(id);
             RefreshUnlocks();
         }
         public void Claim(int lineId, int entryId)
         {
             if (!State.Shown.Contains(lineId)) return;
+            var line = Data.Plot.FirstOrDefault(x => x.Id == lineId);
+            if (line == null || !line.LinkTarget.Contains("entry:" + entryId)) return;
             string key = lineId + ":" + entryId;
             if (!State.Claims.Contains(key))
             {
@@ -285,12 +312,13 @@ namespace Castle.V24
             foreach (var record in Data.Record.Where(x => x.AccessType == "central" && !string.IsNullOrEmpty(x.Start)))
             {
                 var device = Data.DeviceConfig.First(x => x.Id == record.Device);
-                DateTime real = DateTime.Parse(record.Start, CultureInfo.InvariantCulture).AddSeconds(-device.Offset);
+                int configuredOffset = !Data.Formal || record.Id >= 620015 && record.Id <= 620017 ? device.Offset : 0;
+                DateTime real = DateTime.Parse(record.Start, CultureInfo.InvariantCulture).AddSeconds(-configuredOffset);
                 if (real.Ticks > State.Now) continue;
                 var snapshot = State.Recordings.FirstOrDefault(x => x.Id == record.Id);
                 if (snapshot == null)
                 {
-                    int offset = Offset(record.Device);
+                    int offset = Data.Formal ? configuredOffset : Offset(record.Device);
                     var date = real.TimeOfDay < TimeSpan.FromHours(10) ? real.Date.AddDays(-1) : real.Date;
                     snapshot = new V24RecordingState { Id = record.Id, TrueStart = real.Ticks, RawStart = real.AddSeconds(offset).Ticks, CapturedOffset = offset, Day = State.Day + (date - BaseDate).Days };
                     State.Recordings.Add(snapshot);
@@ -301,7 +329,7 @@ namespace Castle.V24
         public bool Accessible(V24Record record)
         {
             var snapshot = State.Recordings.FirstOrDefault(x => x.Id == record.Id);
-            return record.AccessType == "central" && snapshot != null && snapshot.Complete && Need(record.Need) && (Data.GameSettings.KeepRecords || snapshot.Day == State.Day);
+            return (record.AccessType == "central" || Data.Formal && (record.AccessType == "personal" || record.AccessType == "tape" && State.Tapes.Any(x=>x.Record==record.Id))) && snapshot != null && snapshot.Complete && Need(record.Need) && (Data.GameSettings.KeepRecords || snapshot.Day == State.Day);
         }
         public long DisplayStart(V24RecordingState snapshot, int device) => snapshot.RawStart - (State.Repaired.Contains(device) ? TimeSpan.FromSeconds(snapshot.CapturedOffset).Ticks : 0);
         public bool Mark(int line)
@@ -313,6 +341,7 @@ namespace Castle.V24
         /// <summary>点击录音条切换标记；首次标记同时收录该句的人物信息和线索，取消不撤销已获知识。</summary>
         public bool ToggleMark(int line)
         {
+            if (Data.Formal && State.Room != Data.GameSettings.ControlRoom) return false;
             if (!State.Shown.Contains(line)) return false;
             var plot = Data.Plot.First(x => x.Id == line);
             var entries = Data.Entry.Where(x => (x.Type == "clue" || x.Type == "info") && x.Source.Contains("plot:" + line)).ToArray();
@@ -331,7 +360,8 @@ namespace Castle.V24
             else
             {
                 State.Marked.Add(line);
-                foreach (var entry in entries) if (!Has(entry.Id)) Grant(entry.Id, "extract:" + entry.Id, false);
+                if (Data.Formal) ApplyEffects("anchor_mark", line);
+                else foreach (var entry in entries) if (!Has(entry.Id)) Grant(entry.Id, "extract:" + entry.Id, false);
             }
             Commit(); return true;
         }
@@ -354,7 +384,8 @@ namespace Castle.V24
             if (set && draft.Values.Any(x => !State.Marked.Contains(x))) return "请先在录音中标记证据";
             if (puzzle.Type == "timeline" && draft.Values.Any(x => !Has(x))) return "尚未获得所需事件卡";
             if (set && (draft.Values.Distinct().Count() != draft.Values.Count || !draft.Values.OrderBy(x => x).SequenceEqual(answer.OrderBy(x => x)))) return "这些片段不属于本次关联，请重新选择";
-            if (!set && !draft.Values.SequenceEqual(answer)) return "顺序或位置不正确，请调整";
+            if (!set && !(puzzle.Type == "timeline" ? draft.Values.Select(CanonicalEntry) : draft.Values).SequenceEqual(answer)) return "顺序或位置不正确，请调整";
+            if (Data.Formal && puzzle.Type == "sound_path" && !draft.Doors.SequenceEqual(new[] { "open", "closed", "closed" })) return "请检查每个位置的门状态";
             if (puzzle.Type == "anchor_align")
             {
                 if (!draft.Values.Contains(draft.Reference)) return "请重新选择参考轨道";
@@ -377,7 +408,18 @@ namespace Castle.V24
         public void ContinuePuzzleReward()
         {
             if (State.PendingPuzzle == 0 || State.ActiveEvent != 0) return;
+            if (Data.Formal && State.PendingPuzzle == 720030 && !State.HeardRecords.Contains(620025)) return;
             var puzzle = Data.PuzzleById(State.PendingPuzzle);
+            if (Data.Formal && puzzle.Id == 720030)
+            {
+                var reward = Data.EventById(puzzle.Success);
+                if (!Done(reward))
+                {
+                    foreach (int entry in reward.Reward) Grant(entry,"event:"+reward.Id+":"+entry);
+                    State.Goals.Add(reward.Goal); State.CompletedEvents.Add(reward.Id); ImportRecords();
+                }
+                EndChain(); Commit(); return;
+            }
             if (puzzle.Success != 0 && !Done(Data.EventById(puzzle.Success))) Start(puzzle.Success, true);
             else EndChain();
             Commit();

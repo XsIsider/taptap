@@ -18,28 +18,30 @@ namespace Castle.V24
             else if(!directed)S.JournalSelection=0;
             Push("Journal");JournalRender();
         }
-        private int JournalSize()=>S.JournalCategory==2?6:4;
+        private int JournalSize()=>S.JournalCategory==2?3:4;
         private int[] JournalIds()
         {
-            if(S.JournalCategory==0)return S.Entries.Select(_data.EntryById).Where(x=>x.Type=="info").SelectMany(x=>x.Owner).Distinct().ToArray();
+            if(S.JournalCategory==0)return S.Entries.Select(_data.EntryById).Where(x=>x.Type=="info").SelectMany(x=>x.Owner).Distinct().Where(Engine.KnowsCharacter).ToArray();
             if(S.JournalCategory==1)return S.Entries.Where(x=>{var t=_data.EntryById(x).Type;return t=="item"||t=="tape";}).ToArray();
-            return S.Entries.Where(x=>_data.EntryById(x).Type=="event").ToArray();
+            return S.Entries.Where(x=>_data.EntryById(x).Type==(_data.Formal?"clue":"event")&&Engine.VisibleEntry(x)).ToArray();
         }
         private void JournalRender()
         {
             var v=V("Journal");Btn(v,"Close",Pop);
             for(int i=0;i<3;i++){int tab=i;Btn(v,"Tab"+i,()=>{S.JournalPages[S.JournalCategory]=S.JournalPage;S.JournalCategory=tab;S.JournalPage=S.JournalPages[tab];S.JournalSelection=0;JournalRender();});}
+            JournalAppearance(v);
             int[] ids=JournalIds();int size=JournalSize(),pages=Math.Max(1,(ids.Length+size-1)/size);S.JournalPage=Mathf.Clamp(S.JournalPage,0,pages-1);
             int[] current=ids.Skip(S.JournalPage*size).Take(size).ToArray();if(!current.Contains(S.JournalSelection))S.JournalSelection=current.FirstOrDefault();
             Txt(v,"PageNumber",(S.JournalPage+1)+" / "+pages);Txt(v,"Category",new[]{"人物","道具","记录"}[S.JournalCategory]);Txt(v,"Empty",ids.Length==0?"尚未收录":"");
             var left=v.Get<RectTransform>("LeftCards");var right=v.Get<RectTransform>("RightCards");Clear(left);Clear(right);
             Show(v,"Details",S.JournalCategory!=1);Show(v,"RightCards",S.JournalCategory==1);
-            var grid=left.GetComponent<GridLayoutGroup>();grid.constraintCount=S.JournalCategory==0?2:1;grid.cellSize=S.JournalCategory==0?new Vector2(230,205):S.JournalCategory==1?new Vector2(486,205):new Vector2(486,64);
+            var grid=left.GetComponent<GridLayoutGroup>();grid.constraintCount=S.JournalCategory==0?2:1;grid.cellSize=S.JournalCategory==0?new Vector2(230,285):S.JournalCategory==1?new Vector2(530,285):new Vector2(510,180);
             for(int i=0;i<current.Length;i++)
             {
                 int id=current[i];var entry=S.JournalCategory==0?null:_data.EntryById(id);
                 string name=entry?.Name??Engine.CharacterName(id);
-                string body=S.JournalCategory==1?entry.Text:"点击查看详情";
+                string body=entry?.Text??"";
+                if (_data.Formal && entry?.Id==_data.ItemPolicy.GiftEntry && S.CompletedEvents.Contains(_data.ItemPolicy.OpenAfterEvent)) body=_data.ItemPolicy.OpenedDescription;
                 if(entry?.Type=="tape")
                 {
                     var tapes=S.Tapes.Where(x=>x.Entry==id).ToArray();
@@ -49,19 +51,20 @@ namespace Castle.V24
                 {
                     S.JournalSelection=id;
                     if(S.JournalCategory==1)UseEntry(id);else JournalRender();
-                },false,S.JournalCategory==0?PersonCardPrefab:S.JournalCategory==1?ItemCardPrefab:null);
-                if(S.JournalCategory==0){var portrait=card.Get<Image>("Portrait");portrait.sprite=id==200003?ButlerPortrait:id==200004?MerchantPortrait:null;portrait.gameObject.SetActive(portrait.sprite!=null);card.Get<Text>("Body").text=portrait.sprite?"":"头像待补充";}
-                card.Get<Text>("Title").fontSize=S.JournalCategory==2?18:22;
-                if(S.JournalCategory==2)card.Get<Text>("Body").text="";
+                },false,S.JournalCategory==0?PersonCardPrefab:S.JournalCategory==1?ItemCardPrefab:JournalRecordPrefab);
+                if(S.JournalCategory==0) { DrawHead(card.Get<RawImage>("Head"),id); card.Get<Text>("Body").text=""; }
+                if(S.JournalCategory==1) LayoutItemCard(card,entry,i%2==1);
+
             }
             if(S.JournalCategory==0 && S.JournalSelection!=0)
             {
                 Txt(v,"DetailTitle",Engine.CharacterName(S.JournalSelection));
-                Txt(v,"DetailBody",string.Join("\n\n",S.Entries.Select(_data.EntryById).Where(x=>x.Type=="info"&&x.Owner.Contains(S.JournalSelection)).Select(x=>x.Text)));
+                DrawHead(v.Get<RawImage>("DetailHead"),S.JournalSelection);
+                Txt(v,"DetailBody",string.Join("\n\n",S.Entries.Where(Engine.VisibleEntry).Select(_data.EntryById).Where(x=>x.Type=="info"&&x.Owner.Contains(S.JournalSelection)).OrderBy(x=>x.Id==329999?1:0).Select(x=>x.Text)));
             }
             else if(S.JournalCategory==2 && S.JournalSelection!=0)
             {
-                var entry=_data.EntryById(S.JournalSelection);Txt(v,"DetailTitle",entry.Name);Txt(v,"DetailBody",entry.Text);
+                var entry=_data.EntryById(S.JournalSelection);Txt(v,"DetailTitle",entry.Name);Txt(v,"DetailBody",RecordDescription(entry));
             }
             else {Txt(v,"DetailTitle","");Txt(v,"DetailBody","");}
             Btn(v,"Previous",()=>StartCoroutine(Flip(-1)),enabled:S.JournalPage>0);Btn(v,"Next",()=>StartCoroutine(Flip(1)),enabled:S.JournalPage+1<pages);
@@ -70,7 +73,7 @@ namespace Castle.V24
             var timeline=_data.Puzzle.First(x=>x.Type=="timeline");
             Show(v,"Timeline",S.JournalCategory==2);Btn(v,"Timeline",()=>{_puzzle=timeline.Id;CloseAll();Page("Timeline");},"重构事件时间线");
             var path=_data.Puzzle.FirstOrDefault(x=>x.Type=="person_path"&&x.Target==S.JournalSelection);
-            Show(v,"CharacterPath",S.JournalCategory==0&&path!=null);
+            Show(v,"CharacterPath",S.JournalCategory==0&&path!=null&&(!_data.Formal||Engine.Need(path.Need)&&!S.Puzzles.Contains(path.Id)));
             Btn(v,"CharacterPath",()=>{_puzzle=path.Id;Push("Path",JournalRender);PathRender(V("Path"));},"人物路径",path!=null);
             Save();
         }
@@ -104,6 +107,10 @@ namespace Castle.V24
                 return;
             }
             if(id==_data.GameSettings.MapEntry){Map();return;}
+            if (_data.Formal && entry.Type=="item")
+            {
+                ItemDetail(entry,id==_data.ItemPolicy.LetterEntry?_data.ItemPolicy.LetterFullText:id==_data.ItemPolicy.GiftEntry&&S.CompletedEvents.Contains(_data.ItemPolicy.OpenAfterEvent)?_data.ItemPolicy.OpenedDescription:entry.Text);return;
+            }
             string result=Engine.UseItem(id);
             if(result=="使用成功"){CloseAll();Refresh();Toast(result);}
             else if(id==_data.InvitationEntry){Push("Letter");Txt(V("Letter"),"Body",entry.Text);Btn(V("Letter"),"Close",Pop);Toast(result);}
@@ -122,24 +129,46 @@ namespace Castle.V24
                 if(tape.Record==0){Toast("磁带为空");return;}
                 var record=_data.RecordById(tape.Record);
                 if(record.AccessType=="tape"&&!Engine.Need(record.Need)){Toast("尚未满足播放条件");return;}
-                _playTape=instance;S.PlayingTape=instance;_record=record.Id;_position=0;_playing=true;CloseAll();Page("Tape");
+                _playTape=instance;S.PlayingTape=instance;_record=record.Id;_position=0;_heardPosition=0;_audioLine=0;_playing=true;CloseAll();Page("Tape");
             }
             else Toast("此处无法使用磁带");
         }
         private void BurnSelect()
         {
-            _burnRecord=0;Push("Burn");var v=V("Burn");Btn(v,"Close",Pop);Clear(v.Get<RectTransform>("List"));
+            _burnRecord=0;Push("Burn");Btn(V("Burn"),"Close",Pop);BurnRender();
+        }
+        private void BurnRender()
+        {
+            var v=V("Burn");Clear(v.Get<RectTransform>("List"));
             var records=_data.Record.Where(Engine.Accessible).OrderBy(x=>x.Device).ToArray();
-            Txt(v,"Details","选择文件后点击刻录");
+            Txt(v,"Details",_burnRecord==0?"选择文件后点击刻录":_data.RecordById(_burnRecord).Name);
             Txt(v,"Heading",records.Length==0?"没有可刻录文件":"选择刻录文件");
             foreach(var group in records.GroupBy(x=>x.Device))
             {
                 int device=group.Key;bool expanded=S.ExpandedDevices.Contains(device);
-                Card(v.Get<RectTransform>("List"),(expanded?"▾ ":"▸ ")+Engine.DeviceName(device),group.Count()+" 个文件",()=>{if(expanded)S.ExpandedDevices.Remove(device);else S.ExpandedDevices.Add(device);Pop();BurnSelect();});
+                var folder=Card(v.Get<RectTransform>("List"),Engine.DeviceName(device),"",()=>{if(expanded)S.ExpandedDevices.Remove(device);else S.ExpandedDevices.Add(device);BurnRender();},template:RecordingFolderPrefab);
+                folder.name="BurnDevice"+device;
+                folder.Get<Image>("Icon").sprite=expanded?FolderOpen:FolderClosed;
+                BurnCardStyle(folder);
                 if(!expanded)continue;
-                foreach(var record in group){int id=record.Id;Card(v.Get<RectTransform>("List"),record.Name,"点击选择文件",()=>{_burnRecord=id;Txt(v,"Details",record.Name);Btn(v,"Burn",BurnNow,"刻录",true);});}
+                foreach(var record in group)
+                {
+                    int id=record.Id;
+                    var file=Card(v.Get<RectTransform>("List"),record.Name,"",()=>{_burnRecord=id;BurnRender();},template:RecordingFilePrefab);
+                    file.name="BurnRecord"+id;
+                    file.Get<Image>("Icon").sprite=id==_burnRecord?PauseIcon:PlayIcon;
+                    file.Get<Text>("Title").color=id==_burnRecord?new Color(1,.87f,.5f):Color.white;
+                    BurnCardStyle(file);
+                }
             }
-            Btn(v,"Burn",BurnNow,"刻录",false);
+            Btn(v,"Burn",BurnNow,"刻录",_burnRecord!=0);
+        }
+        private void BurnCardStyle(CastleUiView card)
+        {
+            var title=card.Get<Text>("Title");
+            title.font=WorkbenchFont;
+            title.rectTransform.sizeDelta=new Vector2(650,title.rectTransform.sizeDelta.y);
+            title.alignment=TextAnchor.MiddleLeft;
         }
         private void BurnNow(){Engine.Burn(_selectedTape,_burnRecord);Pop();JournalRender();Toast("刻录成功");}
     }

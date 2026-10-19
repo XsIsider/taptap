@@ -11,7 +11,9 @@ namespace Castle.V24
     public sealed partial class CastleV24Controller : MonoBehaviour
     {
         public CastleFlowUi Ui;
+        public Font WorkbenchFont, ReadingFont, ButtonFont;
         public CastleUiView ConversationPortraitPrefab, AnchorCardPrefab, SpaceCardPrefab;
+        public CastleUiView DialogueChoicePrefab;
         public CastleUiView MapCardPrefab, PersonCardPrefab, ItemCardPrefab, RecordingFolderPrefab, RecordingFilePrefab, RecordingLinePrefab;
         public Sprite PathMarkerIcon;
         public Sprite FolderClosed, FolderOpen, PlayIcon, PauseIcon;
@@ -35,15 +37,18 @@ namespace Castle.V24
         private CastleUiView V(string id) => Ui.View(id);
         private void Awake()
         {
-            _test = Environment.GetCommandLineArgs().Contains("-castleV24Smoke");
+            _test = Environment.GetCommandLineArgs().Contains("-castleV24Smoke") || Environment.GetCommandLineArgs().Contains("-castleFormalSmoke");
             _data = V24Data.Load(); V24State state;
             _defaultRoomBackground = V("Explore").transform.Find("Backdrop").GetComponent<RawImage>().texture;
             try { state = _test ? new V24State() : V24Save.Read(); }
             catch (Exception ex) { state = new V24State(); _blocked = true; Debug.LogWarning(ex.Message); }
             Engine = new V24Engine(_data, state); Engine.Changed = Save; Engine.WaitForSelection = IsConversationChoice;
-            Music.volume=state.Volume;Effects.volume=state.Volume;
+            Engine.PlotRevealed = PlayPlotAudio;
+            if (!_test) { S.Volume=PlayerPrefs.GetFloat("Castle.MusicVolume",S.Volume); S.EffectsVolume=PlayerPrefs.GetFloat("Castle.EffectsVolume",S.EffectsVolume); }
+            ApplyAudioSettings();
+            if (TalkingCursor) Cursor.SetCursor(TalkingCursor, Vector2.zero, CursorMode.Auto);
             Ui.Toast.gameObject.SetActive(false); Page("Title");
-            if (_test) StartCoroutine(Smoke());
+            if (_test) StartCoroutine(_data.Formal ? FormalSmoke() : Smoke());
         }
         private void Save()
         {
@@ -71,21 +76,25 @@ namespace Castle.V24
                 else _endingDialogue = 0;
                 if (!zoomReset && Input.GetKeyDown(KeyCode.Space) || S.Auto && Time.unscaledTime >= _nextAuto) Next();
             }
-            if (_playing && _page == "Tape")
+            if (_playing && (_page == "Tape" || _data.Formal && (_page == "Recordings" || _page == "Timeline" && S.Ending)))
             {
+                UpdatePlaybackAudio();
                 if (_playTape != 0)
                 {
                     var tape = S.Tapes.First(x => x.Instance == _playTape);
                     if (_position <= tape.ListenedSeconds + .2f) tape.ListenedSeconds = Mathf.Max(tape.ListenedSeconds, _position + Time.unscaledDeltaTime);
                 }
+                if (_position <= _heardPosition + .2f) _heardPosition = Mathf.Max(_heardPosition, _position + Time.unscaledDeltaTime);
                 _position += Time.unscaledDeltaTime;
+                S.RecordId=_record;S.RecordPosition=_position;S.PlaybackHeard=_heardPosition;
                 var record = _data.RecordById(_record);
                 if (_position >= record.Duration)
                 {
                     _position = record.Duration; _playing = false;
-
+                    if (_data.Formal && _heardPosition + .2f >= record.Duration) Engine.CompleteRecord(record.Id);
+                    if (_data.Formal && (_page == "Timeline" || S.DeferredEvent != 0)) { Refresh(); return; }
                 }
-                PlaybackTick();
+                if (_page == "Timeline") TimelinePlayback(); else PlaybackTick();
             }
             if (S.Ending && _page == "Timeline")
                 foreach (Transform bar in V("Timeline").Get<RectTransform>("Wave"))
@@ -105,11 +114,15 @@ namespace Castle.V24
         private void Clear(Transform root) { foreach (Transform c in root) { c.gameObject.SetActive(false); Destroy(c.gameObject); } }
         private CastleUiView Card(Transform parent, string title, string body, Action action, bool map = false, CastleUiView template = null)
         {
-            var card = Instantiate(template ? template : map ? MapCardPrefab : Ui.CardPrefab, parent); card.gameObject.SetActive(true); Txt(card,"Title",title); Txt(card,"Body",body); Btn(card,"Select",action); return card;
+            var card = Instantiate(template ? template : map ? MapCardPrefab : Ui.CardPrefab, parent);
+            var font = _modal.Count > 0 ? ReadingFont : new[] { "Recordings", "Anchors", "Space" }.Contains(_page) ? WorkbenchFont : ButtonFont;
+            if (font) foreach (var text in card.GetComponentsInChildren<Text>(true)) text.font = font;
+            card.gameObject.SetActive(true); Txt(card,"Title",title); Txt(card,"Body",body); Btn(card,"Select",action); return card;
         }
         private void Toast(string text) { Txt(Ui.Toast,"Body",text); Ui.Toast.gameObject.SetActive(true); _toastUntil = Time.unscaledTime + 5; }
         private void Push(string id, Action close = null)
         {
+            S.Auto=false;if(Voice)Voice.Pause();if(Effects)Effects.Pause();
             if (_modal.Count == 0 && _page == "Explore") S.DialogueScroll = V("Explore").Get<ScrollRect>("DialogueScroll").verticalNormalizedPosition;
             _modal.Add(id); _returns.Add(close); ModalVisibility();
         }
@@ -118,6 +131,7 @@ namespace Castle.V24
             if (_modal.Count == 0) return;
             int last = _modal.Count - 1; var callback = _returns[last]; _modal.RemoveAt(last); _returns.RemoveAt(last); ModalVisibility(); callback?.Invoke();
             _nextAuto = Time.unscaledTime + S.AutoSeconds;
+            if (_modal.Count==0 && (_playing || _page=="Explore")) {if(Voice)Voice.UnPause();if(Effects)Effects.UnPause();}
         }
         private void ModalVisibility()
         {
@@ -125,7 +139,7 @@ namespace Castle.V24
             foreach (var v in Ui.Modals) v.gameObject.SetActive(_modal.Count > 0 && v.Id == _modal.Last());
             bool mapOpen=_modal.Contains("Map");
             foreach(var v in Ui.Pages)v.gameObject.SetActive(!mapOpen&&v.Id==_page);
-            Ui.Hud.gameObject.SetActive(!mapOpen&&_page!="Title"&&_page!="Invitation"&&_page!="Cutscene"&&_page!="EndCard");
+            Ui.Hud.gameObject.SetActive(!mapOpen&&_page!="Title"&&_page!="Invitation"&&_page!="Cutscene"&&_page!="EndCard"&&!(_page=="Timeline"&&S.Ending));
         }
         private void CloseAll() { _modal.Clear(); _returns.Clear(); ModalVisibility(); }
         private void Confirm(string text, Action yes)
@@ -135,8 +149,9 @@ namespace Castle.V24
         private void Page(string id)
         {
             _page = id; if(!Music.isPlaying)Music.Play(); if (id != "Title") S.Page = id;
+            UpdateFormalMusic();
             foreach (var v in Ui.Pages) v.gameObject.SetActive(v.Id == id);
-            Ui.Hud.gameObject.SetActive(id != "Title" && id != "Invitation" && id != "Cutscene" && id != "EndCard");
+            Ui.Hud.gameObject.SetActive(id != "Title" && id != "Invitation" && id != "Cutscene" && id != "EndCard" && !(id=="Timeline"&&S.Ending));
             Hud();
             switch (id)
             {
@@ -155,7 +170,7 @@ namespace Castle.V24
         }
         private void Hud()
         {
-            Show(Ui.Hud,"LocationGroup",_page!="Recordings"&&_page!="Anchors"&&_page!="Space");
+            Show(Ui.Hud,"LocationGroup",_page!="Recordings"&&_page!="Anchors"&&_page!="Space"&&_page!="Timeline");
             foreach(var id in new[]{"Back","Map","Journal","Settings"})Ui.Hud.Get<Button>(id).GetComponentInChildren<Text>(true).gameObject.SetActive(false);
             Txt(Ui.Hud,"Location","当前位置：" + Engine.RoomName(S.Room));
             Txt(Ui.Hud,"CurrentTime","当前时间：Day " + S.Day + " · " + Engine.Now.ToString("HH:mm"));
@@ -183,12 +198,12 @@ namespace Castle.V24
                     if(S.Ending&&!S.EndingTransitionDone){Page("Timeline");StartCoroutine(RevealEnding());return;}
                     Engine.ContinuePuzzleReward();
                 }
-                _record=S.RecordId; _position=S.RecordPosition; _playTape=S.PlayingTape;_nextAuto=Time.unscaledTime+S.AutoSeconds; Refresh();
+                _record=S.RecordId; _position=S.RecordPosition; _heardPosition=S.PlaybackHeard; _playTape=S.PlayingTape;_nextAuto=Time.unscaledTime+S.AutoSeconds; Refresh();
             },enabled:S.Started);
-            Btn(v,"Settings",Settings); Btn(v,"Credits",()=>Toast("古堡 V2.4 · UI 与角色素材使用提供的素材包；缺失资源为占位。"));
-            Btn(v,"Quit",()=>Confirm("退出游戏？",()=>{Save(); Application.Quit();}));
+            Btn(v,"Settings",Settings); Btn(v,"Credits",()=>{Push("Credits");Btn(V("Credits"),"Close",Pop);});
+            Btn(v,"Quit",RequestQuit);
         }
-        private void StartNew() { _presentationRoom=0;_sceneZoom=1;_avatarsExpanded=false;_playing=false;_playTape=0;_record=0;_position=0;_blocked=false; CloseAll(); Engine.NewGame(); Page("Invitation"); }
+        private void StartNew() { _presentationRoom=0;_sceneZoom=1;_avatarsExpanded=false;_playing=false;_playTape=0;_record=0;_position=0;_blocked=false; CloseAll(); float music=S.Volume, effects=S.EffectsVolume; Engine.NewGame(); S.Volume=music;S.EffectsVolume=effects;ApplyAudioSettings(); Page("Invitation"); }
         private void Invitation()
         {
             var v=V("Invitation"); var entry=_data.EntryById(_data.InvitationEntry);
@@ -208,6 +223,8 @@ namespace Castle.V24
             CloseAll();
             if(S.Finished){Page("EndCard");return;}
             if(S.SleepStage!=""){Page("Cutscene");return;}
+            if (_data.Formal && S.PlaybackGate != 0) { OpenGate(); return; }
+            if (_data.Formal && S.Ending && !S.HeardRecords.Contains(620025)) { Page("Timeline"); return; }
             if(S.SleepPending&&!Engine.Busy)Toast(Engine.SleepReason());
             if(S.InvitationStage==2 && !S.CompletedEvents.Contains(_data.GameSettings.ArrivalEvent) && S.ActiveEvent==0) Engine.Start(_data.GameSettings.ArrivalEvent,true);
             if(S.ActiveEvent!=0) Page("Explore");
@@ -219,19 +236,36 @@ namespace Castle.V24
                 Journal(0,_data.PuzzleById(_puzzle).Target,true);Push("Path",JournalRender);PathRender(V("Path"));
             }
             if(Engine.IntroDone&&!S.RepairNoticeShown){S.RepairNoticeShown=true;Save();Toast(_data.ControlRoomPolicy.RepairToast);}
+            if (_data.Formal && !Engine.Busy && !S.PathReadyNotice && Engine.Need(_data.PuzzleById(720020).Need))
+            { S.PathReadyNotice=true;Save();Confirm("维里诺的人物路径证据已集齐，是否现在查看？",()=>Journal(0,200006,true)); }
         }
         private void Reward()
         {
             if(_modal.LastOrDefault()=="Acquire") return;
             Push("Acquire"); var entry=_data.EntryById(S.RewardPopups[0]); var v=V("Acquire");
             Txt(v,"Name",entry.Name); Txt(v,"Body",entry.Text); Txt(v,"Icon",entry.Type=="tape"?"磁带":"道具"); Txt(v,"Filed","已收入调查册 · 道具");
+            if (_data.Formal) { Txt(v,"Icon",entry.Type=="info"?"人物灵感":entry.Type=="clue"?"记录线索":"道具"); Txt(v,"Filed","已收入调查册 · "+(entry.Type=="info"?"人物":entry.Type=="clue"?"记录":"道具")); }
+            var art = v.Get<RawImage>("ItemArt");
+            bool isItem = entry.Type == "item" || entry.Type == "tape";
+            art.texture = isItem ? ItemTexture(entry) : null;
+            art.gameObject.SetActive(art.texture != null);
+            // 线索、人物灵感等非道具奖励保留原图，不沿用上一件道具的图片。
+            art.transform.parent.GetComponent<Image>().enabled = !isItem;
+            if (art.texture)
+            {
+                var bounds = ((RectTransform)art.transform.parent).rect;
+                FitItemArt(art, 0, 0, bounds.width, bounds.height);
+            }
+            v.Get<Text>("Icon").enabled = art.texture == null;
             Btn(v,"Confirm",()=>{Pop();Engine.CloseReward();Refresh();});
         }
         private void Settings()
         {
             Push("Settings"); var v=V("Settings");
             Slide(v,"Speed",1,8,S.AutoSeconds,x=>{S.AutoSeconds=x;Txt(v,"SpeedValue",x.ToString("0.0")+" 秒 / 句");Save();}); Txt(v,"SpeedValue",S.AutoSeconds.ToString("0.0")+" 秒 / 句");
-            Slide(v,"Volume",0,1,S.Volume,x=>{S.Volume=x;Music.volume=x;Effects.volume=x;Save();});
+            Slide(v,"Volume",0,1,S.Volume,x=>{S.Volume=x;ApplyAudioSettings();SaveAudioSettings();});
+            Slide(v,"EffectsVolume",0,1,S.EffectsVolume,x=>{S.EffectsVolume=x;ApplyAudioSettings();SaveAudioSettings();});
+            Btn(v,"ExitGame",RequestQuit);
             Btn(v,"Motion",()=>Toast("翻页使用书页过渡，内容与选择在关闭子页面后保留。"),"调查册 · 书页过渡"); Btn(v,"Close",Pop);
             Btn(v,"Title",()=>{Save();CloseAll();_playing=false;Page("Title");});
             Btn(v,"SaveGame",()=>
@@ -246,8 +280,8 @@ namespace Castle.V24
                     var state=V24Save.Read(_test?"Logs/v24-manual-test.json":V24Save.Path+".manual");
                     if(!state.Started){Toast("尚无手动存档");return;}
                     Engine.State=state;S.Auto=false;_playing=false;_endingDialogue=0;
-                    _record=S.RecordId;_position=S.RecordPosition;_playTape=S.PlayingTape;
-                    Music.volume=S.Volume;Effects.volume=S.Volume;
+                    _record=S.RecordId;_position=S.RecordPosition;_heardPosition=S.PlaybackHeard;_playTape=S.PlayingTape;
+                    ApplyAudioSettings();
                     CloseAll();Engine.ResumeAction();
                     if(S.PendingPuzzle!=0 && S.ActiveEvent==0 && S.RewardPopups.Count==0)
                     {
@@ -261,6 +295,7 @@ namespace Castle.V24
         }
         private void CloseTape()
         {
+            if (_data.Formal && !Engine.ClosePlaybackGate()) { Toast("请完整听完这份录音"); _playing=true; return; }
             int instance=_playTape;
             _playing=false;_playTape=0;S.PlayingTape=0;
             if(instance!=0)Engine.TapeCompleted(instance);

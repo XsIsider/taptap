@@ -23,6 +23,7 @@ namespace Castle.V24
         }
         private void Recordings()
         {
+            if (_data.Formal && Engine.ImportRecords()>0) Toast("文件录入成功");
             var v=V("Recordings");_playing=false;Tabs(v);Show(v,"PreviousPuzzle",false);Show(v,"NextPuzzle",false);Show(v,"PuzzleName",false);
             var root=v.Get<RectTransform>("List");Clear(root);
             var records=_data.Record.Where(Engine.Accessible).OrderBy(x=>x.Device).ThenBy(x=>x.Id).ToArray();
@@ -40,7 +41,7 @@ namespace Castle.V24
                 foreach(var record in group)
                 {
                     int id=record.Id;
-                    var card=Card(root,record.Name,"",()=>{_record=id;_position=0;_playing=false;Recordings();},template:RecordingFilePrefab);card.name="Record"+id;
+                    var card=Card(root,record.Name,"",()=>{_record=id;_position=0;_heardPosition=0;_audioLine=0;_playing=false;Recordings();},template:RecordingFilePrefab);card.name="Record"+id;
                     card.Get<Image>("Icon").sprite=id==_record?PauseIcon:PlayIcon;
                     card.Get<Text>("Title").color=id==_record?new Color(1,.87f,.5f):Color.white;
                 }
@@ -60,8 +61,8 @@ namespace Castle.V24
                 if(_page=="Tape")Line(v.Get<RectTransform>("Lines"),plot,true);
                 else RecordingLine(v.Get<RectTransform>("Lines"),plot);
             }
-            Btn(v,"Play",()=>{if(_page=="Tape")_playing=!_playing;}," ");
-            Slide(v,"Progress",0,record.Duration,_position,x=>{_position=x;if(_page=="Tape")PlaybackRender();else {HighlightRecording();PlaybackTick(false);Save();}});
+            Btn(v,"Play",()=>{if(_page=="Tape"||_data.Formal){if(_position>=record.Duration){_position=0;_heardPosition=0;_audioLine=0;}SetPlaybackPlaying(!_playing);}}," ");
+            Slide(v,"Progress",0,record.Duration,_position,x=>{_position=x;_audioLine=0;if(Voice)Voice.Stop();if(Effects)Effects.Stop();if(_page=="Tape")PlaybackRender();else {HighlightRecording();PlaybackTick(false);Save();}});
             Show(v,"Extract",false);PlaybackTick(false);if(_page!="Tape")HighlightRecording();
         }
         private void PlaybackTick(bool redraw=true)
@@ -81,7 +82,7 @@ namespace Castle.V24
         private void RecordingLine(Transform parent,V24Plot plot)
         {
             var row=Instantiate(RecordingLinePrefab,parent);row.gameObject.SetActive(true);row.name="Line"+plot.Id;
-            Txt(row,"Time",TimeSpan.FromSeconds(plot.At).ToString(@"mm\:ss"));Txt(row,"Speaker",Engine.CharacterName(plot.SpeakerId)+"：");
+            Txt(row,"Time",TimeSpan.FromSeconds(plot.At).ToString(@"mm\:ss"));Txt(row,"Speaker",SpeakerName(plot,true)+"：");
             var body=row.Get<TMPro.TextMeshProUGUI>("Body");body.text=plot.Text;
             float height=body.GetPreferredValues(plot.Text,850,0).y;
             body.rectTransform.sizeDelta=new Vector2(850,Mathf.Max(65,height));
@@ -97,6 +98,7 @@ namespace Castle.V24
         private void ToggleRecordingLine(int id)
         {
             bool changed=Engine.ToggleMark(id);
+            if (_data.Formal && S.RewardPopups.Count > 0) { Reward(); return; }
             Toast(changed?(S.Marked.Contains(id)?"已标记信息":"已取消标记"):"这句话似乎没什么用");
             if(_page=="Tape"){PlaybackRender();return;}
             foreach(var row in V("Recordings").Get<RectTransform>("Lines").GetComponentsInChildren<CastleUiView>())
@@ -166,7 +168,7 @@ namespace Castle.V24
         }
         private void SubmitPuzzle(string source)
         {
-            S.ReturnPage=source=="Path"?"Explore":source;if(source=="Path")S.ReturnPath=_puzzle;string result=Engine.ValidatePuzzle(_puzzle);Toast(result);
+            S.ReturnPage=source=="Path"?"Explore":source;if(source=="Path"&&!_data.Formal)S.ReturnPath=_puzzle;string result=Engine.ValidatePuzzle(_puzzle);Toast(result);
             if(result!="成功"){if(source=="Path")S.ReturnPath=0;return;}
             if(S.Ending){CloseAll();Page("Timeline");StartCoroutine(RevealEnding());return;}
             Engine.ContinuePuzzleReward();Refresh();
@@ -174,13 +176,16 @@ namespace Castle.V24
         private IEnumerator RevealEnding()
         {
             for(float t=0;t<1.6f;){if(_modal.Count==0&&_page=="Timeline")t+=Time.unscaledDeltaTime;yield return null;}
+            if (_data.Formal) { S.EndingTransitionDone=true;_record=620025;_position=0;_heardPosition=0;_playing=true;Engine.Commit();Timeline();yield break; }
             S.EndingTransitionDone=true;Engine.Commit();Engine.ContinuePuzzleReward();Refresh();
         }
         private void PathPage(){if(!SpaceAvailable){Page("Recordings");return;}_puzzle=_data.GameSettings.IntroSoundPath;Tabs(V("Space"));PathRender(V("Space"));}
         private void PathRender(CastleUiView v)
         {
             var puzzle=_data.PuzzleById(_puzzle);var draft=Engine.Draft(_puzzle);_floor=draft.Floor;string[] labels=puzzle.Answer.Split('|').Select(x=>x.Split('=')[0]).ToArray();
+            if (_data.Formal && puzzle.Type=="person_path") labels=_data.PersonPathPolicy.Nodes.OrderBy(x=>x.Step).Select(x=>x.Time).ToArray();
             while(draft.Values.Count<labels.Length)draft.Values.Add(0);
+            _slot=Mathf.Clamp(_slot,0,labels.Length-1);
             if(v.Id=="Path")Btn(v,"Close",Pop);
             else {Txt(v,"PuzzleName",puzzle.Name);Show(v,"PreviousPuzzle",false);Show(v,"NextPuzzle",false);}
             draft.Floor=_floor=Mathf.Clamp(draft.Floor,1,2);MapArt(v,_floor);
@@ -190,22 +195,32 @@ namespace Castle.V24
             for(int i=0;i<labels.Length;i++)
             {
                 int slot=i;int value=draft.Values[i];var node=map.Nodes.FirstOrDefault(x=>x.Id==value);
-                var card=Card(list,labels[i],node==null?"拖到地图地点":Engine.RoomName(node.Room)+" "+node.Floor+"F",()=>{_slot=slot;Txt(v,"Details","已选择标签 "+labels[slot]+"，点击或拖放到地点。");},template:v.Id=="Space"?SpaceCardPrefab:null);
+                var card=Card(list,labels[i],node==null?"拖到地图地点":NodeName(node)+" "+node.Floor+"F",()=>{_slot=slot;Txt(v,"Details","已选择标签 "+labels[slot]+"，点击或拖放到地点。");BindDoors(v,draft);},template:v.Id=="Space"?SpaceCardPrefab:null);
+                if(puzzle.Type=="person_path") {var title=card.Get<Text>("Title");title.resizeTextForBestFit=true;title.resizeTextMinSize=12;title.resizeTextMaxSize=20;title.horizontalOverflow=HorizontalWrapMode.Overflow;}
                 var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="path";drag.Id=slot.ToString();
             }
             foreach(var node in map.Nodes.Where(x=>x.Floor==_floor&&puzzle.Candidates.Contains(x.Id)))
             {
-                var room=_data.Room.First(x=>x.Id==node.Room);string placed=string.Join(" ",Enumerable.Range(0,labels.Length).Where(i=>draft.Values[i]==node.Id).Select(i=>labels[i]));
-                var card=Card(root,Engine.RoomName(room.Id),"",()=>{draft.Values[_slot]=node.Id;Engine.Commit();PathRender(v);},true);card.name="Node"+node.Id;
-                PlaceMapRegion(card,root,room.Id);card.Get<Image>("Background").color=v.Id=="Space"?Color.clear:new Color(.15f,.25f,.18f,.5f);
+                string placed=string.Join(" ",Enumerable.Range(0,labels.Length).Where(i=>draft.Values[i]==node.Id).Select(i=>labels[i]));
+                var card=Card(root,NodeName(node),"",()=>
+                {
+                    // 空间页点击已放置的房间是选择；移动到已有标签的房间仍可通过拖放完成。
+                    int placedSlot = draft.Values.IndexOf(node.Id);
+                    if (v.Id == "Space" && placedSlot >= 0) _slot = placedSlot;
+                    else draft.Values[_slot] = node.Id;
+                    Engine.Commit();PathRender(v);
+                },true);card.name="Node"+node.Id;
+                if(node.Room!=0)PlaceMapRegion(card,root,node.Room);
+                else {var rect=(RectTransform)card.transform;var point=NodePoint(node);rect.anchorMin=rect.anchorMax=new Vector2(point.x,1-point.y);rect.anchoredPosition=Vector2.zero;rect.sizeDelta=new Vector2(95,160);}
+                card.Get<Image>("Background").color=v.Id=="Space"?Color.clear:new Color(.15f,.25f,.18f,.5f);
                 card.Get<FlowDrag>("Drag").Dropped=drag=>{if(drag.Kind=="path"){draft.Values[int.Parse(drag.Id)]=node.Id;Engine.Commit();PathRender(v);}};
-                card.Get<FlowPointer>("Pointer").Enter=()=>{if(v.Id=="Space")Txt(v,"Details",Engine.RoomName(room.Id)+"\n"+placed);if(FlowDrag.PathDragging)card.Get<Image>("Background").color=new Color(.5f,.4f,.15f);};
+                card.Get<FlowPointer>("Pointer").Enter=()=>{if(v.Id=="Space")Txt(v,"Details",NodeName(node)+"\n"+placed);if(FlowDrag.PathDragging)card.Get<Image>("Background").color=new Color(.5f,.4f,.15f);};
                 card.Get<FlowPointer>("Pointer").Exit=()=>card.Get<Image>("Background").color=v.Id=="Space"?Color.clear:new Color(.15f,.25f,.18f);
                 if(v.Id=="Space")Show(card,"Title",false);
                 int order=0;
                 foreach(int slot in Enumerable.Range(0,labels.Length).Where(i=>draft.Values[i]==node.Id))
                 {
-                    var badge=Card(card.transform,labels[slot],"",()=>_slot=slot,true);badge.name="Label"+slot;
+                    var badge=Card(card.transform,((char)('A'+slot)).ToString(),"",()=>{_slot=slot;BindDoors(v,draft);},true);badge.name="Label"+slot;
                     var badgeRect=(RectTransform)badge.transform;badgeRect.anchorMin=badgeRect.anchorMax=new Vector2(0,0);badgeRect.pivot=new Vector2(0,1);badgeRect.anchoredPosition=new Vector2(order++*44,0);badgeRect.sizeDelta=new Vector2(40,38);
                     if(v.Id=="Space"){var mark=badge.Get<Image>("Background");mark.sprite=PathMarkerIcon;mark.color=Color.white;mark.preserveAspect=true;badge.Get<Text>("Title").color=new Color(.1f,.2f,.1f);}
                     var title=badge.Get<Text>("Title");title.rectTransform.anchoredPosition=new Vector2(4,-2);title.rectTransform.sizeDelta=new Vector2(-8,30);
@@ -217,7 +232,7 @@ namespace Castle.V24
                 var a=map.Nodes.FirstOrDefault(x=>x.Id==draft.Values[i-1]);var b=map.Nodes.FirstOrDefault(x=>x.Id==draft.Values[i]);
                 if(a==null||b==null||a.Floor!=_floor||b.Floor!=_floor)continue;
                 var line=Instantiate(PathLinePrefab,root);line.transform.SetAsFirstSibling();var r=line.rectTransform;r.anchorMin=r.anchorMax=new Vector2(0,1);
-                var ap=MapPoint(a.Room);var bp=MapPoint(b.Room);
+                var ap=NodePoint(a);var bp=NodePoint(b);
                 Vector2 from=new Vector2(ap.x*root.rect.width,-ap.y*root.rect.height),to=new Vector2(bp.x*root.rect.width,-bp.y*root.rect.height);
                 r.pivot=new Vector2(0,.5f);r.anchoredPosition=from;r.sizeDelta=new Vector2(Vector2.Distance(from,to),3);r.localRotation=Quaternion.Euler(0,0,Mathf.Atan2(to.y-from.y,to.x-from.x)*Mathf.Rad2Deg);
             }
@@ -238,6 +253,7 @@ namespace Castle.V24
             }
             if(v.Id=="Path")Txt(v,"Details",puzzle.Name+"\n"+PuzzleRequirements(puzzle));
             Show(v,"TooltipPanel",false);
+            BindDoors(v,draft);
         }
         private void Timeline()
         {
@@ -246,11 +262,12 @@ namespace Castle.V24
             Show(v,"SortRoot",!S.Ending);Show(v,"RevealRoot",S.Ending);
             if(S.Ending)
             {
+                if (_data.Formal) { TimelinePlayback(); return; }
                 Txt(v,"EndingStatus",S.Finished?"未完待续":"真相正在显现");Txt(v,"EndingText",S.Finished?"本次调查告一段落。":"事件时间线已还原……");Show(v,"Progress",false);Show(v,"Play",false);Show(v,"Replay",false);return;
             }
             while(draft.Values.Count<count)draft.Values.Add(0);
             Clear(v.Get<RectTransform>("Clues"));Clear(v.Get<RectTransform>("Slots"));
-            foreach(int id in puzzle.Candidates.Where(Engine.Has))
+            foreach(int id in puzzle.Candidates.Where(Engine.Has).Select(Engine.BestEntry))
             {
                 var entry=_data.EntryById(id);var card=Card(v.Get<RectTransform>("Clues"),entry.Name,entry.Text,()=>_selectedEntry=id);
                 var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="event";drag.Id=id.ToString();

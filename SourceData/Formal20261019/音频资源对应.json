@@ -1,0 +1,703 @@
+[
+  {
+    "key": "Tailor-cx",
+    "archive": null,
+    "file": null,
+    "exists": false,
+    "plots": [
+      520459
+    ]
+  },
+  {
+    "key": "Tailor-fd",
+    "archive": null,
+    "file": null,
+    "exists": false,
+    "plots": [
+      520693
+    ]
+  },
+  {
+    "key": "Tailor-jf",
+    "archive": null,
+    "file": null,
+    "exists": false,
+    "plots": [
+      520708,
+      520723
+    ]
+  },
+  {
+    "key": "Tailor-qr",
+    "archive": null,
+    "file": null,
+    "exists": false,
+    "plots": [
+      520465,
+      520473
+    ]
+  },
+  {
+    "key": "Tailor-yw",
+    "archive": null,
+    "file": null,
+    "exists": false,
+    "plots": [
+      520454
+    ]
+  },
+  {
+    "key": "butler-cx",
+    "archive": "CV.zip",
+    "file": "CV/butler-cx.wav",
+    "exists": true,
+    "plots": [
+      520004,
+      520019,
+      520132,
+      520524,
+      520541
+    ]
+  },
+  {
+    "key": "butler-fj",
+    "archive": "CV.zip",
+    "file": "CV/butler-fj.wav",
+    "exists": true,
+    "plots": [
+      520007,
+      520123,
+      520345
+    ]
+  },
+  {
+    "key": "butler-ks",
+    "archive": "CV.zip",
+    "file": "CV/butler-ks.wav",
+    "exists": true,
+    "plots": [
+      520031
+    ]
+  },
+  {
+    "key": "butler-tq",
+    "archive": "CV.zip",
+    "file": "CV/butler-tq.wav",
+    "exists": true,
+    "plots": [
+      520127,
+      520349,
+      520528,
+      520669,
+      520676,
+      520941
+    ]
+  },
+  {
+    "key": "child-fj",
+    "archive": "CV.zip",
+    "file": "CV/child-fj.wav",
+    "exists": true,
+    "plots": [
+      520140
+    ]
+  },
+  {
+    "key": "child-gt",
+    "archive": "CV.zip",
+    "file": "CV/child-gt.wav",
+    "exists": true,
+    "plots": [
+      520134,
+      520867
+    ]
+  },
+  {
+    "key": "child-kx",
+    "archive": "CV.zip",
+    "file": "CV/child-kx.wav",
+    "exists": true,
+    "plots": [
+      520151
+    ]
+  },
+  {
+    "key": "child-lj",
+    "archive": "CV.zip",
+    "file": "CV/child-lj.wav",
+    "exists": true,
+    "plots": [
+      520407
+    ]
+  },
+  {
+    "key": "child-sk",
+    "archive": "CV.zip",
+    "file": "CV/child-sk.wav",
+    "exists": true,
+    "plots": [
+      520427
+    ]
+  },
+  {
+    "key": "child-sk2",
+    "archive": "CV.zip",
+    "file": "CV/child-sk2.wav",
+    "exists": true,
+    "plots": [
+      520359,
+      520405
+    ]
+  },
+  {
+    "key": "child-tq2",
+    "archive": "CV.zip",
+    "file": "CV/child-tq2.wav",
+    "exists": true,
+    "plots": [
+      520365,
+      520884
+    ]
+  },
+  {
+    "key": "child-yw2",
+    "archive": "CV.zip",
+    "file": "CV/child-yw2.wav",
+    "exists": true,
+    "plots": [
+      520355,
+      520875,
+      520880
+    ]
+  },
+  {
+    "key": "child-yw3",
+    "archive": "CV.zip",
+    "file": "CV/child-yw3.wav",
+    "exists": true,
+    "plots": [
+      520145
+    ]
+  },
+  {
+    "key": "doctor-bx2",
+    "archive": "CV.zip",
+    "file": "CV/doctor-bx2.wav",
+    "exists": true,
+    "plots": [
+      520438
+    ]
+  },
+  {
+    "key": "doctor-qs",
+    "archive": "CV.zip",
+    "file": "CV/doctor-qs.wav",
+    "exists": true,
+    "plots": [
+      520384,
+      520431,
+      520728
+    ]
+  },
+  {
+    "key": "doctor-qs3",
+    "archive": "CV.zip",
+    "file": "CV/doctor-qs3.wav",
+    "exists": true,
+    "plots": [
+      520399
+    ]
+  },
+  {
+    "key": "doctor-wn2",
+    "archive": "CV.zip",
+    "file": "CV/doctor-wn2.wav",
+    "exists": true,
+    "plots": [
+      520442
+    ]
+  },
+  {
+    "key": "doctor-yw",
+    "archive": "CV.zip",
+    "file": "CV/doctor-yw.wav",
+    "exists": true,
+    "plots": [
+      520446,
+      520738
+    ]
+  },
+  {
+    "key": "doctor-yw2",
+    "archive": "CV.zip",
+    "file": "CV/doctor-yw2.wav",
+    "exists": true,
+    "plots": [
+      520452
+    ]
+  },
+  {
+    "key": "duchess-cx",
+    "archive": "CV.zip",
+    "file": "CV/duchess-cx.wav",
+    "exists": true,
+    "plots": [
+      520401,
+      520510
+    ]
+  },
+  {
+    "key": "duchess-jx",
+    "archive": "CV.zip",
+    "file": "CV/duchess-jx.wav",
+    "exists": true,
+    "plots": [
+      520517
+    ]
+  },
+  {
+    "key": "duchess-my",
+    "archive": "CV.zip",
+    "file": "CV/duchess-my.wav",
+    "exists": true,
+    "plots": [
+      520519
+    ]
+  },
+  {
+    "key": "duchess-sk",
+    "archive": "CV.zip",
+    "file": "CV/duchess-sk.wav",
+    "exists": true,
+    "plots": [
+      520666,
+      520700
+    ]
+  },
+  {
+    "key": "duchess-tq",
+    "archive": "CV.zip",
+    "file": "CV/duchess-tq.wav",
+    "exists": true,
+    "plots": [
+      520661,
+      520757,
+      520767,
+      520981,
+      521018
+    ]
+  },
+  {
+    "key": "duchess-yw",
+    "archive": "CV.zip",
+    "file": "CV/duchess-yw.wav",
+    "exists": true,
+    "plots": [
+      520657,
+      520765,
+      520953,
+      520991
+    ]
+  },
+  {
+    "key": "gamejam用 - 关门",
+    "archive": "音效包.zip",
+    "file": "Stems/gamejam用 - 关门.wav",
+    "exists": true,
+    "plots": [
+      520033
+    ]
+  },
+  {
+    "key": "gamejam用 - 开门",
+    "archive": "音效包.zip",
+    "file": "Stems/gamejam用 - 开门.wav",
+    "exists": true,
+    "plots": [
+      520673
+    ]
+  },
+  {
+    "key": "gamejam用 - 摩擦 4",
+    "archive": "音效包.zip",
+    "file": "Stems/gamejam用 - 摩擦 4.wav",
+    "exists": true,
+    "plots": [
+      520644
+    ]
+  },
+  {
+    "key": "gamejam用 - 敲门",
+    "archive": "音效包.zip",
+    "file": "Stems/gamejam用 - 敲门.wav",
+    "exists": true,
+    "plots": [
+      520154,
+      520678
+    ]
+  },
+  {
+    "key": "gamejam用 - 破碎1",
+    "archive": "音效包.zip",
+    "file": "Stems/gamejam用 - 破碎1.wav",
+    "exists": true,
+    "plots": [
+      520036
+    ]
+  },
+  {
+    "key": "gamejam用 - 碰杯 11",
+    "archive": "音效包.zip",
+    "file": "Stems/gamejam用 - 碰杯 11.wav",
+    "exists": true,
+    "plots": [
+      520380
+    ]
+  },
+  {
+    "key": "gamejam用 - 门吱呀",
+    "archive": "音效包.zip",
+    "file": "Stems/gamejam用 - 门吱呀.wav",
+    "exists": true,
+    "plots": [
+      520156
+    ]
+  },
+  {
+    "key": "heroine-fj",
+    "archive": "CV.zip",
+    "file": "CV/heroine-fj.wav",
+    "exists": true,
+    "plots": [
+      520015,
+      520113,
+      520128,
+      520146,
+      520168,
+      520360,
+      520516,
+      520601,
+      520938
+    ]
+  },
+  {
+    "key": "heroine-fj2",
+    "archive": "CV.zip",
+    "file": "CV/heroine-fj2.wav",
+    "exists": true,
+    "plots": [
+      520171,
+      520306,
+      520351,
+      520480,
+      520720,
+      520748,
+      520977
+    ]
+  },
+  {
+    "key": "heroine-jj",
+    "archive": "CV.zip",
+    "file": "CV/heroine-jj.wav",
+    "exists": true,
+    "plots": [
+      520186,
+      520712,
+      520734,
+      520779,
+      520863,
+      520878,
+      520892,
+      521043,
+      521076,
+      521077,
+      521105
+    ]
+  },
+  {
+    "key": "heroine-jx",
+    "archive": "CV.zip",
+    "file": "CV/heroine-jx.wav",
+    "exists": true,
+    "plots": [
+      520037,
+      520440,
+      520633,
+      520643
+    ]
+  },
+  {
+    "key": "heroine-yw",
+    "archive": "CV.zip",
+    "file": "CV/heroine-yw.wav",
+    "exists": true,
+    "plots": [
+      520008,
+      520174,
+      520185,
+      520373,
+      520419,
+      520462,
+      520495,
+      520537,
+      520620,
+      520755
+    ]
+  },
+  {
+    "key": "heroine-yw2",
+    "archive": "CV.zip",
+    "file": "CV/heroine-yw2.wav",
+    "exists": true,
+    "plots": [
+      520328,
+      520505,
+      520705,
+      520838
+    ]
+  },
+  {
+    "key": "housemaid-1-dy",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-1-dy.wav",
+    "exists": true,
+    "plots": [
+      520120,
+      520333,
+      520338,
+      520558,
+      520575
+    ]
+  },
+  {
+    "key": "housemaid-1-jj3",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-1-jj3.wav",
+    "exists": true,
+    "plots": [
+      520320,
+      520786
+    ]
+  },
+  {
+    "key": "housemaid-1-jx",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-1-jx.wav",
+    "exists": true,
+    "plots": [
+      521155
+    ]
+  },
+  {
+    "key": "housemaid-1-qh",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-1-qh.wav",
+    "exists": true,
+    "plots": [
+      520040,
+      520157
+    ]
+  },
+  {
+    "key": "housemaid-1-qh2",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-1-qh2.wav",
+    "exists": true,
+    "plots": [
+      520032,
+      520162
+    ]
+  },
+  {
+    "key": "housemaid-1-wn",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-1-wn.wav",
+    "exists": true,
+    "plots": [
+      520340,
+      520566
+    ]
+  },
+  {
+    "key": "housemaid-1-yw2",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-1-yw2.wav",
+    "exists": true,
+    "plots": [
+      520324,
+      520543
+    ]
+  },
+  {
+    "key": "housemaid-1-yw4",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-1-yw4.wav",
+    "exists": true,
+    "plots": [
+      520579,
+      520801
+    ]
+  },
+  {
+    "key": "housemaid-2-jj",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-2-jj.wav",
+    "exists": true,
+    "plots": [
+      520794
+    ]
+  },
+  {
+    "key": "housemaid-2-jx",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-2-jx.wav",
+    "exists": true,
+    "plots": [
+      520672
+    ]
+  },
+  {
+    "key": "housemaid-2-qh",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-2-qh.wav",
+    "exists": true,
+    "plots": [
+      520549
+    ]
+  },
+  {
+    "key": "housemaid-2-qs",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-2-qs.wav",
+    "exists": true,
+    "plots": [
+      520339
+    ]
+  },
+  {
+    "key": "housemaid-2-tq",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-2-tq.wav",
+    "exists": true,
+    "plots": [
+      520826,
+      520829
+    ]
+  },
+  {
+    "key": "housemaid-2-yw",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-2-yw.wav",
+    "exists": true,
+    "plots": [
+      520546,
+      520551
+    ]
+  },
+  {
+    "key": "housemaid-2-yw2",
+    "archive": "CV.zip",
+    "file": "CV/housemaid-2-yw2.wav",
+    "exists": true,
+    "plots": [
+      520587
+    ]
+  },
+  {
+    "key": "painter_fd",
+    "archive": "CV.zip",
+    "file": "CV/painter_fd.wav",
+    "exists": true,
+    "plots": [
+      520335
+    ]
+  },
+  {
+    "key": "painter_sk",
+    "archive": "CV.zip",
+    "file": "CV/painter_sk.wav",
+    "exists": true,
+    "plots": [
+      520315,
+      520485
+    ]
+  },
+  {
+    "key": "painter_tq",
+    "archive": "CV.zip",
+    "file": "CV/painter_tq.wav",
+    "exists": true,
+    "plots": [
+      520607,
+      521107
+    ]
+  },
+  {
+    "key": "painter_yh",
+    "archive": "CV.zip",
+    "file": "CV/painter_yh.wav",
+    "exists": true,
+    "plots": [
+      520294
+    ]
+  },
+  {
+    "key": "vintner_gk",
+    "archive": "CV.zip",
+    "file": "CV/vintner_gk.wav",
+    "exists": true,
+    "plots": [
+      520282,
+      520366,
+      520486
+    ]
+  },
+  {
+    "key": "vintner_lh",
+    "archive": "CV.zip",
+    "file": "CV/vintner_lh.wav",
+    "exists": true,
+    "plots": [
+      520375
+    ]
+  },
+  {
+    "key": "vintner_sk",
+    "archive": "CV.zip",
+    "file": "CV/vintner_sk.wav",
+    "exists": true,
+    "plots": [
+      520291,
+      520500
+    ]
+  },
+  {
+    "key": "vintner_tq",
+    "archive": "CV.zip",
+    "file": "CV/vintner_tq.wav",
+    "exists": true,
+    "plots": [
+      520769,
+      520783
+    ]
+  },
+  {
+    "key": "vintner_xs",
+    "archive": "CV.zip",
+    "file": "CV/vintner_xs.wav",
+    "exists": true,
+    "plots": [
+      520371,
+      520509
+    ]
+  },
+  {
+    "key": "vintner_yh2",
+    "archive": "CV.zip",
+    "file": "CV/vintner_yh2.wav",
+    "exists": true,
+    "plots": [
+      520302
+    ]
+  }
+]
