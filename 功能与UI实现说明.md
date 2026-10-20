@@ -1,3 +1,55 @@
+## 2026-10-20 进度保存分支
+
+- `prototype_revised_没有基于UI修改版的调整`：从 `prototype_revised` 保存当前项目改动与 BUG-001～008 修复，配套指南见 [Bug修复指南](Assets/Docs/Bug修复指南.md)。
+
+## 2026-10-20 BUG-008 空间推演标记字母居中
+
+- 用户复测确认仅调整 Title 仍偏右：40×38 标记根 pivot=(0,1)，31×46 图片在 preserveAspect 下贴左绘制，中心与文字框相差约 7.2 个 UI 单位。`PathRender()` 在 Space 将标记根 pivot 改为中心，按 pivot 差值×矩形尺寸补偿 anchoredPosition，保留原矩形位置；Title 铺满且使用 MiddleCenter + alignByGeometry，让图片与字形同中心。拖拽预览自动继承。
+- 人物路径页、场景／Prefab／存档不变。改法见 [Bug修复指南](Assets/Docs/Bug修复指南.md) 的 BUG-008。
+- 验证：项目响应文件编译通过；同版 Unity 2022.3.62f3 使用项目 uGUI、原图和原字体隔离渲染 A／B／C，复现旧偏右并确认新显示居中，已复核对比图。网格中心误差约 0.7 UI 单位（字体取整）；图与数值记录见项目交接。未在当前游戏场景进行交互回归。
+
+## 2026-10-20 BUG-007 空间推演拖拽显示层级
+
+- `PathRender()` 在 Space 中为左侧 A／B／C 候选及地图上已放置的标签设置 `DragRoot = (RectTransform)v.transform`，复用页面上层拖拽预览，避免地图覆盖和列表裁切。预览不拦截放置射线，松手或页面重建时统一清理。
+- 仅启用 Space，人物路径页保持原行为；房间放置、门状态、地图缩放／平移及验证规则不变，无场景／Prefab／存档变化。改法见 [Bug修复指南](Assets/Docs/Bug修复指南.md) 的 BUG-007。
+- 验证：Unity 2022.3.62f3 编译器及项目响应文件编译通过；已核对候选／已放置标签两处接入、放置回调与 PathDragging 保留。尚未进行 Unity Play 中拖动、地图缩放后重拖和放置的交互验证。
+
+## 2026-10-20 BUG-006 锚点拖拽显示层级
+
+- 锚点对齐／文本对照的候选卡片在拖动时显示于轨道上方。`FlowDrag.DragRoot` 为可选预览父节点，`Anchors()` 将其设为当前页面；拖动副本作为页面最后子节点，原卡片隐藏但继续占位，不再受左侧列表遮罩和轨道绘制顺序影响。
+- 原卡片与预览均不阻挡放置射线，接收器仍读取原卡片数据；松手、列表重建或页面关闭统一清理。Space 标签的接入见 BUG-007；其他未设置 DragRoot 的拖拽沿用原显示方式，无场景／Prefab／存档变化。改法见 [Bug修复指南](Assets/Docs/Bug修复指南.md) 的 BUG-006。
+- 验证：Unity 2022.3.62f3 编译器及项目响应文件编译通过；已核对页面绘制顺序、预览尺寸、射线穿透和重建清理路径。尚未进行 Unity Play 中实际拖动、放入及取消的交互验证。
+
+## 2026-10-20 BUG-005 磁带对白跟随
+
+- Tape 逐句追加对白后按原滚动位置决定是否置底：距底部 16 个 UI 单位内继续跟随，上翻历史保留像素位置，回到底部后恢复。进入播放页、拖动进度条或从末尾重播显示当前最新对白。
+- `PlaybackRender()` 重建后等待布局，再由 `RestoreTapeScroll()` 定位；取消旧定位协程并检查页面与录音。复用 LinesScroll，无场景绑定变化，不改变 Recordings 全文列表和听完判定。改法见 [Bug修复指南](Assets/Docs/Bug修复指南.md) 的 BUG-005。
+- 验证：Unity 2022.3.62f3 编译器及项目响应文件编译通过；已核对 Tape 的 LinesScroll／Content 绑定及顶端锚点。尚未进行 Play 中追加对白、历史阅读与拖动进度的实测。
+
+## 2026-10-20 BUG-004 磁带页隐藏时间地点
+
+- `CastleV24Controller.Hud()` 在 `Tape` 页隐藏 `LocationGroup`（`Hud/bg_location`），包括时间、地点、图标及背景；返回探索页恢复。返回及右上角按钮保留，场景绑定不变。改法见 [Bug修复指南](Assets/Docs/Bug修复指南.md) 的 BUG-004。
+- 验证：Unity 2022.3.62f3 编译器及项目响应文件编译通过；已核对页面切换显隐逻辑，尚未进行此次改动的 Play 画面实测。
+
+## 2026-10-20 BUG-003 对话框点击推进
+
+- 现场对白框内普通文字／空白左键点击也可继续；链接只触发原链接，拖动滚动不推进。保留 Continue 和自动播放入口；选项、弹窗、结束对白、必点动作不能被背景点击跳过，录音标记规则保留。
+- `V24LineHit` 在 TMP 存在时排除链接，背景无 TMP 时也可接收点击；`CastleV24Controller.Explore.cs` 的 `AdvanceDialogueFromPanel()` 检查状态后调用 Continue。`CastleEditable` 的 DialoguePanel 挂该组件，底层 TextBackdrop 开启射线，按钮与正文位置不变。详见 [Bug修复指南](Assets/Docs/Bug修复指南.md) 的 BUG-003 和 `UI对象树与绑定清单.md`。
+- 验证：Unity 2022.3.62f3 编译器及项目响应文件编译通过；已检查链接排除、拖动取消、状态门禁与场景绑定。尚未完成 Unity Play 中的实际点击和滚动回归。
+
+## 2026-10-20 BUG-002 对白姓名与正文同行
+
+- 交谈界面每条现场对白显示为“人物名：正文”，不在姓名后强制换行；旁白、未知身份和选项回复同样处理，保留原姓名颜色、字号、关键词链接及身份规则。整句按实际可用宽度计算换行与行高。
+- `CastleV24Controller.Explore.cs` 新增 `SetInlineDialogue()`，仅调整现场对白实例；磁带／录音排版和场景、Prefab 绑定不变。具体问题及改法见 [Bug修复指南](Assets/Docs/Bug修复指南.md) 的 BUG-002。
+- 同一条现场对白的 TMP `lineSpacing` 从 0 调至 8，在计算文本高度前设置；不同对白之间的列表间距不变。
+
+- 验证：姓名同行效果已由用户在游戏中确认；行距补充使用 Unity 2022.3.62f3 编译器及项目响应文件编译通过，尚未进行该行距的 Play 画面实测。
+
+## 2026-10-20 BUG-001 获得弹窗类型文字
+
+- `CastleV24Controller.Reward()` 对 `info` 奖励隐藏 `Acquire/Icon` 左侧类型文字，覆盖人物初始资料、灵感及人物路径奖励；固定文件夹图、名称、正文、收录提示与奖励结算保留。线索及道具原显示规则保留，场景绑定未变。
+- 问题、代码位置和具体修改片段见 [Bug修复指南](Assets/Docs/Bug修复指南.md)。
+
 ## 2026-10-20 对话选项参考图
 
 - 素材已由用户放入 Assets/Castle/Art/V24/UI/5交谈界面/拆分。01 为顶部带菱形装饰边框，02 为普通圆角边框，03 为金色纹理；不将三张图误当成普通／悬停／按下状态图。
@@ -8,7 +60,7 @@
 
 ## 2026-10-20 获得图片、刻录列表与制作名单
 
-- Acquire 的 ItemArt 位于 IconBack 下：仅获得道具（item／tape）时读取当前条目的 Icon 并等比显示；获得线索、人物灵感等其他类型时隐藏道具图，恢复 IconBack 原固定图片和类型文字，不替换为奖励图片，也不残留上一件道具图。道具缺图时显示类型文字。
+- Acquire 的 ItemArt 位于 IconBack 下：仅获得道具（item／tape）时读取当前条目的 Icon 并等比显示；非道具隐藏 ItemArt，恢复 IconBack 原固定图片。`info` 隐藏左侧类型文字；线索及缺图道具保留类型文字。不残留上一件道具图。
 
 - 本次类型范围修正验证：Unity 编译、Windows 构建与 317 项规则检查通过；隔离播放器验证道具→线索→人物灵感→道具切换，非道具恢复 IconBack 原图，运行日志 Logs/acquire-type-player.log 无 Error／Exception；已复核人物奖励截图。构建日志 Logs/acquire-type-build.log。仅本次分类切换经过自动回归，未人工全流程通关。
 - Burn/FilesScroll 复用 Recordings 的 RecordingFolder／RecordingFile 模板、文件夹打开／关闭图、缩进分支与文件选中高亮；展开收起不再关闭重开弹窗，也不清除已选文件。选择后才启用刻录，关闭仍不修改磁带。保留既有可访问录音与覆盖确认规则。

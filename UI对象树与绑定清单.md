@@ -1,3 +1,8 @@
+## 2026-10-20 对话框点击推进绑定
+
+- `Explore/DialoguePanel` 挂已有 `V24LineHit`，运行时在 `Explore()` 中将 `Clicked` 绑定 `AdvanceDialogueFromPanel()`；底层 `TextBackdrop/Image` 开启 Raycast Target，保留层级和尺寸。
+- 对白行 `Body` 的 `FlowTextLink` 继续处理链接，`V24LineHit` 对非链接点击推进；选项回复同样绑定。Continue、Auto、Choices、DialogueScroll 和滚动条原绑定保留，不在正文上覆盖透明按钮。
+
 ## 2026-10-20 对话选项绑定
 
 - CastleV24Controller.DialogueChoicePrefab → Assets/Castle/Prefabs/V24/DialogueChoice.prefab；绑定 Title、Body（隐藏）、Select、Background。模板挂 V24DialogueChoice，Border 指向根 Image，Glow 指向 HighlightMask，FirstBorder／RegularBorder 分别绑定 button_talking_01／02。
