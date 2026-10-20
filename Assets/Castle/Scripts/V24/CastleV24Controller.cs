@@ -148,6 +148,7 @@ namespace Castle.V24
         }
         private void Page(string id)
         {
+            if (id != "Tape") _tapeScrollRecord = 0;
             _page = id; if(!Music.isPlaying)Music.Play(); if (id != "Title") S.Page = id;
             UpdateFormalMusic();
             foreach (var v in Ui.Pages) v.gameObject.SetActive(v.Id == id);
@@ -170,7 +171,7 @@ namespace Castle.V24
         }
         private void Hud()
         {
-            Show(Ui.Hud,"LocationGroup",_page!="Recordings"&&_page!="Anchors"&&_page!="Space"&&_page!="Timeline");
+            Show(Ui.Hud,"LocationGroup",_page!="Recordings"&&_page!="Anchors"&&_page!="Space"&&_page!="Timeline"&&_page!="Tape");
             foreach(var id in new[]{"Back","Map","Journal","Settings"})Ui.Hud.Get<Button>(id).GetComponentInChildren<Text>(true).gameObject.SetActive(false);
             Txt(Ui.Hud,"Location","当前位置：" + Engine.RoomName(S.Room));
             Txt(Ui.Hud,"CurrentTime","当前时间：Day " + S.Day + " · " + Engine.Now.ToString("HH:mm"));
@@ -256,7 +257,9 @@ namespace Castle.V24
                 var bounds = ((RectTransform)art.transform.parent).rect;
                 FitItemArt(art, 0, 0, bounds.width, bounds.height);
             }
-            v.Get<Text>("Icon").enabled = art.texture == null;
+            // 人物资料、灵感和路径奖励保留图案与正文，隐藏左侧类型文字。
+            bool showTypeLabel = entry.Type != "info" && art.texture == null;
+            v.Get<Text>("Icon").enabled = showTypeLabel;
             Btn(v,"Confirm",()=>{Pop();Engine.CloseReward();Refresh();});
         }
         private void Settings()

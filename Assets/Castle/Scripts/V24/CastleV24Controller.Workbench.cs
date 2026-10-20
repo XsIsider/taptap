@@ -48,9 +48,24 @@ namespace Castle.V24
             }
             Btn(v,"Done",()=>Page("Anchors"),"标记完成");PlaybackRender();Save();
         }
-        private void PlaybackRender()
+        private Coroutine _tapeScrollRoutine;
+        private int _tapeScrollRecord;
+        private void PlaybackRender(bool revealLatest = false)
         {
             var v=V(_page=="Tape"?"Tape":"Recordings");
+            var scroll = _page == "Tape" ? v.Get<ScrollRect>("LinesScroll") : null;
+            bool follow = false;
+            Vector2 scrollPosition = Vector2.zero;
+            if (scroll != null)
+            {
+                if (_tapeScrollRoutine != null) StopCoroutine(_tapeScrollRoutine);
+                _tapeScrollRoutine = null;
+                float hiddenHeight = Mathf.Max(0f, scroll.content.rect.height - scroll.viewport.rect.height);
+                // 先按旧内容判断是否贴近底部；向上查看历史时保留原来的像素位置。
+                follow = revealLatest || _tapeScrollRecord != _record || hiddenHeight <= 16f || scroll.verticalNormalizedPosition * hiddenHeight <= 16f;
+                scrollPosition = scroll.content.anchoredPosition;
+                _tapeScrollRecord = _record;
+            }
             Clear(v.Get<RectTransform>("Lines"));
             if(_record==0){Txt(v,"FileInfo","暂无可访问录音");Btn(v,"Play",null,"播放",false);return;}
             var record=_data.RecordById(_record);_position=Mathf.Clamp(_position,0,record.Duration);
@@ -61,9 +76,24 @@ namespace Castle.V24
                 if(_page=="Tape")Line(v.Get<RectTransform>("Lines"),plot,true);
                 else RecordingLine(v.Get<RectTransform>("Lines"),plot);
             }
-            Btn(v,"Play",()=>{if(_page=="Tape"||_data.Formal){if(_position>=record.Duration){_position=0;_heardPosition=0;_audioLine=0;}SetPlaybackPlaying(!_playing);}}," ");
-            Slide(v,"Progress",0,record.Duration,_position,x=>{_position=x;_audioLine=0;if(Voice)Voice.Stop();if(Effects)Effects.Stop();if(_page=="Tape")PlaybackRender();else {HighlightRecording();PlaybackTick(false);Save();}});
+            Btn(v,"Play",()=>{if(_page=="Tape"||_data.Formal){if(_position>=record.Duration){_position=0;_heardPosition=0;_audioLine=0;if(_page=="Tape")PlaybackRender(true);}SetPlaybackPlaying(!_playing);}}," ");
+            Slide(v,"Progress",0,record.Duration,_position,x=>{_position=x;_audioLine=0;if(Voice)Voice.Stop();if(Effects)Effects.Stop();if(_page=="Tape")PlaybackRender(true);else {HighlightRecording();PlaybackTick(false);Save();}});
             Show(v,"Extract",false);PlaybackTick(false);if(_page!="Tape")HighlightRecording();
+            if (scroll != null) _tapeScrollRoutine = StartCoroutine(RestoreTapeScroll(scroll, follow, scrollPosition, _record));
+        }
+        private IEnumerator RestoreTapeScroll(ScrollRect scroll, bool follow, Vector2 position, int recordId)
+        {
+            // 等待旧行销毁与新行布局完成，避免立即置底时仍使用上一帧的内容高度。
+            yield return null;
+            _tapeScrollRoutine = null;
+            if (_page != "Tape" || _record != recordId || !scroll || !scroll.isActiveAndEnabled) yield break;
+            Canvas.ForceUpdateCanvases();
+            if (follow)
+            {
+                scroll.StopMovement();
+                scroll.verticalNormalizedPosition = 0f;
+            }
+            else scroll.content.anchoredPosition = position;
         }
         private void PlaybackTick(bool redraw=true)
         {
@@ -71,7 +101,7 @@ namespace Castle.V24
             if(redraw && _page=="Tape")
             {
                 int count=_data.Lines(record.Plot).Count(x=>x.At<=_position);
-                if(v.Get<RectTransform>("Lines").childCount!=count){PlaybackRender();return;}
+                if(v.Get<RectTransform>("Lines").Cast<Transform>().Count(x=>x.gameObject.activeSelf)!=count){PlaybackRender();return;}
             }
             string time="相对进度";var snapshot=S.Recordings.FirstOrDefault(x=>x.Id==_record);
             if(snapshot!=null)time=new DateTime(Engine.DisplayStart(snapshot,record.Device)).AddSeconds(_position).ToString("HH:mm:ss");
@@ -117,6 +147,7 @@ namespace Castle.V24
                 var plot=_data.Plot.First(x=>x.Id==id);var record=_data.Record.FirstOrDefault(x=>x.Plot==plot.Group);
                 var card=Card(v.Get<RectTransform>("List"),"锚点 "+(S.Marked.IndexOf(id)+1),plot.Text,()=>{_selectedLine=id;Toast(plot.Text+"\n"+Engine.DeviceName(record?.Device??0));},template:AnchorCardPrefab);
                 var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="evidence";drag.Id=id.ToString();
+                drag.DragRoot=(RectTransform)v.transform;
             }
             int capacity=puzzle.Answer.Split('|').Length;
             v.Get<FlowDrag>("DropZone").Dropped=drag=>{if(drag.Kind=="evidence")AddEvidence(int.Parse(drag.Id),capacity);};
@@ -198,6 +229,7 @@ namespace Castle.V24
                 var card=Card(list,labels[i],node==null?"拖到地图地点":NodeName(node)+" "+node.Floor+"F",()=>{_slot=slot;Txt(v,"Details","已选择标签 "+labels[slot]+"，点击或拖放到地点。");BindDoors(v,draft);},template:v.Id=="Space"?SpaceCardPrefab:null);
                 if(puzzle.Type=="person_path") {var title=card.Get<Text>("Title");title.resizeTextForBestFit=true;title.resizeTextMinSize=12;title.resizeTextMaxSize=20;title.horizontalOverflow=HorizontalWrapMode.Overflow;}
                 var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="path";drag.Id=slot.ToString();
+                if(v.Id=="Space")drag.DragRoot=(RectTransform)v.transform;
             }
             foreach(var node in map.Nodes.Where(x=>x.Floor==_floor&&puzzle.Candidates.Contains(x.Id)))
             {
@@ -224,7 +256,22 @@ namespace Castle.V24
                     var badgeRect=(RectTransform)badge.transform;badgeRect.anchorMin=badgeRect.anchorMax=new Vector2(0,0);badgeRect.pivot=new Vector2(0,1);badgeRect.anchoredPosition=new Vector2(order++*44,0);badgeRect.sizeDelta=new Vector2(40,38);
                     if(v.Id=="Space"){var mark=badge.Get<Image>("Background");mark.sprite=PathMarkerIcon;mark.color=Color.white;mark.preserveAspect=true;badge.Get<Text>("Title").color=new Color(.1f,.2f,.1f);}
                     var title=badge.Get<Text>("Title");title.rectTransform.anchoredPosition=new Vector2(4,-2);title.rectTransform.sizeDelta=new Vector2(-8,30);
+                    if(v.Id=="Space")
+                    {
+                        // 等比图片按 pivot 分配留白；改为中心轴心，同时补偿位置以保留原矩形。
+                        var markerCenter=new Vector2(.5f,.5f);
+                        badgeRect.anchoredPosition+=Vector2.Scale(markerCenter-badgeRect.pivot,badgeRect.rect.size);
+                        badgeRect.pivot=markerCenter;
+                        // 标记文字与菱形共用中心，并按字形而非字体行框居中。
+                        var titleRect=title.rectTransform;
+                        titleRect.anchorMin=Vector2.zero;titleRect.anchorMax=Vector2.one;
+                        titleRect.pivot=new Vector2(.5f,.5f);
+                        titleRect.offsetMin=Vector2.zero;titleRect.offsetMax=Vector2.zero;
+                        title.alignment=TextAnchor.MiddleCenter;
+                        title.alignByGeometry=true;
+                    }
                     var drag=badge.Get<FlowDrag>("Drag");drag.Kind="path";drag.Id=slot.ToString();drag.CanDrag=true;drag.Dropped=card.Get<FlowDrag>("Drag").Dropped;
+                    if(v.Id=="Space")drag.DragRoot=(RectTransform)v.transform;
                 }
             }
             for(int i=1;i<draft.Values.Count;i++)

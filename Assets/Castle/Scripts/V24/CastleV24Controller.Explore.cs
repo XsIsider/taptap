@@ -66,7 +66,12 @@ namespace Castle.V24
             foreach(var item in S.Transcript)
             {
                 if(item.Plot!=0) Line(content,_data.Plot.First(x=>x.Id==item.Plot),false);
-                else {var line=Instantiate(Ui.LinePrefab,content);Txt(line,"Speaker",Engine.CharacterName(200001));line.Get<TextMeshProUGUI>("Body").text=item.Reply;}
+                else
+                {
+                    var line = Instantiate(Ui.LinePrefab, content);
+                    line.gameObject.SetActive(true);
+                    SetInlineDialogue(line, Engine.CharacterName(200001), item.Reply);
+                }
             }
             Clear(v.Get<RectTransform>("Choices"));
             if(!talk){StartCoroutine(RestoreScroll(v.Get<ScrollRect>("DialogueScroll"),S.DialogueScroll));return;}
@@ -123,7 +128,8 @@ namespace Castle.V24
         private CastleUiView Line(Transform parent,V24Plot plot,bool recording)
         {
             var view=Instantiate(Ui.LinePrefab,parent); view.gameObject.SetActive(true);
-            Txt(view,"Speaker",(recording?TimeSpan.FromSeconds(plot.At).ToString(@"mm\:ss")+" · ":"")+SpeakerName(plot,recording)+(S.Marked.Contains(plot.Id)?"  ◆":""));
+            string speaker = (recording ? TimeSpan.FromSeconds(plot.At).ToString(@"mm\:ss") + " · " : "") + SpeakerName(plot, recording) + (S.Marked.Contains(plot.Id) ? "  ◆" : "");
+            Txt(view, "Speaker", speaker);
             string body=plot.Text;
             for(int i=0;i<plot.LinkText.Length;i++)
             {
@@ -135,8 +141,37 @@ namespace Castle.V24
             var tmp=view.Get<TextMeshProUGUI>("Body");tmp.text=body;
             tmp.GetComponent<FlowTextLink>().Clicked=Link;
             tmp.GetComponent<V24LineHit>().Clicked=()=>{if(recording)ToggleRecordingLine(plot.Id);};
-            var layout=view.GetComponent<LayoutElement>();layout.preferredHeight=Mathf.Max(110,65+tmp.GetPreferredValues(body,recording?720:405,0).y);
+            if (recording)
+            {
+                var layout = view.GetComponent<LayoutElement>();
+                layout.preferredHeight = Mathf.Max(110, 65 + tmp.GetPreferredValues(body, 720, 0).y);
+            }
+            else SetInlineDialogue(view, speaker, body);
             return view;
+        }
+        private void SetInlineDialogue(CastleUiView view, string speakerName, string body)
+        {
+            var speaker = view.Get<Text>("Speaker");
+            var text = view.Get<TextMeshProUGUI>("Body");
+            speaker.text = speakerName;
+            speaker.enabled = false;
+            // 稍微拉开同一条对白内的行距，后续首选高度计算同时包含新增间距。
+            text.lineSpacing = 8f;
+
+            // 先处理正文链接，再拼姓名，避免姓名前缀被关键词替换成可点击链接。
+            string color = ColorUtility.ToHtmlStringRGBA(speaker.color);
+            text.text = "<color=#" + color + "><size=" + speaker.fontSize + ">" + speakerName + "：</size></color>" + body;
+            var bodyRect = text.rectTransform;
+            bodyRect.anchoredPosition = new Vector2(bodyRect.anchoredPosition.x, speaker.rectTransform.anchoredPosition.y);
+
+            // 列表布局尚未刷新时，预制件仍保留原宽度，按父列表可用宽度计算换行和整行高度。
+            var parentRect = (RectTransform)view.transform.parent;
+            var group = parentRect.GetComponent<VerticalLayoutGroup>();
+            float rowWidth = parentRect.rect.width - (group != null ? group.padding.horizontal : 0);
+            float textWidth = Mathf.Max(1f, rowWidth * (bodyRect.anchorMax.x - bodyRect.anchorMin.x) + bodyRect.sizeDelta.x);
+            float textHeight = Mathf.Ceil(text.GetPreferredValues(text.text, textWidth, 0).y);
+            bodyRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, textHeight);
+            view.GetComponent<LayoutElement>().preferredHeight = Mathf.Ceil(-bodyRect.anchoredPosition.y + textHeight + 4f);
         }
         private bool CharacterUnlocked(int id) => Engine.KnowsCharacter(id);
         private void Link(string key)
