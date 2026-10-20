@@ -286,10 +286,10 @@ namespace Castle.V24
             for(int i=0;i<labels.Length;i++)
             {
                 int slot=i;int value=draft.Values[i];var node=map.Nodes.FirstOrDefault(x=>x.Id==value);
-                var card=Card(list,labels[i],node==null?"拖到地图地点":NodeName(node)+" "+node.Floor+"F",()=>{_slot=slot;Txt(v,"Details","已选择标签 "+labels[slot]+"，点击或拖放到地点。");BindDoors(v,draft);},template:v.Id=="Space"?SpaceCardPrefab:null);
-                if(puzzle.Type=="person_path") {var title=card.Get<Text>("Title");title.resizeTextForBestFit=true;title.resizeTextMinSize=12;title.resizeTextMaxSize=20;title.horizontalOverflow=HorizontalWrapMode.Overflow;}
+                var card=Card(list,labels[i],node==null?"拖到地图地点":NodeName(node)+" "+node.Floor+"F",()=>{_slot=slot;Txt(v,"Details","已选择标签 "+labels[slot]+"，点击或拖放到地点。");BindDoors(v,draft);},template:v.Id=="Space"?SpaceCardPrefab:PathLabelPrefab);
+                if(puzzle.Type=="person_path") {var title=card.Get<Text>("Title");title.font=WorkbenchFont;title.resizeTextForBestFit=true;title.resizeTextMinSize=12;title.resizeTextMaxSize=20;title.horizontalOverflow=HorizontalWrapMode.Overflow;}
                 var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="path";drag.Id=slot.ToString();
-                if(v.Id=="Space")drag.DragRoot=(RectTransform)v.transform;
+                drag.DragRoot=(RectTransform)v.transform;
             }
             foreach(var node in map.Nodes.Where(x=>x.Floor==_floor&&puzzle.Candidates.Contains(x.Id)))
             {
@@ -304,17 +304,17 @@ namespace Castle.V24
                 },true);card.name="Node"+node.Id;
                 if(node.Room!=0)PlaceMapRegion(card,root,node.Room);
                 else {var rect=(RectTransform)card.transform;var point=NodePoint(node);rect.anchorMin=rect.anchorMax=new Vector2(point.x,1-point.y);rect.anchoredPosition=Vector2.zero;rect.sizeDelta=new Vector2(95,160);}
-                card.Get<Image>("Background").color=v.Id=="Space"?Color.clear:new Color(.15f,.25f,.18f,.5f);
+                card.Get<Image>("Background").color=Color.clear;
                 card.Get<FlowDrag>("Drag").Dropped=drag=>{if(drag.Kind=="path"){draft.Values[int.Parse(drag.Id)]=node.Id;Engine.Commit();PathRender(v);}};
-                card.Get<FlowPointer>("Pointer").Enter=()=>{if(v.Id=="Space")Txt(v,"Details",NodeName(node)+"\n"+placed);if(FlowDrag.PathDragging)card.Get<Image>("Background").color=new Color(.5f,.4f,.15f);};
-                card.Get<FlowPointer>("Pointer").Exit=()=>card.Get<Image>("Background").color=v.Id=="Space"?Color.clear:new Color(.15f,.25f,.18f);
-                if(v.Id=="Space")Show(card,"Title",false);
+                card.Get<FlowPointer>("Pointer").Enter=()=>{if(v.Id=="Space")Txt(v,"Details",NodeName(node)+"\n"+placed);else if(node.Room!=0)ShowRoomTooltip(v,node.Room);if(FlowDrag.PathDragging)card.Get<Image>("Background").color=new Color(.5f,.4f,.15f);};
+                card.Get<FlowPointer>("Pointer").Exit=()=>{card.Get<Image>("Background").color=Color.clear;if(v.Id=="Path")Show(v,"TooltipPanel",false);};
+                Show(card,"Title",false);
                 int order=0;
                 foreach(int slot in Enumerable.Range(0,labels.Length).Where(i=>draft.Values[i]==node.Id))
                 {
                     var badge=Card(card.transform,((char)('A'+slot)).ToString(),"",()=>{_slot=slot;BindDoors(v,draft);},true);badge.name="Label"+slot;
                     var badgeRect=(RectTransform)badge.transform;badgeRect.anchorMin=badgeRect.anchorMax=new Vector2(0,0);badgeRect.pivot=new Vector2(0,1);badgeRect.anchoredPosition=new Vector2(order++*44,0);badgeRect.sizeDelta=new Vector2(40,38);
-                    if(v.Id=="Space"){var mark=badge.Get<Image>("Background");mark.sprite=PathMarkerIcon;mark.color=Color.white;mark.preserveAspect=true;badge.Get<Text>("Title").color=new Color(.1f,.2f,.1f);}
+                    {var mark=badge.Get<Image>("Background");mark.sprite=v.Id=="Path"?PersonPathMarkerIcon:PathMarkerIcon;mark.color=Color.white;mark.preserveAspect=true;badge.Get<Text>("Title").color=new Color(.1f,.2f,.1f);}
                     var title=badge.Get<Text>("Title");title.rectTransform.anchoredPosition=new Vector2(4,-2);title.rectTransform.sizeDelta=new Vector2(-8,30);
                     if(v.Id=="Space")
                     {
@@ -331,7 +331,7 @@ namespace Castle.V24
                         title.alignByGeometry=true;
                     }
                     var drag=badge.Get<FlowDrag>("Drag");drag.Kind="path";drag.Id=slot.ToString();drag.CanDrag=true;drag.Dropped=card.Get<FlowDrag>("Drag").Dropped;
-                    if(v.Id=="Space")drag.DragRoot=(RectTransform)v.transform;
+                    drag.DragRoot=(RectTransform)v.transform;
                 }
             }
             for(int i=1;i<draft.Values.Count;i++)
@@ -369,36 +369,44 @@ namespace Castle.V24
             if(v.Id=="Path")Txt(v,"Details",puzzle.Name+"\n"+PuzzleRequirements(puzzle));
             Show(v,"TooltipPanel",false);
             BindDoors(v,draft);
+            PreparePathView(v);
         }
         private void Timeline()
         {
             var v=V("Timeline");var puzzle=_data.Puzzle.First(x=>x.Type=="timeline");_puzzle=puzzle.Id;var draft=Engine.Draft(puzzle.Id);int count=puzzle.Answer.Split('|').Length;
-            if(v.TryGet<Text>("Requirements",out var requirementLabel))requirementLabel.gameObject.SetActive(!S.Ending);
+            while(draft.Values.Count<count)draft.Values.Add(0);
+            RenderTimelineSlots(v,draft,count);
+            if(v.TryGet<Text>("Requirements",out var requirementLabel))requirementLabel.gameObject.SetActive(false);
             Show(v,"SortRoot",!S.Ending);Show(v,"RevealRoot",S.Ending);
             if(S.Ending)
             {
                 if (_data.Formal) { TimelinePlayback(); return; }
                 Txt(v,"EndingStatus",S.Finished?"未完待续":"真相正在显现");Txt(v,"EndingText",S.Finished?"本次调查告一段落。":"事件时间线已还原……");Show(v,"Progress",false);Show(v,"Play",false);Show(v,"Replay",false);return;
             }
-            while(draft.Values.Count<count)draft.Values.Add(0);
-            Clear(v.Get<RectTransform>("Clues"));Clear(v.Get<RectTransform>("Slots"));
-            foreach(int id in puzzle.Candidates.Where(Engine.Has).Select(Engine.BestEntry))
+            Clear(v.Get<RectTransform>("Clues"));
+            foreach(int id in TimelineClueOrder(puzzle.Candidates.Where(Engine.Has).Select(Engine.BestEntry).Distinct().ToArray()))
             {
-                var entry=_data.EntryById(id);var card=Card(v.Get<RectTransform>("Clues"),entry.Name,entry.Text,()=>_selectedEntry=id);
+                var entry=_data.EntryById(id);var card=Card(v.Get<RectTransform>("Clues"),entry.Name,"",()=>_selectedEntry=id,template:TimelineCluePrefab);
+                card.Get<Text>("Title").font=ReadingFont;
                 var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="event";drag.Id=id.ToString();
-            }
-            for(int i=0;i<count;i++)
-            {
-                int slot=i;var entry=_data.EntryById(draft.Values[i]);var card=Card(v.Get<RectTransform>("Slots"),(i+1).ToString(),entry?.Name??"拖入事件",()=>PlaceTimeline(slot,_selectedEntry));
-                card.Get<FlowDrag>("Drag").Dropped=drag=>{if(drag.Kind=="event")PlaceTimeline(slot,int.Parse(drag.Id));};
-                card.Get<FlowDrag>("Drag").CanDrag=entry!=null;card.Get<FlowDrag>("Drag").Kind="event";card.Get<FlowDrag>("Drag").Id=draft.Values[i].ToString();
+                drag.DragRoot=(RectTransform)v.transform;
             }
             if(v.TryGet<Text>("Requirements",out var requirements))requirements.text=PuzzleRequirements(puzzle);
-            Btn(v,"Submit",()=>SubmitPuzzle("Timeline"),"提交时间线",draft.Values.All(x=>x!=0)&&Engine.Need(puzzle.Need));
         }
         private void PlaceTimeline(int slot,int id)
         {
-            if(id==0)return;var draft=Engine.Draft(_puzzle);int old=draft.Values.IndexOf(id);if(old>=0)draft.Values[old]=draft.Values[slot];draft.Values[slot]=id;Engine.Commit();Timeline();
+            if(id==0 || S.Ending || !_data.PuzzleById(_puzzle).Candidates.Select(Engine.BestEntry).Contains(id) || !Engine.Has(id))return;
+            var puzzle = _data.PuzzleById(_puzzle);
+            var draft = Engine.Draft(_puzzle);
+            if (slot < 0 || slot >= draft.Values.Count || draft.Values[slot] == id) return;
+            int old = draft.Values.IndexOf(id);
+            if (old >= 0) draft.Values[old] = draft.Values[slot];
+            draft.Values[slot] = id;
+            Engine.Commit();
+            Timeline();
+            // 仅玩家改变排序后校验；打开页面或重绘不重复提交错误答案。
+            if (draft.Values.Take(puzzle.Answer.Split('|').Length).All(x => x != 0) && Engine.Need(puzzle.Need))
+                SubmitPuzzle("Timeline");
         }
     }
 }

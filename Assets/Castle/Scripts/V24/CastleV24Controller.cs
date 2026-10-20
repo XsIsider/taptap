@@ -12,6 +12,10 @@ namespace Castle.V24
     {
         public CastleFlowUi Ui;
         public Font WorkbenchFont, ReadingFont, ButtonFont;
+        [Min(0), Tooltip("同一条对白内的行间距，可在场景 UIFlow 上调整。")]
+        public float DialogueLineSpacing = 12f;
+        [Min(0), Tooltip("相邻对白条目的间距，现场与磁带通用对话框共用。")]
+        public float DialogueEntrySpacing = 14f;
         public CastleUiView ConversationPortraitPrefab, AnchorCardPrefab, SpaceCardPrefab;
         public CastleUiView DialogueChoicePrefab;
         public CastleUiView MapCardPrefab, PersonCardPrefab, ItemCardPrefab, RecordingFolderPrefab, RecordingFilePrefab, RecordingLinePrefab;
@@ -28,7 +32,7 @@ namespace Castle.V24
         private readonly List<string> _modal = new List<string>();
         private readonly List<Action> _returns = new List<Action>();
         private string _page = "Title";
-        private float _toastUntil, _nextAuto;
+        private float _nextAuto, _toastUntil;
         private bool _blocked, _test, _playing;
         private int _floor = 1, _selectedRoom, _selectedEntry, _selectedTape, _selectedCharacter, _puzzle, _selectedLine, _slot, _record, _playTape, _burnRecord;
         private float _position;
@@ -49,9 +53,11 @@ namespace Castle.V24
             Engine.EntryGranted = ShowDialogueCollectionHint;
             ClearDialogueCollectionHint();
             HideFloatingHint();
+            var journalReference = Ui.ModalRoot.transform.Find("example");
+            if (journalReference) journalReference.gameObject.SetActive(false);
             if (!_test) { S.Volume=PlayerPrefs.GetFloat("Castle.MusicVolume",S.Volume); S.EffectsVolume=PlayerPrefs.GetFloat("Castle.EffectsVolume",S.EffectsVolume); }
             ApplyAudioSettings();
-            if (TalkingCursor) Cursor.SetCursor(TalkingCursor, Vector2.zero, CursorMode.Auto);
+            if (TalkingCursor) SetTalkingCursor();
             Ui.Toast.gameObject.SetActive(false); Page("Title");
             if (_test) StartCoroutine(_data.Formal ? FormalSmoke() : Smoke());
         }
@@ -64,11 +70,11 @@ namespace Castle.V24
         private void OnApplicationPause(bool paused) { if (paused) Save(); }
         private void Update()
         {
-            if (Ui.Toast.gameObject.activeSelf && Time.unscaledTime > _toastUntil) Ui.Toast.gameObject.SetActive(false);
+            UpdatePageCursor();
+            if (Ui.Toast.gameObject.activeSelf && Time.unscaledTime >= _toastUntil) Ui.Toast.gameObject.SetActive(false);
             if (_openingTransition) return;
             UpdateAnchorDetailsFade();
             UpdatePersonPathCompletionHint();
-            UpdateFloatingHintFade();
             bool itemBlocked = UpdateDialogueItemHint();
             if (_modal.Count > 0) { if (Input.GetKeyDown(KeyCode.Escape) && _modal.Last() != "Acquire") Pop(); return; }
             if (Input.GetKeyDown(KeyCode.Escape)) { Settings(); return; }
@@ -134,7 +140,16 @@ namespace Castle.V24
             if (font) foreach (var text in card.GetComponentsInChildren<Text>(true)) text.font = font;
             card.gameObject.SetActive(true); Txt(card,"Title",title); Txt(card,"Body",body); Btn(card,"Select",action); return card;
         }
-        private void Toast(string text) { Txt(Ui.Toast,"Body",text); Ui.Toast.gameObject.SetActive(true); _toastUntil = Time.unscaledTime + 5; }
+        private void Toast(string text)
+        {
+            HideFloatingHint();
+            _anchorDetailsUntil = 0f;
+            Show(V("Anchors"), "AnchorDetails", false);
+            Txt(Ui.Toast, "Body", text);
+            _toastUntil = Time.unscaledTime + 5f;
+            Ui.Toast.transform.SetAsLastSibling();
+            Ui.Toast.gameObject.SetActive(true);
+        }
         private void Push(string id, Action close = null)
         {
             S.Auto=false;if(Voice)Voice.Pause();if(Effects)Effects.Pause();
@@ -163,7 +178,7 @@ namespace Castle.V24
         }
         private void Page(string id)
         {
-            if (id == "Title" || id == "Opening" || id == "Invitation" || id == "Cutscene" || id == "EndCard") HideFloatingHint();
+            if (id=="Timeline" && _page!="Timeline") { _timelineClueOrder=null;_selectedEntry=0; }
             if (id != "Tape") _tapeScrollRecord = 0;
             _page = id; if(!Music.isPlaying)Music.Play(); if (id != "Title") S.Page = id;
             UpdateFormalMusic();
@@ -180,7 +195,7 @@ namespace Castle.V24
                 case "Anchors": Anchors(); break;
                 case "Space": PathPage(); break;
                 case "Timeline": Timeline(); break;
-                case "Tape": PlaybackRender(); break;
+                case "Tape": TapeView(); break;
                 case "Cutscene": Cutscene(); break;
                 case "EndCard": EndCard(); break;
             }
@@ -190,8 +205,8 @@ namespace Castle.V24
         {
             Show(Ui.Hud,"LocationGroup",_page!="Recordings"&&_page!="Anchors"&&_page!="Space"&&_page!="Timeline"&&_page!="Tape");
             foreach(var id in new[]{"Back","Map","Journal","Settings"})Ui.Hud.Get<Button>(id).GetComponentInChildren<Text>(true).gameObject.SetActive(false);
-            Txt(Ui.Hud,"Location","当前位置：" + Engine.RoomName(S.Room));
-            Txt(Ui.Hud,"CurrentTime","当前时间：Day " + S.Day + " · " + Engine.Now.ToString("HH:mm"));
+            Txt(Ui.Hud,"Location",Engine.RoomName(S.Room));
+            Txt(Ui.Hud,"CurrentTime",Engine.Now.ToString("HH:mm"));
             Btn(Ui.Hud,"Map",()=>Map(),enabled:Engine.Has(_data.GameSettings.MapEntry)); Btn(Ui.Hud,"Journal",()=>Journal()); Btn(Ui.Hud,"Settings",Settings);
             Btn(Ui.Hud,"Back",()=>
             {
@@ -316,7 +331,10 @@ namespace Castle.V24
         }
         private void CloseTape()
         {
-            if (_data.Formal && !Engine.ClosePlaybackGate()) { Toast("请完整听完这份录音"); _playing=true; return; }
+            _playing=false;
+            if (Voice) Voice.Stop();
+            if (Effects) Effects.Stop();
+            if (_data.Formal && !Engine.ClosePlaybackGate()) { Toast("请完整听完这份录音"); _audioLine=0;_playing=true; return; }
             int instance=_playTape;
             _playing=false;_playTape=0;S.PlayingTape=0;
             if(instance!=0)Engine.TapeCompleted(instance);

@@ -27,15 +27,18 @@ namespace Castle.V24
         }
         private void JournalRender()
         {
-            var v=V("Journal");Btn(v,"Close",Pop);
+            var v=V("Journal");Btn(v,"Close",Pop);Btn(v,"Dismiss",Pop);
             for(int i=0;i<3;i++){int tab=i;Btn(v,"Tab"+i,()=>{S.JournalPages[S.JournalCategory]=S.JournalPage;S.JournalCategory=tab;S.JournalPage=S.JournalPages[tab];S.JournalSelection=0;JournalRender();});}
-            JournalAppearance(v);
             int[] ids=JournalIds();int size=JournalSize(),pages=Math.Max(1,(ids.Length+size-1)/size);S.JournalPage=Mathf.Clamp(S.JournalPage,0,pages-1);
             int[] current=ids.Skip(S.JournalPage*size).Take(size).ToArray();if(!current.Contains(S.JournalSelection))S.JournalSelection=current.FirstOrDefault();
+            JournalAppearance(v);
             Txt(v,"PageNumber",(S.JournalPage+1)+" / "+pages);Txt(v,"Category",new[]{"人物","道具","记录"}[S.JournalCategory]);Txt(v,"Empty",ids.Length==0?"尚未收录":"");
             var left=v.Get<RectTransform>("LeftCards");var right=v.Get<RectTransform>("RightCards");Clear(left);Clear(right);
             Show(v,"Details",S.JournalCategory!=1);Show(v,"RightCards",S.JournalCategory==1);
-            var grid=left.GetComponent<GridLayoutGroup>();grid.constraintCount=S.JournalCategory==0?2:1;grid.cellSize=S.JournalCategory==0?new Vector2(230,285):S.JournalCategory==1?new Vector2(530,285):new Vector2(510,180);
+            var grid=left.GetComponent<GridLayoutGroup>();grid.constraintCount=S.JournalCategory==0?2:1;
+            grid.cellSize=S.JournalCategory==0?new Vector2(235,315):S.JournalCategory==1?new Vector2(530,320):new Vector2(530,190);
+            grid.spacing=S.JournalCategory==0?new Vector2(52.5f,40):S.JournalCategory==1?new Vector2(0,50):new Vector2(0,20);
+            var rightGrid=right.GetComponent<GridLayoutGroup>();rightGrid.cellSize=new Vector2(530,320);rightGrid.spacing=new Vector2(0,50);
             for(int i=0;i<current.Length;i++)
             {
                 int id=current[i];var entry=S.JournalCategory==0?null:_data.EntryById(id);
@@ -53,7 +56,7 @@ namespace Castle.V24
                     if(S.JournalCategory==1)UseEntry(id);else JournalRender();
                 },false,S.JournalCategory==0?PersonCardPrefab:S.JournalCategory==1?ItemCardPrefab:JournalRecordPrefab);
                 if(S.JournalCategory==0) { DrawHead(card.Get<RawImage>("Head"),id); card.Get<Text>("Body").text=""; }
-                if(S.JournalCategory==1) LayoutItemCard(card,entry,i%2==1);
+                if(S.JournalCategory==1) LayoutItemCard(card,entry,i);
 
             }
             if(S.JournalCategory==0 && S.JournalSelection!=0)
@@ -68,6 +71,7 @@ namespace Castle.V24
             }
             else {Txt(v,"DetailTitle","");Txt(v,"DetailBody","");}
             Btn(v,"Previous",()=>StartCoroutine(Flip(-1)),enabled:S.JournalPage>0);Btn(v,"Next",()=>StartCoroutine(Flip(1)),enabled:S.JournalPage+1<pages);
+            Show(v,"Previous",pages>1);Show(v,"Next",pages>1);Show(v,"PageNumber",pages>1);
             if(v.TryGet<Button>("RecordFilter",out var filter))filter.gameObject.SetActive(false);
             if(v.TryGet<Button>("Source",out var source))source.gameObject.SetActive(false);
             var timeline=_data.Puzzle.First(x=>x.Type=="timeline");
@@ -105,6 +109,7 @@ namespace Castle.V24
         }
         private void UseEntry(int id)
         {
+            if (Engine.UseInteractionItem(id)) { CloseAll(); Refresh(); return; }
             var entry=_data.EntryById(id);
             if(entry.Type=="tape")
             {

@@ -30,6 +30,7 @@ namespace Castle.V24
     [Serializable] public sealed class V24Data
     {
         public bool Formal;
+        public V24DialogueInteractionGate[] DialogueInteractionGateConfig = Array.Empty<V24DialogueInteractionGate>();
         public V24StoryStep[] StoryFlow = Array.Empty<V24StoryStep>();
         public V24EntryVariant[] EntryVariantConfig = Array.Empty<V24EntryVariant>();
         public V24PlotEffect[] PlotEffectConfig = Array.Empty<V24PlotEffect>();

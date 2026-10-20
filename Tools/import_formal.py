@@ -18,7 +18,7 @@ def normalize(value):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--source', type=Path, default=ROOT / 'SourceData/Formal20261020')
+    parser.add_argument('--source', type=Path, default=ROOT / 'SourceData/Formal20261021')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     args.output = args.output or args.source / 'GeneratedContent.json'
@@ -58,7 +58,7 @@ def main():
     result['SleepPolicy'].update(LastDay=4, Wake='10:00', Requirements=[], Day3Ghost=dict(Day=3, Event=920076, OnceGoal=1920076, Start='23:00'))
     # 人工确认覆盖包内的播放限制；原始 JSON 保持不动。
     for gate in result['PlaybackGates']:
-        if gate.get('Event') == 920007:
+        if gate.get('Event') in (920007, 920016):
             gate['AllowEarlyExit'] = True
     result['ConversationGroups'] = [
         dict(Id='banquet', AfterEvent=920033, Events=[920034, 920035, 920036, 920037, 920038, 920039], Ordered=[920034, 920035], Clocks=['18:45', '18:50'], Day=2),

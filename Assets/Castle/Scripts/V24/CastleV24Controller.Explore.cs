@@ -305,7 +305,8 @@ namespace Castle.V24
             for(int i=0;i<plot.LinkText.Length;i++)
             {
                 string target=plot.LinkTarget[i];
-                if(target.StartsWith("action:") && (recording || (_data.Formal ? !_data.DialogueActionConfig.Any(x=>x.SourcePlot==plot.Id&&x.SourceEvent==S.ActiveEvent&&!S.ConsumedActions.Contains(x.Id)) : Engine.RequiredAction()?.SourcePlot!=plot.Id)))continue;
+                if (Engine.PersonLinkResolved(target)) continue;
+                if(target.StartsWith("action:") && (recording || (_data.Formal ? !_data.DialogueActionConfig.Any(x=>x.SourcePlot==plot.Id&&(x.SourceEvent==S.ActiveEvent||Engine.CanOpenInteraction(x.Id))&&!S.ConsumedActions.Contains(x.Id)) : Engine.RequiredAction()?.SourcePlot!=plot.Id)))continue;
                 if(target.StartsWith("character:")&&!CharacterUnlocked(int.Parse(target.Substring(10))))continue;
                 bool pendingItem = !recording && target.StartsWith("entry:")
                     && int.TryParse(target.Substring(6), out int entryId)
@@ -317,12 +318,13 @@ namespace Castle.V24
             var tmp=view.Get<TextMeshProUGUI>("Body");tmp.text=body;
             tmp.GetComponent<FlowTextLink>().Clicked=Link;
             tmp.GetComponent<V24LineHit>().Clicked=()=>{if(recording)ToggleRecordingLine(plot.Id);};
-            if (recording)
+            if (recording && _page != "Tape")
             {
                 var layout = view.GetComponent<LayoutElement>();
                 layout.preferredHeight = Mathf.Max(110, 65 + tmp.GetPreferredValues(body, 720, 0).y);
             }
-            else SetInlineDialogue(view, speaker, body);
+            else SetInlineDialogue(view, recording ? SpeakerName(plot,true) : speaker, body);
+            if (recording) tmp.GetComponent<V24LineHit>().Clicked=()=>ToggleRecordingLine(plot.Id);
             tmp.GetComponent<V24DialogueLinkFeedback>().Configure(recording ? Array.Empty<string>()
                 : plot.LinkTarget.Where(IsPersonNameLink).Select(target => plot.Id + ";" + target),
                 () => _page == "Explore" && _modal.Count == 0);
@@ -340,18 +342,19 @@ namespace Castle.V24
             speaker.text = speakerName;
             speaker.enabled = false;
             // 稍微拉开同一条对白内的行距，后续首选高度计算同时包含新增间距。
-            text.lineSpacing = 8f;
+            text.lineSpacing = DialogueLineSpacing;
             text.GetComponent<V24LineHit>().Clicked = AdvanceDialogueFromPanel;
 
             // 先处理正文链接，再拼姓名，避免姓名前缀被关键词替换成可点击链接。
             string color = ColorUtility.ToHtmlStringRGBA(speaker.color);
-            text.text = "<color=#" + color + "><size=" + speaker.fontSize + ">" + speakerName + "：</size></color>" + body;
+            text.text = string.IsNullOrEmpty(speakerName) ? body : "<color=#" + color + "><size=" + speaker.fontSize + ">" + speakerName + "：</size></color>" + body;
             var bodyRect = text.rectTransform;
             bodyRect.anchoredPosition = new Vector2(bodyRect.anchoredPosition.x, speaker.rectTransform.anchoredPosition.y);
 
             // 列表布局尚未刷新时，预制件仍保留原宽度，按父列表可用宽度计算换行和整行高度。
             var parentRect = (RectTransform)view.transform.parent;
             var group = parentRect.GetComponent<VerticalLayoutGroup>();
+            if (group != null) group.spacing = DialogueEntrySpacing;
             float rowWidth = parentRect.rect.width - (group != null ? group.padding.horizontal : 0);
             float textWidth = Mathf.Max(1f, rowWidth * (bodyRect.anchorMax.x - bodyRect.anchorMin.x) + bodyRect.sizeDelta.x);
             float textHeight = Mathf.Ceil(text.GetPreferredValues(text.text, textWidth, 0).y);
@@ -363,9 +366,16 @@ namespace Castle.V24
         {
             var pair=key.Split(';');int line=int.Parse(pair[0]);var target=pair[1].Split(':');int id=int.Parse(target[1]);
             if(!S.Shown.Contains(line))return;
-            if(target[0]=="room") {Map(id);return;}
+            if(target[0]=="room") {OpenAddressMap(id);return;}
             // 正文中的中控室地址只打开地图；由末尾的独立按钮确认进入，避免点击地址直接转场。
-            if(target[0]=="action") {Map(_data.GameSettings.ControlRoom);return;}
+            if(target[0]=="action")
+            {
+                var action = _data.DialogueActionConfig.FirstOrDefault(x=>x.Id==id && x.SourcePlot==line);
+                if (action == null) return;
+                if (action.Action == "enter_control") OpenAddressMap(_data.GameSettings.ControlRoom);
+                else if (Engine.CanOpenInteraction(id)) OpenDialogueInteraction(action);
+                return;
+            }
             if(target[0]=="character") {if(CharacterUnlocked(id))Journal(0,id,true);return;}
             if(target[0]=="entry")
             {
@@ -395,9 +405,18 @@ namespace Castle.V24
             if(target!=0){_selectedRoom=target;_floor=_data.Room.First(x=>x.Id==target).Floor;}
             Push("Map");MapRender();
         }
+        private void OpenAddressMap(int room)
+        {
+            var address = _data.Room.FirstOrDefault(x=>x.Id==room);
+            if (address == null) return;
+            _floor = Mathf.Clamp(address.Floor,1,2);
+            _selectedRoom = 0;
+            Map();
+        }
         private void MapRender()
         {
-            var v=V("Map");Btn(v,"Close",Pop);
+            var v=V("Map");Btn(v,"Close",Pop);Show(v,"Close",false);
+            Btn(v,"Dismiss",Pop);
             _floor=Mathf.Clamp(_floor,1,2);MapArt(v,_floor);
             Btn(v,"Floor1",()=>{_floor=1;_selectedRoom=0;MapRender();});Btn(v,"Floor2",()=>{_floor=2;_selectedRoom=0;MapRender();});
             Txt(v,"Heading","古堡地图 · "+_floor+"F");Show(v,"TooltipPanel",false);
@@ -409,19 +428,22 @@ namespace Castle.V24
                 var card=Card(root,(S.Room==room.Id?"◆ ":"")+(unlocked?Engine.RoomName(room.Id):"未解锁"),"",()=>
                 {
                     _selectedRoom=room.Id;
+                    if (Engine.SelectInteractionRoom(room.Id)) {Pop();Refresh();return;}
+                    if (Engine.PendingInteraction != null && Engine.PendingInteraction.CompletionConditions.Any(x=>x.StartsWith("player_selected_room:")))
+                    { ShowRoomTooltip(v,cardRoom:room.Id,extra:"请根据对白选择对应客房");return; }
                     if(Engine.CanEnter(room.Id) && Engine.Move(room.Id)){Pop();Refresh();}
-                    else {Show(v,"TooltipPanel",true);Txt(v,"Tooltip",RoomDetail(room.Id)+(Engine.Busy?"\n对白或奖励期间仅可查看":"\n当前不可进入"));}
+                    else ShowRoomTooltip(v,room.Id,Engine.Busy?"对白或奖励期间仅可查看":"当前不可进入");
                 },true);
                 PlaceMapRegion(card,root,room.Id);
-                Txt(card,"Body",S.Room==room.Id?"◆":open?"开放中":unlocked?room.Start+"—"+room.End:"");
+                Txt(card,"Body",S.Room==room.Id?"":open?"开放中":unlocked?room.Start+"—"+room.End:"");
                 card.Get<Image>("Background").color=Color.clear;
                 card.Get<Button>("Select").transition=Selectable.Transition.None;
                 Show(card,"Title",false);
-                card.Get<FlowPointer>("Pointer").Enter=()=>{Show(v,"TooltipPanel",true);Txt(v,"Tooltip",RoomDetail(room.Id));};card.Get<FlowPointer>("Pointer").Exit=()=>Show(v,"TooltipPanel",false);
+                card.Get<FlowPointer>("Pointer").Enter=()=>ShowRoomTooltip(v,room.Id);card.Get<FlowPointer>("Pointer").Exit=()=>Show(v,"TooltipPanel",false);
             }
-            foreach(var hidden in new[]{"Heading","Details","Hint","Enter"})Show(v,hidden,false);
+            foreach(var hidden in new[]{"Heading","Details","Enter"})Show(v,hidden,false);
             Txt(v,"Details",_selectedRoom==0?"请选择地点":RoomDetail(_selectedRoom));
-            Txt(v,"Hint",S.ActiveEvent!=0?"对白期间只能查看地图":"选择地点后点击进入；普通移动不加时。");
+            Show(v,"Hint",true);Txt(v,"Hint","点击空白处关闭——");
             Btn(v,"Enter",()=>{if(Engine.Move(_selectedRoom)){Pop();Refresh();}},enabled:_selectedRoom!=0&&Engine.CanEnter(_selectedRoom));
         }
         private string RoomDetail(int id)
@@ -429,7 +451,7 @@ namespace Castle.V24
             if(!S.Unlocked.Contains(id))return "未解锁区域";
             var r=_data.Room.First(x=>x.Id==id);
             var devices=_data.DeviceConfig.Where(x=>x.Room==id).Select(x=>S.KnownDevices.Contains(x.Id)?x.Label:"未知设备");
-            return Engine.RoomName(id)+"\n"+(id==_data.GameSettings.ControlRoom?Engine.ControlReason():string.IsNullOrEmpty(r.Start)?"全天开放":r.Start+"—"+r.End)+"\n"+string.Join("、",devices)+(S.Room==id?"\n◆ 当前位置":"");
+            return Engine.RoomName(id)+"\n"+(id==_data.GameSettings.ControlRoom?Engine.ControlReason():string.IsNullOrEmpty(r.Start)?"全天开放":r.Start+"—"+r.End)+"\n"+string.Join("、",devices);
         }
     }
 }

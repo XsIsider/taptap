@@ -8,6 +8,7 @@ namespace Castle.V24
     {
         public CastleUiView JournalRecordPrefab;
         public V24ItemArt[] ItemArt = System.Array.Empty<V24ItemArt>();
+        public Sprite BookmarkNormal, BookmarkSelected;
 
         private Texture2D ItemTexture(V24Entry entry, bool detail = false)
         {
@@ -31,21 +32,48 @@ namespace Castle.V24
 
         private void JournalAppearance(CastleUiView view)
         {
-            for (int i=0;i<3;i++) view.Get<Button>("Tab"+i).transform.localScale = Vector3.one * (i==S.JournalCategory?1.18f:1);
+            SyncJournalPaper(view);
+            for (int i=0;i<3;i++)
+            {
+                bool selected = i == S.JournalCategory;
+                var tab = view.Get<Button>("Tab"+i);
+                JournalPlace(tab.transform,201.667f+i*62.5f,selected?20.833f:32.5f,59.167f,selected?79.167f:67.5f);
+                tab.transform.localScale = Vector3.one;
+                tab.GetComponent<Image>().sprite = selected ? BookmarkSelected : BookmarkNormal;
+                var icon = (RectTransform)tab.transform.Find("BookmarkIcon");
+                icon.anchoredPosition = new Vector2(icon.anchoredPosition.x, selected?-19f:-12f);
+            }
+            Show(view,"PlainRightPage",S.JournalCategory!=0);
             Show(view,"CharacterDecoration",S.JournalCategory==0);
             Show(view,"RecordDecoration",S.JournalCategory==2);
             Show(view,"DetailHead",S.JournalCategory==0 && S.JournalSelection!=0);
             Show(view,"Category",false);
             bool isCharacter = S.JournalCategory == 0;
             var title = view.Get<Text>("DetailTitle").rectTransform;
-            JournalPlace(title,isCharacter?1068:1084.4f,isCharacter?184:200.7f,300,85);
-            title.localRotation = Quaternion.Euler(0,0,isCharacter?-4f:3.53f);
-            JournalPlace(view.Get<ScrollRect>("DetailScroll").transform,isCharacter?950:890,isCharacter?409:340,isCharacter?420:450,isCharacter?330:390);
+            JournalPlace(title,isCharacter?1120:1125,isCharacter?190:112,260,70);
+            title.localRotation = Quaternion.identity;
+            JournalPlace(view.Get<ScrollRect>("DetailScroll").transform,915,isCharacter?375:355,455,isCharacter?360:380);
             var body = view.Get<Text>("DetailBody");
-            body.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,isCharacter?405:445);
+            body.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,445);
             // 人物资料统一加大行距，贴合便笺横线；切换记录页时恢复原间距。
             body.lineSpacing = isCharacter ? 1.4f : 1f;
             view.Get<ScrollRect>("DetailScroll").verticalNormalizedPosition=1;
+            JournalPlace(view.Get<RectTransform>("LeftCards"),isCharacter?226.667f:S.JournalCategory==1?233:225,isCharacter?111.667f:S.JournalCategory==1?155:158,530,680);
+            JournalPlace(view.Get<RectTransform>("RightCards"),865,130,530,680);
+        }
+
+        private static void SyncJournalPaper(CastleUiView view)
+        {
+            // Cover 是场景作者的尺寸入口；分类覆盖图只跟随它，不反向改写封面。
+            var cover = (RectTransform)view.transform.Find("Cover");
+            var paper = view.Get<RawImage>("PlainRightPage").rectTransform;
+            paper.anchorMin = cover.anchorMin;
+            paper.anchorMax = cover.anchorMax;
+            paper.pivot = cover.pivot;
+            paper.sizeDelta = cover.sizeDelta;
+            paper.anchoredPosition3D = cover.anchoredPosition3D;
+            paper.localRotation = cover.localRotation;
+            paper.localScale = cover.localScale;
         }
 
         private static void JournalPlace(Transform transform,float x,float y,float width,float height)
@@ -72,17 +100,27 @@ namespace Castle.V24
             image.gameObject.SetActive(visible);
         }
 
-        private void LayoutItemCard(CastleUiView card,V24Entry entry,bool reverse)
+        private void LayoutItemCard(CastleUiView card,V24Entry entry,int index)
         {
-            JournalPlace(card.Get<RectTransform>("ArtFrame"),reverse?325:0,25,190,190);
-            JournalPlace(card.Get<RawImage>("ItemArt").transform,reverse?340:15,40,160,160);
-            JournalPlace(card.Get<Image>("Tape").transform,reverse?0:215,25,295,55);
-            JournalPlace(card.Get<Text>("Title").transform,reverse?5:220,30,280,45);
-            JournalPlace(card.Get<Text>("Body").transform,reverse?5:220,95,280,170);
+            // 以 Overlays/example 的 1920×1080 参考图换算至 1600×900 画布。
+            // 下排道具框比上排大，不能统一缩放为同一个尺寸。
+            bool reverse = index % 2 == 1;
+            float frameX = reverse ? (index < 2 ? 298.667f : 293.333f) : 0;
+            float frameY = index == 0 ? 33.333f : index == 2 ? 24.167f : 31.667f;
+            float frameWidth = reverse ? 216.667f : 195f;
+            float frameHeight = reverse ? 187.5f : 170.833f;
+            float tapeX = reverse ? (index < 2 ? 32f : 22.5f) : (index == 0 ? 257.833f : 250f);
+            float tapeY = index == 0 ? 22.5f : index == 1 ? -24.167f : index == 2 ? 20f : -16.667f;
+            // 原框 PNG 为 309×267，可见框为 (14,2) 起的 260×225；补偿透明留边。
+            JournalPlace(card.Get<RectTransform>("ArtFrame"),frameX-14*frameWidth/260,
+                frameY-2*frameHeight/225,frameWidth*309/260,frameHeight*267/225);
+            JournalPlace(card.Get<Image>("Tape").transform,tapeX,tapeY,236.667f,81.667f);
+            JournalPlace(card.Get<Text>("Title").transform,tapeX+5,tapeY+15,230,45);
+            JournalPlace(card.Get<Text>("Body").transform,tapeX+5,tapeY+85,230,165);
             var art=card.Get<RawImage>("ItemArt");
             art.texture=ItemTexture(entry);
             art.uvRect=new Rect(0,0,1,1);art.gameObject.SetActive(art.texture!=null);
-            if (art.texture) FitItemArt(art, reverse?340:15, 40, 160, 160);
+            if (art.texture) FitItemArt(art, frameX+15, frameY+15, frameWidth-30, frameHeight-35);
         }
 
         private static void FitItemArt(RawImage art, float x, float y, float width, float height)

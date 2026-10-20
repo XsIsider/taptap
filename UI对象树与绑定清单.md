@@ -1,3 +1,62 @@
+## 2026-10-21 地图热区绑定与楼层文字修复
+
+- 校正 Map 的 FloorImage 控件误绑到 Rooms/RawImage：现在固定绑定真正 FloorImage 的 RawImage，Rooms 绑定其 RectTransform。保存的场景中 Rooms 对象存在，已恢复核对绑定。
+- 删除 Rooms 上的 RawImage 组件，Rooms 仅保留热区容器职责；地图只由 FloorImage 绘制，切层不再重新启用/赋图到 Rooms，避免重影与误删贴图组件造成缺失引用。
+- Floor1Label / Floor2Label 原固定左上锚点配合零高度尺寸造成不显示，改为在各自按钮内拉伸；运行时明确启用并显示1F/2F，保留选中标签在前、非选中标签在纸后。
+- 验证：Roslyn 编译、全部场景 View 引用及 RectTransform 父子检查通过；确认 Rooms 无贴图组件、FloorImage 与 Rooms 指向不同对象、楼层文字有有效拉伸区域。未进入 Unity Play，最终显示及点击仍待运行验收；未构建、未改存档、未提交推送。
+
+## 2026-10-21 地图显示与当前位置标记补修
+
+- 修复 Map 的 FloorImage 场景对象关闭导致的空白地图：场景初始激活并设置一层贴图，MapArt 每次渲染明确激活对象和 RawImage，再按楼层更新纹理。Rooms 继续仅作为动态热区容器，不恢复会遮挡二层的固定一层贴图。
+- Details 与悬浮 Tooltip 删除“当前位置”文字，当前位置房间不再另画菱形文字；CurrentLocationMarker 绑定改指向作者现有 Overlays/Map/current_location。保留该组件的素材、尺寸与缩放，取消射线阻挡；按当前房间中心换算至 Map 父坐标，图钉底端贴位置，同层显示、异层隐藏。停用 FloorImage 下重复的旧标记，标记不放入会被清理的 Rooms。
+- 验证：Roslyn 编译通过；FloorImage 激活/组件启用/贴图引用、现有 current_location 绑定与重复标记关闭静态检查通过；场景父子关系与固定绑定回归检查通过。未进入 Unity Play，实际显示及位置对齐尚待运行验收；未构建、未改存档、未提交推送。
+
+## 2026-10-21 地图双层纸张与标签层级
+
+- Overlays/Map 的 Panel 作为 Paper 绑定，按楼层切换 UI整理/地图/地图一层.png 与 地图2层.png；使用完整1600×900画布比例。两枚楼层标签改用同目录原素材比例和参考位置，文字靠右。
+- 层级按未选中标签 → 当前纸张 → FloorImage → Rooms热区 → 选中标签排列，每次切层同步更新。Dismiss 始终在底层，Tooltip 保持前景；未选中标签外露部分仍可点击。
+- 禁用 Rooms 上遗留的固定一层 RawImage，仅保留其热区容器，避免它遮挡真正随楼层切换的 FloorImage。保留现有两层地图配置、当前地点标记、房间点击、悬浮详情与空白关闭，不改 Path / Space 的地图展示。
+- 验证：Roslyn 编译、固定绑定及 RectTransform 父子检查通过；已查看两张参考图及素材。未进入 Unity Play，动态切层与最终渲染待实际运行验收；未构建、未改存档、未提交推送。
+
+## 2026-10-21 对话头像、调查册封面及 Toast 修复
+
+- 按用户提供《对话头像贴框修复说明.md》仅修改 ConversationPortrait.prefab/Head 的 RectTransform：位置(13.5,-15)、尺寸(86.5,117.5)、Z旋转+2°（四元数同步）。保持左上锚点/轴心、单位缩放；Frame、GUID、HeadRect、DrawHead 及点击行为不变，不套改调查册头像或 StackHead。
+- Journal/Cover 保留本次读取到的手调 Transform：位置(50.864994,0)、尺寸(1525.3911,896.667)、缩放(1,1,1)。尺寸跳变来自道具/记录页 PlainRightPage 仍使用旧矩形；场景初始值与运行时分类切换均让覆盖图跟随 Cover 的锚点、位置、尺寸、轴心、旋转和缩放，绝不反向覆盖 Cover。
+- 移除 Explore/People 中额外生成的“使用邀请函 / 打开地图，选择客房”操作卡片，左下头像区不再混入此类流程门入口。对白原链接、历史对白链接有效性、调查册道具使用和地图选择流程仍保留。
+- 按用户最新要求覆盖上一轮提示规则：所有原 FloatingHint 触发点均改为 Toast，Toast 调用直接显示场景 Toast/Body，停留5秒后隐藏，显示层级置顶且不拦截点击；FloatingHint 保留序列化兼容绑定但关闭，无激活路径。
+- 验证：Unity 随附 Roslyn 编译通过；239项真实 V24Engine 隔离断言通过；场景固定绑定/父子关系检查通过；头像参数回读、仅修改 Head、Cover 原始块未改写与覆盖图一致性检查通过。未进入 Unity Play，头像最终贴框、分类切换及提示显示待实际运行验收；未构建、未改玩家存档、未提交推送。
+
+## 2026-10-21 九项 UI 追加修订
+
+- Timeline 的 SortRoot/Submit 及 SubmitLabel 绑定已删除。仅玩家实际改变槽位且全部放齐、证据条件满足后自动提交；错误排序保留可继续交换，每次更改再次校验，打开/重绘不重复提交。
+- Explore/CharacterImage 在运行时固定 anchoredPosition=(-468.4181,-331.5084)、sizeDelta=(612.4181,1122.509)，保留现有锚点和等比显示。
+- 对白间距入口在场景 UIFlow 的 CastleV24Controller：DialogueLineSpacing=12（条内行距）、DialogueEntrySpacing=14（相邻条目间距），可直接在 Inspector 手调；现场和 Tape 通用对白一起生效。
+- V24 全部 Toast 调用统一转到 FloatingHint；旧 Toast 不再显示。切换页面不会主动清掉刚出现的提示，仍按原悬浮组件 5 秒淡出。未改变提示文案和触发条件。
+- Journal 新增底层全屏透明 Dismiss 按钮，点击空白合上；标签、道具、翻页与详情滚动仍各自消费点击，怀表关闭入口兼容保留。Overlays/example 保留编辑参考，运行时关闭，避免遮挡交互。
+- 道具页四个可见框按 example 的参考图分别匹配上排/下排尺寸（上排195×170.833，下排216.667×187.5，1600画布单位）；补偿原 PNG 透明留边，已输出并查看叠图。道具 RawImage 共享 BookItemCard.prefab 的 Shadow，颜色 #130B0B、alpha 0.34，偏移(0,-6)，全部实例生效。框、胶带和图标落点同步调整。
+- Recordings / Anchors / Space 及顶层 Path 使用 UI整理/中控/锚点对齐/鼠标.png；其他页面和地图、调查册等覆盖页恢复普通指针，退出覆盖页后恢复对应页面指针。新指针导入为32像素可读 Cursor，不生成新美术。
+- Map 的 Details 绑定及可见 Tooltip 统一补充“当前位置：实际场景名”，包含查看未解锁房间的情况，不将悬停房间误报为当前位置。
+- 四个绿色中控页只统一 Backdrop：使用 UI整理/中控/人物推演/图层 1.png，1600×900、同锚点与比例。逐组件对照修改前快照，确认各页内部其他对象、组件和绑定保持不变。
+- 实际验证：Unity 随附 Roslyn 编译通过；原有239项真实 V24Engine 隔离断言通过；全部场景 View 引用、父子关系、Dismiss 顺序、Submit 清理、Cursor 导入、Shadow 参数及中控内部保持不变检查通过；道具框源素材叠图已查看。**未进入 Unity Play，最终渲染、鼠标切换、拖放自动提交及点击关闭仍待 Unity 内验收。** 未改玩家存档、未构建、未提交推送。
+
+## 2026-10-21 Path / Timeline / Tape 绑定更新
+
+- Path 仍位于 UIFlow/Canvas/Stage/Overlays/Path；Backdrop 改为 UI整理/中控/人物推演/图层 1.png，新增 MapArea、FloorBar、SpaceUnderline、FloorUnderline。原 Close 改为左上返回箭头，旧调试式说明/缩放按钮/假设框隐藏，绑定保留。新增 Path 内的 JournalShortcut / MapShortcut / SettingsShortcut 三个固定按钮及同名 Button 绑定，避免被全屏弹层遮住下方 HUD。
+- Path/MapViewport/MapContent 为 V24MapPan.Content，锚点/轴心居中；FloorImage、Rooms 为其同级子对象，位置零、1140×416，底图用 V24PathMap 材质。FloorImage / Rooms 的原绑定仍指向各自原组件。新增控制器 PathLabelPrefab、PersonPathMarkerIcon。
+- Timeline/TimelineArt 为固定共用背景层，内含 ReferenceWave、ClueDivider、Connection1～9、WavePoint0～9、Slots/Slot0～9。原 Slots 绑定不变，新增 Slot0～9 绑定至各自 CastleUiView；槽位均保存到场景，不再运行创建/清空。
+- Timeline/SortRoot/CluesScroll 改为 (420,-770)、760×105，水平滚动，内容为固定一行 GridLayoutGroup、HorizontalFit=PreferredSize；原纵向条隐藏并解除引用。控制器新增 TimelineCluePrefab。TimelineSlot / TimelineClue / PersonPathLabel 与 .meta 一起保存于 Prefabs/V24。
+- Tape/DialoguePanel 从当前 Explore/DialoguePanel 复用布局保存；LinesScroll / Lines 绑定分别改指新面板的 DialogueScroll / Viewport/Dialogue，新增 DialoguePanel、Backdrop 绑定。旧 Tape 工作台边框、标签、旧列表等隐藏，Play / Progress / Playback / FileInfo 移至对白面板区域；退出继续使用 Hud/Back。
+- 所有新固定绑定已静态核对；尚未完成 Unity 内实际渲染、Shader 与点击/拖放验收。
+
+## 2026-10-21 Journal / Map 新绑定
+
+- 控制器 BookmarkNormal / BookmarkSelected 引用 UI整理/调查-角色 的未选中/选中标签 Sprite，均裁切可见区域；Tab0/1/2 与 BookmarkIcon 保留原对象和绑定。
+- Journal/PlainRightPage：固定 RawImage，不接收射线，使用 UI整理/调查-角色/bg_diaocha.png 与 V24JournalPaper 材质；同名绑定，位于 Cover 后、内容前，只在道具/记录页显示。原 CharacterDecoration/Note 隐藏并清空旧 Sprite（便笺已在新底图中）。Close 保留绑定，透明热区移到右侧怀表；模板尺寸同步运行布局。
+- Map/Dismiss：固定全屏透明 Image + Button，位于子对象首位，同名绑定指向 Button；仅空白点击关闭。Close 隐藏保留旧引用，FloorImage/Panel 不拦射线。
+- Map/FloorImage/CurrentLocationMarker：固定 Image + RectTransform，图来自 UI整理/地图/图层 16.png，不拦射线；同名绑定到 RectTransform。与 Rooms 分离，避免清理动态房间按钮时销毁。
+- TooltipPanel / Tooltip 继续用原绑定，面板 300×165、正文 264×141；运行定位到对应房间顶部并限制画面内。FloorImage 使用 V24MapPaper 材质与 Scene_update 两层地图，区域与底图共用原 Crop。
+- 编辑预览入口仍在 UIFlow/Canvas 的 CastleFlowUi 组件。新材质和场景绑定已保存，C# 编译与引用静态检查通过；Unity 实际渲染/点击未验收。
+
 ## 2026-10-20 开场黑屏旁白
 
 - UIFlow/Canvas/Stage/Pages/Opening：固定 RectTransform + Image + Button + CastleUiView（Id=Opening），已登记 CastleFlowUi.Pages；黑底全屏，Surface 绑定根 Button，无按钮变色和导航选择效果。

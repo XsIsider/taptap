@@ -9,6 +9,8 @@ namespace Castle.V24
     {
         public int Id, SourceEvent, SourcePlot, Day, OnEnterEvent, ReturnRoom, ExitMinutes, ExitEvent;
         public string EnterClock, ExitClock;
+        public string Action, Hint;
+        public int Entry, InitialFloor;
         public bool Required; public string Start, End, SessionMode;
         public string[] Need, ExitNeed;
     }

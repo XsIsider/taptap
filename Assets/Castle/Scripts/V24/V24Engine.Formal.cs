@@ -83,7 +83,7 @@ namespace Castle.V24
         {
             var gate = Data.PlaybackGates.FirstOrDefault(x => x.Event == State.PlaybackGate);
             if (gate == null) return true;
-            if (!gate.AllowEarlyExit && !State.HeardRecords.Contains(gate.Record)) return false;
+            if (gate.MustFinish && !gate.AllowEarlyExit && !State.HeardRecords.Contains(gate.Record)) return false;
             CompleteRecord(gate.Record); EndChain(); return true;
         }
         private void FinishFormal(int choice)
@@ -206,6 +206,14 @@ namespace Castle.V24
             }
             if (State.DeferredEvent != 0)
             {
+                // 先等待玩家实际使用道具或选房，再执行原 StoryFlow 的地点与时间。
+                var interaction = Data.DialogueInteractionGateConfig.FirstOrDefault(x =>
+                    x.SourceEvent == last && x.ResumeEvent == State.DeferredEvent);
+                if (interaction != null)
+                {
+                    if (!interaction.CompletionConditions.All(InteractionCondition)) return;
+                    if (!State.ConsumedActions.Contains(interaction.Id)) State.ConsumedActions.Add(interaction.Id);
+                }
                 int next = State.DeferredEvent; State.DeferredEvent = 0;
                 var step = Data.StoryFlow.FirstOrDefault(x => x.FromEvent == last && x.ToEvent == next);
                 if (step != null)

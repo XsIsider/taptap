@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b1e4c4a988f5a1342942d8b4c3ab2080, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4b6c3b09c285f9d419af18ef47e566d8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -320,7 +320,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2ae456f5f82e0ab46aebe116bc7db44e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3328ffd3700a90d4c83538c2ea38be27, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -430,8 +430,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Border: {fileID: 747369042458782417}
   Glow: {fileID: 385153201746494405}
-  FirstBorder: {fileID: 21300000, guid: 2ae456f5f82e0ab46aebe116bc7db44e, type: 3}
-  RegularBorder: {fileID: 21300000, guid: b1e4c4a988f5a1342942d8b4c3ab2080, type: 3}
+  FirstBorder: {fileID: 21300000, guid: 3328ffd3700a90d4c83538c2ea38be27, type: 3}
+  RegularBorder: {fileID: 21300000, guid: 4b6c3b09c285f9d419af18ef47e566d8, type: 3}
 --- !u!1 &6502142563591925125
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,7 +497,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f28535ee42ffb634fa9d70170f613bff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fa4552d330081b843b5d344f8c169c3c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

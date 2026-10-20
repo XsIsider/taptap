@@ -1,6 +1,11 @@
 using System;
 namespace Castle.V24
 {
+    [Serializable] public sealed class V24DialogueInteractionGate
+    {
+        public int Id, SourceEvent, SourcePlot, ResumeEvent;
+        public string[] CompletionConditions = Array.Empty<string>();
+    }
     [Serializable] public sealed class V24StoryStep
     { public int FromEvent, ToEvent, ToRoom, Day; public string Kind, SceneContext, SetClock; }
     [Serializable] public sealed class V24EntryVariant

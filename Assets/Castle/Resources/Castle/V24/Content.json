@@ -3702,10 +3702,14 @@
       "Group": 530001,
       "Order": 6,
       "SpeakerId": 200001,
-      "Text": "当然。",
+      "Text": "当然。\n（使用邀请函）",
       "Sfx": "",
-      "LinkText": [],
-      "LinkTarget": [],
+      "LinkText": [
+        "使用邀请函"
+      ],
+      "LinkTarget": [
+        "action:1500004"
+      ],
       "At": 23.4,
       "Anchor": false
     },
@@ -4017,10 +4021,12 @@
       "Text": "米娅，带拉帕莉亚小姐去一楼东边靠里的那间客房，不要怠慢了。",
       "Sfx": "butler-ks",
       "LinkText": [
-        "米娅"
+        "米娅",
+        "一楼东边靠里的那间客房"
       ],
       "LinkTarget": [
-        "entry:320200"
+        "entry:320200",
+        "action:1500003"
       ],
       "At": 70.4,
       "Anchor": false
@@ -5580,7 +5586,7 @@
       "Group": 530014,
       "Order": 3,
       "SpeakerId": 0,
-      "Text": "开门声",
+      "Text": "（开门声）",
       "Sfx": "gamejam用 - 门吱呀",
       "LinkText": [],
       "LinkTarget": [],
@@ -6529,7 +6535,7 @@
       "Order": 8,
       "SpeakerId": 200009,
       "Text": "迄今为止，那两个生不如死的家伙还呆在隔离舱里，像狗一样等着人喂食呢。哈哈，你说滑不滑稽？",
-      "Sfx": "",
+      "Sfx": "gamejam用 - 敲门",
       "LinkText": [],
       "LinkTarget": [],
       "At": 42.0,
@@ -7348,7 +7354,7 @@
       "Group": 530028,
       "Order": 12,
       "SpeakerId": 200007,
-      "Text": "她的音乐总是自由而热烈，简直像是……",
+      "Text": "你的音乐总是自由而热烈，简直像是……",
       "Sfx": "",
       "LinkText": [],
       "LinkTarget": [],
@@ -8876,7 +8882,7 @@
       "Group": 530034,
       "Order": 6,
       "SpeakerId": 200004,
-      "Text": "你的眼睛像是......黄昏里缓缓流动的琥珀色，熠熠生辉，让人感到温馨。",
+      "Text": "你的眼睛像是......黄昏照在树脂上，缓缓流动的样子，熠熠生辉，让人感到温馨。",
       "Sfx": "",
       "LinkText": [],
       "LinkTarget": [],
@@ -11264,7 +11270,7 @@
       "Group": 530045,
       "Order": 2,
       "SpeakerId": 200006,
-      "Text": "公爵夫人向来舍得在这些地方花钱，手织的羊绒、经锦工艺制成的缎子，包括你看见的金线。",
+      "Text": "公爵夫人向来舍得在这些地方花钱，手织的羊绒、提花工艺制成的缎子，包括你看见的金线。",
       "Sfx": "",
       "LinkText": [],
       "LinkTarget": [],
@@ -11592,7 +11598,7 @@
       "Group": 530049,
       "Order": 5,
       "SpeakerId": 200001,
-      "Text": "嗯……这几幅画是你的吗？它们看上去，和别的画有些不一样。",
+      "Text": "嗯……这幅画是你的吗？它看上去，和别的画有些不一样。",
       "Sfx": "heroine-yw",
       "LinkText": [],
       "LinkTarget": [],
@@ -13318,7 +13324,7 @@
       "Group": 530062,
       "Order": 8,
       "SpeakerId": 200001,
-      "Text": "你的意思是......凶手应该将尸体伪装成意外死亡，并迅速昭告天下，好合理继承财产？",
+      "Text": "你的意思是......凶手应该将尸体伪装成意外死亡，并迅速昭告天下，好合理处理财产？",
       "Sfx": "heroine-fj2",
       "LinkText": [],
       "LinkTarget": [],
@@ -13518,7 +13524,7 @@
       "Group": 530063,
       "Order": 7,
       "SpeakerId": 200008,
-      "Text": "你的话也不无道理。但在场的每一位宾客，大多都是古堡经常来往的对象，要这么说，只有你完全清白了。",
+      "Text": "你的话也不无道理。但在场的每一位宾客，大多都是古堡经常来往的对象，要这么说，只有你完全清白了？",
       "Sfx": "",
       "LinkText": [],
       "LinkTarget": [],
@@ -13802,16 +13808,10 @@
       "Group": 530065,
       "Order": 1,
       "SpeakerId": 200001,
-      "Text": "已经这个时间了，去后厨拿一下午餐吧，就不麻烦米娅给我送过来了。",
+      "Text": "好像也没什么线索了……",
       "Sfx": "",
-      "LinkText": [
-        "后厨",
-        "米娅"
-      ],
-      "LinkTarget": [
-        "room:100005",
-        "entry:320200"
-      ],
+      "LinkText": [],
+      "LinkTarget": [],
       "At": 0.0,
       "Anchor": false
     },
@@ -20024,7 +20024,7 @@
     },
     {
       "Id": 100006,
-      "Name": "收藏厅/画廊",
+      "Name": "收藏室",
       "Floor": 1,
       "Scene": "",
       "Start": "",
@@ -20149,7 +20149,7 @@
       "UnlockNeed": []
     }
   ],
-  "SchemaVersion": "2.4-story-20261019",
+  "SchemaVersion": "2.4-story-20261019-interaction-fix",
   "SourcePriority": [
     "用户确认采用文档末尾修改",
     "文档整理(4)文末修改（覆盖19、20、21对应旧句）",
@@ -21376,6 +21376,2291 @@
       "Once": true,
       "Note": "",
       "Record": 620015
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520003,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520005,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520008,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520031,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520032,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520041,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520113,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520117,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520118,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520126,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520135,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520136,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520137,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520138,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520140,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520140,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520159,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520171,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520172,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520173,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520175,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520180,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520186,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520197,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520202,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520202,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520205,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520207,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520210,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520213,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520222,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520223,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520226,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520231,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520235,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520247,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520253,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520265,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520270,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520273,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520283,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520285,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520286,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520287,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520296,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520297,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520302,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520306,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520309,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520316,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520316,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520317,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520320,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520322,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520326,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520339,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520343,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520349,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520356,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520364,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520368,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520374,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520382,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520383,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520384,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520388,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520391,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520394,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520397,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520399,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520404,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520405,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520411,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520412,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520414,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520414,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520416,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520417,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520418,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520419,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520421,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520422,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520423,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520429,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520431,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520433,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520434,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520436,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520438,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520441,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520445,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520460,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520462,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520462,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520468,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520471,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520471,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520472,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520474,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520476,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520477,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520478,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520478,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520480,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520481,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520483,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520492,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520495,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520498,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520504,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520505,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520507,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520515,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520531,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520533,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520559,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520562,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520590,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520594,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520623,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520628,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520635,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520636,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520637,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520643,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520649,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520653,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520654,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520656,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520657,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520662,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520662,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520662,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520663,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520663,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520666,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520668,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520670,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520674,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520683,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520684,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520685,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520686,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520689,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520689,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520690,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520691,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520691,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520692,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520695,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520696,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520697,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520705,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520707,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520708,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520709,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520710,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520713,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520713,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520715,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520719,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520719,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520723,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520724,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520727,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520730,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520735,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520736,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520739,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520740,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520750,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520751,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520753,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520757,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520760,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520765,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520770,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520771,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520773,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520774,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520774,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520776,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520776,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520778,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520784,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520785,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200002,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520833,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520837,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520839,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520842,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520844,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520846,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520850,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520854,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520856,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520858,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520862,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520863,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520864,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520865,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520866,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520878,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520883,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200004,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520885,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520891,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520897,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520904,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520923,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520923,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520924,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520925,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520948,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520948,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520949,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520949,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520950,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520965,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520965,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520966,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520969,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520971,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520995,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520995,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520996,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520997,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520997,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200018,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520998,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520998,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200007,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521001,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521002,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521016,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521017,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521017,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521021,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521039,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521042,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200005,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521043,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521048,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521055,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521057,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521071,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521083,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521089,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521089,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200009,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521103,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200008,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521105,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521124,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521127,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521129,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521133,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200006,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521142,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521148,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 521151,
+      "Context": "live_or_playback",
+      "Kind": "reveal_character_name",
+      "Character": 200003,
+      "Once": true,
+      "Note": "显式姓名可见时记为已知；不等于人物档案已解锁，也不识别匿名录音的声源"
+    },
+    {
+      "Trigger": "plot_show",
+      "Plot": 520156,
+      "Context": "live",
+      "Kind": "show_portrait",
+      "Character": 200002,
+      "Note": "原制作备注；用既有米娅立绘绑定，不显示为对白"
     }
   ],
   "RecordMeta": [
@@ -35062,13 +37347,51 @@
       "End": "24:00",
       "Need": [],
       "ReturnRoom": 100002
+    },
+    {
+      "Id": 1500003,
+      "SourceEvent": 920003,
+      "SourcePlot": 520031,
+      "Context": "live",
+      "WaitUntilEventComplete": false,
+      "RetainEntryButtonUntilClicked": true,
+      "Action": "open_map",
+      "Map": 1200001,
+      "InitialFloor": 1,
+      "AutoNavigate": false,
+      "AutoSelectRoom": false,
+      "AutoMarkDestination": false,
+      "Note": "点击“一楼东边靠里的那间客房”只打开探索地图，由玩家自行寻找并选择房间。不能调用enter_control或直接移动人物。此open_map动作是本次新增接入约定，须客户端实现。",
+      "Start": "00:00",
+      "End": "24:00",
+      "Need": [],
+      "ReturnRoom": 100002
+    },
+    {
+      "Id": 1500004,
+      "SourceEvent": 920001,
+      "SourcePlot": 520006,
+      "Context": "live",
+      "WaitUntilEventComplete": false,
+      "RetainEntryButtonUntilClicked": true,
+      "Action": "open_entry_detail",
+      "Entry": 300001,
+      "Category": "item",
+      "AutoUse": false,
+      "Hint": "使用邀请函",
+      "Note": "点击“使用邀请函”打开调查册道具栏并定位邀请函详情，显示使用提示；点击邀请函道具图标后才触发item_used。打开详情本身不使用、不消耗、不重复发放邀请函。此open_entry_detail动作是本次新增接入约定，须客户端实现。",
+      "Start": "00:00",
+      "End": "24:00",
+      "Need": [],
+      "ReturnRoom": 100002
     }
   ],
   "ResourcePolicy": {
-    "AllAudioFieldsBlank": true,
+    "AllAudioFieldsBlank": false,
     "MissingPortrait": "使用已有通用剪影，不改变姓名解锁",
     "MissingScene": "绑定实际背景；不制造新房间",
-    "MapPositions": "沿用正式地图近似中心，接入时按最终裁切校准"
+    "MapPositions": "沿用正式地图近似中心，接入时按最终裁切校准",
+    "ItemKeyFormat": "Entry.icon/detail_image填写程序提供的图片文件名去掉.png；加载器据此解析Sprite资源，包内原图见文案原图"
   },
   "RecordImportPolicy": {
     "CategoriesPeerToDevices": [
@@ -35169,16 +37492,20 @@
   },
   "CharacterDetailPolicy": {
     "PageSize": 4,
-    "NewCard": "结识时由初始资料解锁；未结识灵感可缓存并显示？？",
+    "NewCard": "仅在点击绑定的姓名时授予初始资料，悬浮提示“解锁人物：{name}”；不在事件结束自动授予。已拥有初始资料则显示普通姓名，不重复发奖。",
     "InspirationType": "info",
     "RecordClueType": "clue",
-    "UnknownSpeakerPolicy": "PlotMeta.unknown非空时，在角色已解锁且本录音声源身份已确认前显示？？；不得仅因后台speaker_id泄露姓名",
-    "SourceNames": "按当前姓名/设备位置解锁状态动态解析，不从缓存提前泄露",
+    "UnknownSpeakerPolicy": "现场对白不额外要求录音声源识别。录音中PlotMeta.unknown非空的匿名声源仍需确认身份；仅知道被提及人物的名字不等于识别该匿名声源。明确自我介绍可确认该声源，不能把后台speaker_id当作证据。",
+    "SourceNames": "按姓名已知、档案解锁及录音声源识别状态动态解析；不使用旧的？？缓存",
     "Variant": "保留同一条的最高版本，不重复排列",
     "PathRewardEntry": 329999,
     "PathRewardSort": "always_last",
     "DialogueRewards": "原文位置触发悬浮提示，关闭后继续对白",
-    "RecordDetail": "按Entry.source列出锚点原句、设备或来源分类、文件名与线索正文"
+    "RecordDetail": "按Entry.source列出锚点原句、设备或来源分类、文件名与线索正文",
+    "NameReveal": "处理当前句plot_show/reveal_character_name后再渲染姓名栏。显示姓名条件为known_character_names含speaker_id或Character.name_need满足；显式介绍后不继续显示？？。",
+    "NameClick": "Plot.link_text与link_target按|逐项对应。entry目标为初始人物资料时解锁该人物、提示一次并立即刷新当前姓名栏、调查册及相关已识别录音；不能当作只打开已有详情页。",
+    "ProfileAndInspiration": "未点击姓名前，灵感可缓存；点击后初始资料和已获灵感一并显示，不改变既有灵感条件。",
+    "MissedName": "只处理实际显示到的句子，不因加载整个Plot表提前揭示姓名；同一姓名在后续对白或可访问录音中仍可点击补解锁。"
   },
   "PersonPathPolicy": {
     "Puzzle": 720020,
@@ -35304,7 +37631,7 @@
         "Text": "将你引导来古堡的动机是什么？"
       }
     ],
-    "OnSuccess": "声纹涌现后播放620025；播放完整结算灵感8与Puzzle；随后允许退出",
+    "OnSuccess": "答案正确后立即结算Puzzle与929011一次；声纹涌现后展示620025，可自由拖动或关闭。620025结束或关闭均返回中控室并允许退出，不以完整收听作为结算或退出条件。",
     "OldInspirationTimelineDisabled": true
   },
   "RoomDisplayConfig": [
@@ -35428,16 +37755,31 @@
     {
       "Event": 920007,
       "Record": 620001,
-      "MustFinish": true,
+      "MustFinish": false,
       "ThenEvent": 920009,
       "WorldClockAfter": "18:20",
+      "AllowSeek": true,
+      "AllowReturn": true,
+      "ContinueOn": [
+        "record_end",
+        "record_close"
+      ],
+      "SettleOnce": true,
       "AllowEarlyExit": true
     },
     {
       "Event": 920016,
       "Record": 620015,
-      "MustFinish": true,
-      "ThenEvent": 920017
+      "MustFinish": false,
+      "ThenEvent": 920017,
+      "AllowSeek": true,
+      "AllowReturn": true,
+      "ContinueOn": [
+        "record_end",
+        "record_close"
+      ],
+      "SettleOnce": true,
+      "AllowEarlyExit": true
     }
   ],
   "SleepPolicy": {
@@ -35531,6 +37873,7 @@
     "LockRequires": "室内可取得全部10条记录线索；人物路径不作为时间线前置",
     "PersonPathPopupBeforeExit": true,
     "LastDay": 4,
+    "TruthRecordMustFinish": false,
     "Action": 1500002,
     "RequiredEntries": [],
     "RequiredGoals": [],
@@ -35546,7 +37889,9 @@
       "variant_upgrade",
       "path_ready_popup",
       "sleep",
-      "end_card"
+      "end_card",
+      "character_unlock",
+      "playback_gate_settlement"
     ],
     "Persist": [
       "dialogue_line",
@@ -35562,59 +37907,70 @@
       "control_session",
       "sleep_stage",
       "popup_seen",
-      "world_time"
+      "world_time",
+      "known_character_names",
+      "record_playhead",
+      "playback_gate_settled"
     ],
-    "OldSave": "旧演示剧情ID不兼容，使用新存档；不直接迁移演示存档"
+    "OldSave": "旧演示剧情ID不兼容，使用新存档；不直接迁移演示存档",
+    "CharacterFixMigration": "仅正式ID一致的旧存档：已持有初始资料者补记姓名已知；已访问/已完成的对白中的显式姓名可回填known_character_names。未到达剧情不得扫描解锁。旧演示存档仍不迁移。"
   },
   "SourceAssetConfig": [
     {
       "SourceSheet": "道具描述",
       "SourceRow": 2,
       "Entry": 300001,
-      "Path": "文案原图/道具描述_第2行.png",
-      "Purpose": "原文图片参考，非新增美术"
+      "Path": "文案原图/icon_02.png",
+      "Purpose": "程序命名资源；图片内容与原文配图哈希一致",
+      "ResourceKey": "icon_02"
     },
     {
       "SourceSheet": "道具描述",
       "SourceRow": 3,
       "Entry": 300002,
-      "Path": "文案原图/道具描述_第3行.png",
-      "Purpose": "原文图片参考，非新增美术"
+      "Path": "文案原图/icon_01.png",
+      "Purpose": "程序命名资源；图片内容与原文配图哈希一致",
+      "ResourceKey": "icon_01"
     },
     {
       "SourceSheet": "道具描述",
       "SourceRow": 4,
       "Entry": 300002,
-      "Path": "文案原图/道具描述_第4行.png",
-      "Purpose": "原文图片参考，非新增美术"
+      "Path": "文案原图/icon_03.png",
+      "Purpose": "程序命名资源；图片内容与原文配图哈希一致",
+      "ResourceKey": "icon_03"
     },
     {
       "SourceSheet": "道具描述",
       "SourceRow": 5,
       "Entry": 2001,
-      "Path": "文案原图/道具描述_第5行.png",
-      "Purpose": "原文图片参考，非新增美术"
+      "Path": "文案原图/icon_05.png",
+      "Purpose": "程序命名资源；图片内容与原文配图哈希一致",
+      "ResourceKey": "icon_05"
     },
     {
       "SourceSheet": "道具描述",
       "SourceRow": 10,
       "Entry": 300003,
-      "Path": "文案原图/道具描述_第10行.png",
-      "Purpose": "原文图片参考，非新增美术"
+      "Path": "文案原图/icon_06.png",
+      "Purpose": "程序命名资源；图片内容与原文配图哈希一致",
+      "ResourceKey": "icon_06"
     },
     {
       "SourceSheet": "道具描述",
       "SourceRow": 11,
       "Entry": 300004,
-      "Path": "文案原图/道具描述_第11行.png",
-      "Purpose": "原文图片参考，非新增美术"
+      "Path": "文案原图/icon_07.png",
+      "Purpose": "程序命名资源；图片内容与原文配图哈希一致",
+      "ResourceKey": "icon_07"
     },
     {
       "SourceSheet": "道具描述",
       "SourceRow": 14,
       "Entry": 300005,
-      "Path": "文案原图/道具描述_第14行.png",
-      "Purpose": "原文图片参考，非新增美术"
+      "Path": "文案原图/icon_04.png",
+      "Purpose": "程序命名资源；图片内容与原文配图哈希一致",
+      "ResourceKey": "icon_04"
     }
   ],
   "RecordRuntimePolicy": {
@@ -35700,6 +38056,377 @@
     "GroupOrder": "按group分组、order排序；新增521155位于530066组第29句",
     "VolumeNote": "Plot 520036的破碎1，文案要求降低音量；原表未提供数值，交由音频混音或程序资源配置调整"
   },
+  "CharacterUnlockConfig": [
+    {
+      "Character": 200002,
+      "Entry": 320200,
+      "LinkTarget": "entry:320200",
+      "Plots": [
+        520031,
+        520032,
+        520113,
+        520126,
+        520159,
+        520186,
+        520202,
+        520316,
+        520317,
+        520322,
+        520326,
+        520339,
+        520477,
+        520478,
+        520480,
+        520481,
+        520504,
+        520505,
+        520559,
+        520562,
+        520785
+      ]
+    },
+    {
+      "Character": 200003,
+      "Entry": 320300,
+      "LinkTarget": "entry:320300",
+      "Plots": [
+        520005,
+        520008,
+        520202,
+        520210,
+        520223,
+        520235,
+        520265,
+        520270,
+        520273,
+        520531,
+        520533,
+        520662,
+        520666,
+        520670,
+        520674,
+        520856,
+        520897,
+        520965,
+        520995,
+        521017,
+        521083,
+        521142,
+        521148,
+        521151
+      ]
+    },
+    {
+      "Character": 200004,
+      "Entry": 320400,
+      "LinkTarget": "entry:320400",
+      "Plots": [
+        520140,
+        520356,
+        520364,
+        520388,
+        520391,
+        520394,
+        520404,
+        520411,
+        520414,
+        520421,
+        520422,
+        520423,
+        520445,
+        520739,
+        520740,
+        520878,
+        520883
+      ]
+    },
+    {
+      "Character": 200005,
+      "Entry": 320500,
+      "LinkTarget": "entry:320500",
+      "Plots": [
+        520041,
+        520135,
+        520136,
+        520137,
+        520138,
+        520140,
+        520171,
+        520173,
+        520175,
+        520180,
+        520222,
+        520226,
+        520382,
+        520383,
+        520397,
+        520405,
+        520412,
+        520414,
+        520416,
+        520417,
+        520418,
+        520419,
+        520429,
+        520434,
+        520662,
+        520663,
+        520668,
+        520683,
+        520697,
+        520719,
+        520774,
+        520865,
+        520866,
+        520965,
+        520971,
+        520995,
+        521001,
+        521002,
+        521017,
+        521042
+      ]
+    },
+    {
+      "Character": 200006,
+      "Entry": 320600,
+      "LinkTarget": "entry:320600",
+      "Plots": [
+        520205,
+        520286,
+        520287,
+        520297,
+        520316,
+        520320,
+        520343,
+        520476,
+        520478,
+        520492,
+        520498,
+        520590,
+        520623,
+        520628,
+        520637,
+        520643,
+        520649,
+        520653,
+        520656,
+        520833,
+        520837,
+        520839,
+        520842,
+        520844,
+        520846,
+        520850,
+        520854,
+        520858,
+        520862,
+        520863,
+        520864,
+        520885,
+        520904,
+        520925,
+        520948,
+        520949,
+        520998,
+        521021,
+        521039,
+        521043,
+        521048,
+        521055,
+        521089,
+        521105,
+        521124,
+        521127,
+        521129,
+        521133
+      ]
+    },
+    {
+      "Character": 200007,
+      "Entry": 320700,
+      "LinkTarget": "entry:320700",
+      "Plots": [
+        520117,
+        520118,
+        520197,
+        520207,
+        520283,
+        520285,
+        520296,
+        520306,
+        520374,
+        520495,
+        520515,
+        520770,
+        520923,
+        520948,
+        520949,
+        520998
+      ]
+    },
+    {
+      "Character": 200008,
+      "Entry": 320800,
+      "LinkTarget": "entry:320800",
+      "Plots": [
+        520172,
+        520213,
+        520302,
+        520309,
+        520368,
+        520384,
+        520399,
+        520431,
+        520433,
+        520436,
+        520438,
+        520441,
+        520462,
+        520507,
+        520654,
+        520662,
+        520708,
+        520713,
+        520719,
+        520723,
+        520724,
+        520735,
+        520736,
+        520750,
+        520751,
+        520753,
+        520773,
+        520774,
+        520776,
+        520778,
+        520891,
+        520924,
+        520969,
+        521016,
+        521103
+      ]
+    },
+    {
+      "Character": 200009,
+      "Entry": 320900,
+      "LinkTarget": "entry:320900",
+      "Plots": [
+        520003,
+        520247,
+        520349,
+        520471,
+        520472,
+        520483,
+        520635,
+        520657,
+        520663,
+        520684,
+        520685,
+        520689,
+        520690,
+        520691,
+        520692,
+        520696,
+        520709,
+        520713,
+        520715,
+        520730,
+        520757,
+        520760,
+        520765,
+        520771,
+        520776,
+        520966,
+        520996,
+        520997,
+        521057,
+        521071,
+        521089
+      ]
+    },
+    {
+      "Character": 200018,
+      "Entry": 321800,
+      "LinkTarget": "entry:321800",
+      "Plots": [
+        520231,
+        520253,
+        520460,
+        520462,
+        520468,
+        520471,
+        520474,
+        520594,
+        520636,
+        520686,
+        520689,
+        520691,
+        520695,
+        520705,
+        520707,
+        520710,
+        520727,
+        520923,
+        520950,
+        520997
+      ]
+    }
+  ],
+  "PlaybackPolicy": {
+    "Scope": "all_record_players",
+    "AllowSeek": true,
+    "AllowReturn": true,
+    "RequireFullListen": false,
+    "SeekRange": "0..Record.duration",
+    "CompletedCondition": "自然播放到末尾或主动拖到末尾，均触发record_complete；不检查连续收听时长",
+    "EarlyReturn": "保存进度，可随时返回上级；提前返回不伪造普通录音的record_complete或提前发放结尾奖励",
+    "StoryGate": "PlaybackGates的录音关闭或到末尾均只触发一次then_event及world_clock_after；重播不重复推进",
+    "SeekEffects": "拖动只定位时间、正文和音频，不补播跨过的sfx、不自动标记锚点、不自动领取未显示句奖励；拖到结尾允许结算现有record_complete奖励",
+    "ControlExit": "返回录音列表与退出中控室是两个操作；声音/逻辑谜题的房间退出条件仍有效，不增加听完录音条件",
+    "FinalTruth": "720030答案正确即结算Puzzle及929011（含2025、320680）。620025可自由拖动或关闭，关闭后允许按原流程退出；不等它播完才置Puzzle成功。",
+    "CutsceneScope": "不改变遇鬼过场或现场剧情的播放规则"
+  },
+  "DialogueInteractionGateConfig": [
+    {
+      "Id": 1500003,
+      "SourceEvent": 920003,
+      "SourcePlot": 520031,
+      "Context": "live",
+      "CompletionConditions": [
+        "event_complete:920003",
+        "player_selected_room:100001"
+      ],
+      "ResumeEvent": 920004,
+      "ResumeVia": "StoryFlow",
+      "BlockAutomaticNextEvent": true,
+      "BlockAutomaticStoryflow": true,
+      "RequirePlayerSelection": true,
+      "CloseMapCompletesGate": false,
+      "OtherRoomCompletesGate": false,
+      "Once": true,
+      "Note": "保留原StoryFlow目的地与18:10时刻，但必须等玩家在探索地图中选择正确客房，才放行原接续。点击地名或关闭地图不算完成。"
+    },
+    {
+      "Id": 1500004,
+      "SourceEvent": 920001,
+      "SourcePlot": 520006,
+      "Context": "live",
+      "CompletionConditions": [
+        "event_complete:920001",
+        "item_used:300001@plot:520006"
+      ],
+      "ResumeEvent": 920002,
+      "ResumeVia": "StoryFlow",
+      "BlockAutomaticNextEvent": true,
+      "BlockAutomaticStoryflow": true,
+      "OpenDetailCompletesGate": false,
+      "CloseDetailCompletesGate": false,
+      "ConsumeEntry": false,
+      "Once": true,
+      "Note": "仅当前现场交付邀请函的使用动作可完成；早先查看邀请函不算使用。使用后按原StoryFlow继续管家检查邀请函，不能因关闭详情页自动推进。"
+    }
+  ],
   "HotspotBinding": [],
   "InvitationEntry": 300001,
   "TutorialTape": 2001,

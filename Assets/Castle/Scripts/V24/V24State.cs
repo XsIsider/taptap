@@ -31,6 +31,8 @@ namespace Castle.V24
     [Serializable] public sealed class V24State
     {
         public int DeferredEvent, PlaybackGate, LastCompletedEvent, WakeEvent;
+        // 现场交互去重记录；旧档缺省为空，不更改原存档版本。
+        public List<string> InteractionSignals = new List<string>();
         public string Activity = "", SceneContext = "";
         public bool PathReadyNotice;
         public bool PathCompleteNotice;

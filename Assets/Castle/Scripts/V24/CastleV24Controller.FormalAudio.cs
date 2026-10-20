@@ -47,6 +47,7 @@ namespace Castle.V24
         }
         private string SpeakerName(V24Plot plot, bool recording)
         {
+            if (plot.SpeakerId == 0) return "";
             var meta = _data.PlotMeta.FirstOrDefault(x => x.Id == plot.Id);
             if (!string.IsNullOrEmpty(meta?.SpeakerDisplayOverride)) return meta.SpeakerDisplayOverride;
             if (recording && !string.IsNullOrEmpty(meta?.Unknown)) return meta.Unknown;

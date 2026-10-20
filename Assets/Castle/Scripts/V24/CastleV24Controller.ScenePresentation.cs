@@ -97,6 +97,11 @@ namespace Castle.V24
                 float height = aspect > 1 ? 120 : art.Height; // 姓名占位图保持小尺寸，正式立绘按身高。
                 image.rectTransform.sizeDelta = new Vector2(height * aspect, height);
             }
+            if (binding == "CharacterImage")
+            {
+                image.rectTransform.anchoredPosition = new Vector2(-468.4181f, -331.5084f);
+                image.rectTransform.sizeDelta = new Vector2(612.4181f, 1122.509f);
+            }
         }
 
         private void SceneCharacters(bool talk, int[] participants)

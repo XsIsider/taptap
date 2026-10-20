@@ -41,7 +41,7 @@ namespace Castle.V24
             if (Data.Formal)
             {
                 var requested = Data.DialogueActionConfig.FirstOrDefault(x => x.Id == id && x.SourceEvent == State.ActiveEvent && State.Shown.Contains(x.SourcePlot));
-                if (requested == null || requested.Day!=State.Day || State.ConsumedActions.Contains(id)) return "请在对应现场对白中使用入口";
+                if (requested == null || requested.Action != "enter_control" || requested.Day!=State.Day || State.ConsumedActions.Contains(id)) return "请在对应现场对白中使用入口";
                 State.ActionPending = id;
                 if (State.Line + 1 >= Data.Lines(Data.EventById(State.ActiveEvent).Plot).Length) Finish();
                 Commit(); return "成功";
