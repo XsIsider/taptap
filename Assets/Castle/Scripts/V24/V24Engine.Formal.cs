@@ -20,6 +20,19 @@ namespace Castle.V24
         }
         public bool KnowsCharacter(int id) => State.Entries.Select(Data.EntryById).Any(x => x.Type == "info" && x.Owner.Contains(id) && (!Data.Formal || x.Name.EndsWith("初始资料")));
 
+        /// <summary>人物已解锁且每种灵感均已收录；同种灵感任一版本有效，人物路径奖励不计入。</summary>
+        public bool CharacterInspirationComplete(int character)
+        {
+            if (!KnowsCharacter(character)) return false;
+            var pathRewards = Data.Puzzle.Where(x => x.Type == "person_path")
+                .Select(x => Data.EventById(x.Success)).Where(x => x != null)
+                .SelectMany(x => x.Reward).ToArray();
+            var inspirations = Data.Entry.Where(x => x.Type == "info" && x.Owner.Contains(character)
+                    && !IsCharacterProfile(x.Id) && !pathRewards.Contains(x.Id))
+                .Select(x => CanonicalEntry(x.Id)).Distinct().ToArray();
+            return inspirations.Length > 0 && inspirations.All(Has);
+        }
+
         public int ImportRecords()
         {
             if (!Data.Formal || State.Room != Data.GameSettings.ControlRoom) return 0;
@@ -119,6 +132,9 @@ namespace Castle.V24
             x.Day == State.Day && State.CompletedEvents.Contains(x.AfterEvent) &&
             (x.RequiredEvent == 0 || State.CompletedEvents.Contains(x.RequiredEvent)) && x.Events.Any(id => !Done(Data.EventById(id))));
 
+        /// <summary>第二天下午通过地图到场调查，回自己房间休息后进入晚宴。</summary>
+        public bool IsRoomBasedActivity => Data.Formal && State.Activity == "day2_afternoon";
+
         public bool CanSelectFormalEvent(int id)
         {
             if (Busy || State.PlaybackGate != 0) return false;
@@ -129,9 +145,17 @@ namespace Castle.V24
                 return !Done(Data.EventById(id)) && (required == 0 || required == id);
             }
             var activity = Data.DayActivities.FirstOrDefault(x => x.Id == State.Activity);
-            return activity != null && activity.Events.Contains(id) && !Done(Data.EventById(id)) && ActivityEventAvailable(id);
+            return activity != null && activity.Events.Contains(id) && !Done(Data.EventById(id)) && ActivityEventAvailable(id)
+                && (!IsRoomBasedActivity || Data.EventById(id).Room == State.Room);
         }
         private bool ActivityEventAvailable(int id) => id != 920072 || Has(300004);
+        private void TryStartRoomActivity()
+        {
+            if (!IsRoomBasedActivity || Busy || State.SleepPending) return;
+            var activity = Data.DayActivities.First(x => x.Id == State.Activity);
+            int next = activity.Events.FirstOrDefault(CanSelectFormalEvent);
+            if (next != 0) SelectFormalEvent(next);
+        }
         public bool SelectFormalEvent(int id)
         {
             if (!CanSelectFormalEvent(id)) return false;
@@ -147,7 +171,8 @@ namespace Castle.V24
         public bool WaitForActivity()
         {
             var activity = Data.DayActivities.FirstOrDefault(x => x.Id == State.Activity);
-            if (activity == null || !activity.AllowWaitToFinish || Busy) return false;
+            if (activity == null || !activity.AllowWaitToFinish || Busy
+                || IsRoomBasedActivity && State.Room != Data.GameSettings.HomeRoom) return false;
             FinishActivity(activity); EndChain(); Commit(); return true;
         }
         private void FinishActivity(V24DayActivity activity)
@@ -170,11 +195,13 @@ namespace Castle.V24
             {
                 if (activity.Events.Contains(last) && activity.TimePerEvent > 0 && Data.EventById(last).Time == 0)
                 { AdvanceTime(Now.AddMinutes(activity.TimePerEvent).Ticks); State.LastCompletedEvent = 0; }
-                if (activity.Events.Where(ActivityEventAvailable).All(x => Done(Data.EventById(x)))) FinishActivity(activity);
+                // 地点调查全部结束后仍保留自由探索，统一由回房休息推进至晚宴。
+                if (!IsRoomBasedActivity && activity.Events.Where(ActivityEventAvailable).All(x => Done(Data.EventById(x)))) FinishActivity(activity);
             }
             else
             {
-                activity = Data.DayActivities.FirstOrDefault(x => x.AfterEvent == last || x.AfterAnyEvent.Contains(last));
+                // 0 表示没有待结算事件，不能匹配未配置 AfterEvent 的活动。
+                activity = Data.DayActivities.FirstOrDefault(x => last != 0 && (x.AfterEvent == last || x.AfterAnyEvent.Contains(last)));
                 if (activity != null) { State.Activity = activity.Id; SetClock(activity.StartClock); State.LastCompletedEvent = 0; }
             }
             if (State.DeferredEvent != 0)
@@ -187,7 +214,10 @@ namespace Castle.V24
                     if (step.ToRoom != 0) State.Room = step.ToRoom;
                 }
                 else if (Data.EventById(next).Room != 0) State.Room = Data.EventById(next).Room;
-                Start(next, true);
+                var reply = State.Transcript.LastOrDefault();
+                bool keepText = reply != null && reply.Choice != 0
+                    && Data.PlotChoice.Any(x => x.Id == reply.Choice && x.NextEvent == next);
+                Start(next, true, keepText);
             }
         }
         private void ResumeFormalSleep()

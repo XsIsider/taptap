@@ -36,7 +36,15 @@ namespace Castle.V24
             Show(view,"RecordDecoration",S.JournalCategory==2);
             Show(view,"DetailHead",S.JournalCategory==0 && S.JournalSelection!=0);
             Show(view,"Category",false);
-            JournalPlace(view.Get<ScrollRect>("DetailScroll").transform,890,S.JournalCategory==0?405:340,450,S.JournalCategory==0?320:390);
+            bool isCharacter = S.JournalCategory == 0;
+            var title = view.Get<Text>("DetailTitle").rectTransform;
+            JournalPlace(title,isCharacter?1068:1084.4f,isCharacter?184:200.7f,300,85);
+            title.localRotation = Quaternion.Euler(0,0,isCharacter?-4f:3.53f);
+            JournalPlace(view.Get<ScrollRect>("DetailScroll").transform,isCharacter?950:890,isCharacter?409:340,isCharacter?420:450,isCharacter?330:390);
+            var body = view.Get<Text>("DetailBody");
+            body.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,isCharacter?405:445);
+            // 人物资料统一加大行距，贴合便笺横线；切换记录页时恢复原间距。
+            body.lineSpacing = isCharacter ? 1.4f : 1f;
             view.Get<ScrollRect>("DetailScroll").verticalNormalizedPosition=1;
         }
 
@@ -44,6 +52,24 @@ namespace Castle.V24
         {
             var rect=(RectTransform)transform;rect.anchorMin=rect.anchorMax=rect.pivot=new Vector2(0,1);
             rect.anchoredPosition=new Vector2(x,-y);rect.sizeDelta=new Vector2(width,height);
+        }
+
+        private void JournalCharacterPortrait(CastleUiView view)
+        {
+            var image = view.Get<Image>("CharacterPortrait");
+            var art = S.JournalCategory == 0 && Engine.CharacterInspirationComplete(S.JournalSelection)
+                ? CharacterArt.FirstOrDefault(x => x.Character == S.JournalSelection) : null;
+            var sprite = art?.Portrait;
+            // 横向姓名占位图不作为人物立绘显示；沿用已有正式立绘及剪影绑定。
+            bool visible = sprite != null && sprite.rect.height > sprite.rect.width;
+            image.sprite = visible ? sprite : null;
+            if (visible)
+            {
+                float height = image.rectTransform.sizeDelta.y;
+                image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,
+                    height * sprite.rect.width / sprite.rect.height);
+            }
+            image.gameObject.SetActive(visible);
         }
 
         private void LayoutItemCard(CastleUiView card,V24Entry entry,bool reverse)

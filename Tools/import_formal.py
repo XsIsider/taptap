@@ -34,6 +34,17 @@ def main():
         assert len({row['Id'] for row in result[name]}) == len(result[name]), name
     binding = json.loads((args.source / 'Unity绑定_正式剧情.json').read_text(encoding='utf-8-sig'))
     result.update(normalize(binding))
+    # 玩家可见的房间名覆盖，保留原始表格、绑定和稳定房间 ID。
+    display_overrides_path = args.source / 'RoomDisplayOverrides.json'
+    if display_overrides_path.exists():
+        room_ids = {row['Id'] for row in result['Room']}
+        room_displays = {row['Room']: row for row in result['RoomDisplayConfig']}
+        for display in normalize(json.loads(display_overrides_path.read_text(encoding='utf-8-sig'))):
+            room_id, name = display['Room'], display['Name']
+            if room_id not in room_ids:
+                raise ValueError(f'RoomDisplayOverrides: missing Room:{room_id}')
+            room_displays[room_id] = dict(Room=room_id, MapLabel=name, BeforeName=name, AfterName=name, RevealNeed=[])
+        result['RoomDisplayConfig'] = list(room_displays.values())
     result['PlotMeta'] = [dict(Id=int(key), **normalize(value)) for key, value in binding['PlotMeta'].items()]
     result['HotspotBinding'] = []
     result['InvitationEntry'] = 300001

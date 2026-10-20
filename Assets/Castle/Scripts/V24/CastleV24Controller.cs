@@ -34,6 +34,7 @@ namespace Castle.V24
         private float _position;
         private int _endingDialogue;
         private float _dialogueEndDelay;
+        private int _pendingDialogueItem;
         private CastleUiView V(string id) => Ui.View(id);
         private void Awake()
         {
@@ -44,6 +45,10 @@ namespace Castle.V24
             catch (Exception ex) { state = new V24State(); _blocked = true; Debug.LogWarning(ex.Message); }
             Engine = new V24Engine(_data, state); Engine.Changed = Save; Engine.WaitForSelection = IsConversationChoice;
             Engine.PlotRevealed = PlayPlotAudio;
+            Engine.DialogueStarted = ClearDialogueCollectionHint;
+            Engine.EntryGranted = ShowDialogueCollectionHint;
+            ClearDialogueCollectionHint();
+            HideFloatingHint();
             if (!_test) { S.Volume=PlayerPrefs.GetFloat("Castle.MusicVolume",S.Volume); S.EffectsVolume=PlayerPrefs.GetFloat("Castle.EffectsVolume",S.EffectsVolume); }
             ApplyAudioSettings();
             if (TalkingCursor) Cursor.SetCursor(TalkingCursor, Vector2.zero, CursorMode.Auto);
@@ -60,6 +65,10 @@ namespace Castle.V24
         private void Update()
         {
             if (Ui.Toast.gameObject.activeSelf && Time.unscaledTime > _toastUntil) Ui.Toast.gameObject.SetActive(false);
+            UpdateAnchorDetailsFade();
+            UpdatePersonPathCompletionHint();
+            UpdateFloatingHintFade();
+            bool itemBlocked = UpdateDialogueItemHint();
             if (_modal.Count > 0) { if (Input.GetKeyDown(KeyCode.Escape) && _modal.Last() != "Acquire") Pop(); return; }
             if (Input.GetKeyDown(KeyCode.Escape)) { Settings(); return; }
             bool zoomReset = SceneZoomInput();
@@ -67,14 +76,14 @@ namespace Castle.V24
             {
                 var active = _data.EventById(S.ActiveEvent);
                 bool atEnd = S.Line + 1 >= _data.Lines(active.Plot).Length;
-                if (atEnd && (active.ChoiceGroup == 0 || S.QueuedItem != 0) && Engine.RequiredAction() == null)
+                if (!itemBlocked && !_dialogueHistoryPaused && atEnd && (active.ChoiceGroup == 0 || S.QueuedItem != 0) && Engine.RequiredAction() == null)
                 {
                     if (_endingDialogue != active.Id) { _endingDialogue = active.Id; _dialogueEndDelay = S.AutoSeconds; }
                     _dialogueEndDelay -= Time.unscaledDeltaTime;
                     if (_dialogueEndDelay <= 0) { _endingDialogue = 0; Engine.Advance(); Refresh(); return; }
                 }
                 else _endingDialogue = 0;
-                if (!zoomReset && Input.GetKeyDown(KeyCode.Space) || S.Auto && Time.unscaledTime >= _nextAuto) Next();
+                if ((!zoomReset && Input.GetKeyDown(KeyCode.Space)) || (!itemBlocked && S.Auto && Time.unscaledTime >= _nextAuto)) Next();
             }
             if (_playing && (_page == "Tape" || _data.Formal && (_page == "Recordings" || _page == "Timeline" && S.Ending)))
             {
@@ -148,6 +157,7 @@ namespace Castle.V24
         }
         private void Page(string id)
         {
+            if (id == "Title" || id == "Invitation" || id == "Cutscene" || id == "EndCard") HideFloatingHint();
             if (id != "Tape") _tapeScrollRecord = 0;
             _page = id; if(!Music.isPlaying)Music.Play(); if (id != "Title") S.Page = id;
             UpdateFormalMusic();
@@ -185,7 +195,7 @@ namespace Castle.V24
                 if (S.Room == _data.GameSettings.ControlRoom && !Engine.Busy) { if (Engine.Move(S.ControlReturn)) Refresh(); }
                 else if (!Engine.Busy) Page("Explore");
             }, S.Room==_data.GameSettings.ControlRoom && _page=="Explore" ? "离开 · " + S.ControlCost + "分钟" : "返回", _page=="Tape" || (!Engine.Busy&&(_page!="Explore"||Engine.CanExitControl())));
-            Show(Ui.Hud,"Back",_page!="Explore"||S.Room==_data.GameSettings.ControlRoom);
+            Show(Ui.Hud,"Back",_page!="Explore");
         }
         private void Title()
         {
@@ -204,7 +214,7 @@ namespace Castle.V24
             Btn(v,"Settings",Settings); Btn(v,"Credits",()=>{Push("Credits");Btn(V("Credits"),"Close",Pop);});
             Btn(v,"Quit",RequestQuit);
         }
-        private void StartNew() { _presentationRoom=0;_sceneZoom=1;_avatarsExpanded=false;_playing=false;_playTape=0;_record=0;_position=0;_blocked=false; CloseAll(); float music=S.Volume, effects=S.EffectsVolume; Engine.NewGame(); S.Volume=music;S.EffectsVolume=effects;ApplyAudioSettings(); Page("Invitation"); }
+        private void StartNew() { ClearDialogueCollectionHint(); _presentationRoom=0;_sceneZoom=1;_avatarsExpanded=false;_playing=false;_playTape=0;_record=0;_position=0;_blocked=false; CloseAll(); float music=S.Volume, effects=S.EffectsVolume; Engine.NewGame(); S.Volume=music;S.EffectsVolume=effects;ApplyAudioSettings(); Page("Invitation"); }
         private void Invitation()
         {
             var v=V("Invitation"); var entry=_data.EntryById(_data.InvitationEntry);
@@ -237,8 +247,8 @@ namespace Castle.V24
                 Journal(0,_data.PuzzleById(_puzzle).Target,true);Push("Path",JournalRender);PathRender(V("Path"));
             }
             if(Engine.IntroDone&&!S.RepairNoticeShown){S.RepairNoticeShown=true;Save();Toast(_data.ControlRoomPolicy.RepairToast);}
-            if (_data.Formal && !Engine.Busy && !S.PathReadyNotice && Engine.Need(_data.PuzzleById(720020).Need))
-            { S.PathReadyNotice=true;Save();Confirm("维里诺的人物路径证据已集齐，是否现在查看？",()=>Journal(0,200006,true)); }
+            UpdatePersonPathReadyHint();
+            UpdatePersonPathCompletionHint();
         }
         private void Reward()
         {
@@ -282,7 +292,7 @@ namespace Castle.V24
                 {
                     var state=V24Save.Read(_test?"Logs/v24-manual-test.json":V24Save.Path+".manual");
                     if(!state.Started){Toast("尚无手动存档");return;}
-                    Engine.State=state;S.Auto=false;_playing=false;_endingDialogue=0;
+                    HideFloatingHint();Engine.State=state;S.Auto=false;_playing=false;_endingDialogue=0;
                     _record=S.RecordId;_position=S.RecordPosition;_heardPosition=S.PlaybackHeard;_playTape=S.PlayingTape;
                     ApplyAudioSettings();
                     CloseAll();Engine.ResumeAction();

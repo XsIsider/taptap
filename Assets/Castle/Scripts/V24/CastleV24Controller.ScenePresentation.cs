@@ -10,6 +10,8 @@ namespace Castle.V24
     {
         public int Room;
         public Texture2D Day, Night;
+        // 仅 2.5D 房间背景允许缩放；走廊和中控室等固定视角保持关闭。
+        public bool AllowZoom;
     }
     [Serializable] public sealed class V24CharacterArt
     {
@@ -33,6 +35,10 @@ namespace Castle.V24
         public int[] ConversationOrder = Array.Empty<int>();
         private bool _avatarsExpanded;
         private int _presentationRoom;
+        private const float SceneZoomDefault = 1.4f;
+        private const float SceneZoomMin = 1f;
+        private const float SceneZoomMax = 1.5f;
+        private bool _sceneZoomEnabled;
         private float _sceneZoom = 1;
 
         private V24ConversationChoice[] CurrentChoices() => !_data.Formal ? ConversationChoices : (Engine.CurrentConversationGroup()?.Events ?? Array.Empty<int>())
@@ -47,28 +53,33 @@ namespace Castle.V24
             var art = RoomArt.FirstOrDefault(x => x.Room == S.Room);
             var texture = reception ? (night ? CorridorNight : CorridorDay) : art == null ? null : night ? art.Night : art.Day;
             V("Explore").transform.Find("Backdrop").GetComponent<RawImage>().texture = texture ? texture : _defaultRoomBackground;
-            if (_presentationRoom != S.Room) { _presentationRoom = S.Room; _sceneZoom = 1; _avatarsExpanded = false; }
+            bool zoomEnabled = !reception && art != null && art.AllowZoom && texture != null;
+            if (_presentationRoom != S.Room || _sceneZoomEnabled != zoomEnabled)
+                _sceneZoom = zoomEnabled ? SceneZoomDefault : 1f;
+            if (_presentationRoom != S.Room) { _presentationRoom = S.Room; _avatarsExpanded = false; }
+            _sceneZoomEnabled = zoomEnabled;
             ApplySceneZoom();
         }
 
         private void ApplySceneZoom()
         {
+            _sceneZoom = _sceneZoomEnabled ? Mathf.Clamp(_sceneZoom, SceneZoomMin, SceneZoomMax) : 1f;
             V("Explore").transform.Find("Backdrop").localScale = new Vector3(_sceneZoom, _sceneZoom, 1);
-            Show(V("Explore"), "ZoomHint", _sceneZoom >= 1.349f);
+            Show(V("Explore"), "ZoomHint", false);
         }
 
         private bool SceneZoomInput()
         {
-            if (_page != "Explore") return false;
-            bool reset = Input.GetKeyDown(KeyCode.Space) && _sceneZoom > 1;
-            if (reset) { _sceneZoom = 1; ApplySceneZoom(); return true; }
+            if (_page != "Explore" || !_sceneZoomEnabled) return false;
+            bool reset = Input.GetKeyDown(KeyCode.Space) && !Mathf.Approximately(_sceneZoom, SceneZoomDefault);
+            if (reset) { _sceneZoom = SceneZoomDefault; ApplySceneZoom(); return true; }
             if (Input.mouseScrollDelta.y == 0) return false;
             // 列表和对白消费自己的滚轮，不同时缩放场景。
             var hits = new System.Collections.Generic.List<RaycastResult>();
             if (EventSystem.current)
                 EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current) { position = Input.mousePosition }, hits);
             if (hits.Any(x => x.gameObject.GetComponentInParent<ScrollRect>() != null)) return false;
-            _sceneZoom = Mathf.Clamp(_sceneZoom + Input.mouseScrollDelta.y * .05f, 1, 1.35f);
+            _sceneZoom = Mathf.Clamp(_sceneZoom + Input.mouseScrollDelta.y * .05f, SceneZoomMin, SceneZoomMax);
             ApplySceneZoom();
             return false;
         }

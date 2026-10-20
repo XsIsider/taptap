@@ -71,10 +71,18 @@ namespace Castle.V24
             if(v.TryGet<Button>("RecordFilter",out var filter))filter.gameObject.SetActive(false);
             if(v.TryGet<Button>("Source",out var source))source.gameObject.SetActive(false);
             var timeline=_data.Puzzle.First(x=>x.Type=="timeline");
-            Show(v,"Timeline",S.JournalCategory==2);Btn(v,"Timeline",()=>{_puzzle=timeline.Id;CloseAll();Page("Timeline");},"重构事件时间线");
+            bool canReconstruct = Engine.Need(timeline.Need) && !Engine.Busy;
+            Show(v,"Timeline",S.JournalCategory==2 && canReconstruct);
+            Btn(v,"Timeline",()=>
+            {
+                // 点击时再次检查，避免对白或奖励状态变化后从旧入口进入。
+                if (!Engine.Need(timeline.Need) || Engine.Busy) return;
+                _puzzle=timeline.Id;CloseAll();Page("Timeline");
+            },"重构事件时间线",canReconstruct);
             var path=_data.Puzzle.FirstOrDefault(x=>x.Type=="person_path"&&x.Target==S.JournalSelection);
             Show(v,"CharacterPath",S.JournalCategory==0&&path!=null&&(!_data.Formal||Engine.Need(path.Need)&&!S.Puzzles.Contains(path.Id)));
             Btn(v,"CharacterPath",()=>{_puzzle=path.Id;Push("Path",JournalRender);PathRender(V("Path"));},"人物路径",path!=null);
+            JournalCharacterPortrait(v);
             Save();
         }
         private string PuzzleRequirements(V24Puzzle puzzle)

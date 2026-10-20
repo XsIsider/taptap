@@ -37,6 +37,7 @@ namespace Castle.V24
         }
         public string ExecuteAction(int id)
         {
+            if (PendingDialogueItem() != 0) return "请先点击对白中尚未收集的道具链接";
             if (Data.Formal)
             {
                 var requested = Data.DialogueActionConfig.FirstOrDefault(x => x.Id == id && x.SourceEvent == State.ActiveEvent && State.Shown.Contains(x.SourcePlot));

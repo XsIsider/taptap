@@ -1,3 +1,74 @@
+## 2026-10-20 人物路径悬浮引导
+
+- UIFlow/Canvas/Stage/FloatingHint：复用 AnchorDetails 的 RectTransform、Image、CanvasGroup 和 Body，删除来源行；新增 CastleUiView（Id=FloatingHint），Controls 的 Group 指向 CanvasGroup、Body 指向 TextMeshProUGUI，控制器 FloatingHint 字段指向该视图。
+- 全局位于 Toast 后、所有弹窗之上；底部横向铺满，位置 (0,8)、高度 128，黑色晕影沿用 UI/刻录/弹窗背景.png。Body 宽度为画面 75%、y=56、高 32，V24Workbench 24 号、居中单行 Ellipsis；沿用锚点详情的浅米白及材质。
+- 初始隐藏、alpha=0、Body 为空；CanvasGroup.interactable／blocksRaycasts=false，Image／Body 不接收射线。运行时仅更新文案、透明度和显隐，5 秒平滑淡出，不新增固定组件。
+- 原解锁 Confirm 结构与绑定保留；成功引导前由 JournalRender 更新人物详情及 CharacterPath 显隐。
+
+## 2026-10-20 调查册收齐人物立绘
+
+- UIFlow/Canvas/Stage/Overlays/Journal/CharacterPortrait：编辑期新增 RectTransform + CanvasRenderer + Image，同名绑定指向 Image，初始隐藏、sprite=null。
+- anchorMin／anchorMax／pivot=(1,0)，anchoredPosition=(0,0)，默认尺寸 446×740、缩放 1；运行时保持高度并按 Sprite 比例更新宽度。preserveAspect=true、Raycast Target=false，右边缘与下边缘贴齐游戏画面。
+- 位于 Details 后、FlipSheet 及操作按钮前；不增加遮罩或背景。JournalCharacterPortrait 只更新图片、宽度和显隐；人物收齐判定由 Engine.CharacterInspirationComplete 提供，切换人物／分类时清理旧图。
+
+## 2026-10-20 录音文件目录滚动条
+
+- Recordings/ListScroll：原位置 (155,-340)，尺寸 230×385；Viewport 与 List 宽 195，内容不被新滚动条占用。verticalScrollbar 重新指向现有子 Scrollbar，verticalScrollbarVisibility=Permanent。
+- ListScroll/Scrollbar：启用，位置 (200,-5)、尺寸 25×351；轨道和 Handle 的 Image 复用 LinesScroll 滚动条美术与颜色，保留原 Scrollbar、Handle 引用和 BottomToTop 方向。
+- Recordings/LinesScroll：位置 (395,-340)、尺寸 1077×383；Viewport 与 Lines 宽 1032，原正文 850 宽及信息标记保留。其 Scrollbar 栏内 x 改为 1025，画面中的位置不变。两栏间保留 10 个画布单位，左栏左边缘与右栏右边缘不变。
+- 仅修改场景内尺寸、显隐和 ScrollRect 的滚动条引用，原 ListScroll／LinesScroll 等视图绑定键不变，无新增对象或组件。
+
+## 2026-10-20 收录窗口确认按钮
+
+- Acquire/Confirm 的 RectTransform 在原值基础上等比放大 15%，文字随父级同步放大，保持原中心；最终 anchoredPosition 约 (981.963,-590.286)、localScale 约 (0.570,0.832,1)，sizeDelta 仍为 270×50。
+- 场景已保存，原 Button、Confirm／ConfirmLabel 绑定、字体、美术和点击逻辑不变；不影响通用 Confirm 双按钮弹窗。
+
+## 2026-10-20 调查册人物页布局（BUG-018）
+
+- BookPersonCard.prefab：Head 位置 (23,-16)、尺寸 179×200；Title 位置 (16,-255)、尺寸 198×35，字号／自动字号上限 24。原头像、姓名及按钮绑定不变。
+- Journal/Details：人物 DetailTitle 位置 (1068,-184)、尺寸 300×85、Z 旋转 -4°；DetailScroll 位置 (950,-409)、尺寸 420×330；DetailBody 宽 405、统一 lineSpacing=1.4。按实拍反馈将正文从 -405 回落至 -409（不低于此前 -412），姓名继续左上移动；位置均为左上锚定，沿用游戏字体。
+- 场景保存人物页默认样式，JournalAppearance 切换分类时同步应用；记录页恢复原 DetailTitle (1084.4,-200.7)、Z 旋转 3.53°、DetailScroll (890,-340)、450×390、正文宽 445 和 1 倍行距。无新增对象或绑定。
+
+## 2026-10-20 对白收录提示绑定
+
+- Explore/DialoguePanel/DialogueCollectionHint：固定 RectTransform + TextMeshProUGUI，绑定键 DialogueCollectionHint 指向 TMP。左上锚定，位置 (38,-751)、尺寸 390×44，位于自动播放键左侧，保持原按钮位置与对白视口尺寸。
+- 使用对白 V24Reading 字体及材质，18 号、不自动缩字号，米白色沿用正文且 alpha=0.65；左对齐、允许换行、最多两行、超长 Ellipsis；Rich Text／Raycast Target 关闭，初始空文本且隐藏。
+- 控制器订阅 V24Engine.DialogueStarted／EntryGranted，只更新文本与显隐；同段对白保留最新收录结果，新对白清空，不在运行时创建固定 UI。
+
+## 2026-10-20 锚点底部详情绑定
+
+- Anchors/AnchorDetails：固定 RectTransform + Image + CanvasGroup，绑定键 AnchorDetails 仍指向 RectTransform，底部横向铺满，位置 (0,8)、高度 128；Image 复用 UI/刻录/弹窗背景.png，拉伸显示，默认隐藏。CanvasGroup 初始 alpha=0，interactable／blocksRaycasts=false，控制文字与底图统一淡出。
+- Body：绑定 AnchorDetailsText（TextMeshProUGUI），宽度为页面 75%，底部相对中心 y=56、高 32、24 号字；Source：绑定 AnchorDetailsSource（TextMeshProUGUI），同宽、y=24、高 26、20 号字。
+- 两行均使用 V24Workbench，居中、关闭自动字号与换行、Ellipsis 溢出，字体颜色为浅米白。背景和两行文字不接收射线，不遮挡原按钮与拖拽。
+- 左侧锚点按钮点击调用 ShowAnchorDetails(true)；第一行显示该锚点正文，第二行为“地点(设备) 录音文件xx”（取配置录音名称），未知位置不揭晓。出现后在 5 秒内平滑淡出，重复点击重新计时，列表重绘保留计时且不唤回提示；运行时只更新内容、显隐和透明度，不新增组件或生成固定 UI。
+
+## 2026-10-20 场景缩放配置
+
+- UIFlow/CastleV24Controller.RoomArt 新增 AllowZoom：房间 100003（中控室）为 false，其他 15 项已有 2.5D 房间背景为 true；CorridorDay／CorridorNight 覆盖视角强制禁用缩放，未配置背景也不缩放。
+- Explore/Backdrop 仍由原 RawImage 显示背景，仅背景 Transform 缩放：2.5D 默认 1.4 倍、范围 1～1.5 倍，固定视角 1 倍；ZoomHint 原对象与绑定保留，ApplySceneZoom 始终隐藏其文字提示，空格复位逻辑不变。
+
+## 2026-10-20 姓名链接反馈参数
+
+- DialogueLine.prefab/Body 保留 V24DialogueLinkFeedback，移除 _hoverBackground／_pressedBackground，改为 _hoverAlpha=0.85、_hoverScale=1.05。悬停与按下使用同一文字反馈，不再绘制底色。
+- CastleV24Controller.Line() 继续通过 Configure 登记现场姓名链接及可交互条件；FlowTextLink 点击、V24LineHit 与滚动组件绑定不变，无新增场景对象。
+
+## 2026-10-20 对白滚动绑定
+
+- Explore/DialoguePanel/DialogueScroll：新增 V24DialogueScrollInput，Scroll 指向自身 ScrollRect，IsScrollbar=false；运行时 UserScrolled 绑定 OnDialogueUserScroll。Viewport 高度 610（普通对白向下延长 40），选项时 480，既有正文与链接引用保留。
+- Scrollbar：新增 V24DialogueScrollbarInput，Scroll 指向同一 ScrollRect，IsScrollbar=true；仅滑动条接收 PointerDown，正文组件不截获链接点击。轨道位置 (445,-80)，尺寸 41×502、缩放 1；选项时高度 372。
+- Scrollbar/SlidingArea 为新 RectTransform，上下各内缩 26；原 Handle 连同 Art 移入其中，Scrollbar.handleRect 保持原 Handle，滑块图居中。背景、滑块 Image 保持射线接收，Art 不接收射线。
+
+## 2026-10-20 道具链接提示绑定
+
+- CastleEditable：Explore/ItemLinkHint 为固定 CanvasGroup + Image，绑定键 ItemLinkHint 指向 CanvasGroup；子 Body 的 TextMeshProUGUI 绑定 ItemLinkHintText。原交谈选项边框不用于提示。
+- 相对 Explore 底部居中，位置 (0,28)、尺寸 1120×70；Image 复用 UI/刻录/弹窗背景.png 黑色晕影。字体和材质与 LinePrefab/Body 一致，V24Reading、24 号。Body 左右各内缩 14、底部 6、顶部 30，文字相对原位置下移 12，位于晕影实色区。
+- 初始隐藏且 alpha=0；CanvasGroup 不交互、不阻挡射线，Image／Body 的 Raycast Target 关闭。控制器只控制显隐、透明度和文案，不在运行时新增固定 UI。
+
+## 2026-10-20 对话框点击推进
+
+- Explore/DialoguePanel 新挂 V24LineHit，运行时绑定 AdvanceDialogueFromPanel；现有 Back/Image 开启 Raycast Target，作为底层空白点击区域。无新增 UI 对象，不改变尺寸和绘制顺序。
+- 普通现场对白及玩家回复的 Body/V24LineHit 同样绑定推进；FlowTextLink 优先处理关键词链接，录音正文保持标记回调。Continue、Auto、选项及滚动条原绑定保留。
+
 ## 2026-10-20 对话选项绑定
 
 - CastleV24Controller.DialogueChoicePrefab → Assets/Castle/Prefabs/V24/DialogueChoice.prefab；绑定 Title、Body（隐藏）、Select、Background。模板挂 V24DialogueChoice，Border 指向根 Image，Glow 指向 HighlightMask，FirstBorder／RegularBorder 分别绑定 button_talking_01／02。
@@ -291,6 +362,7 @@
 | DetailHead | RawImage | UIFlow/Canvas/Stage/Overlays/Journal/Details/CharacterDecoration/Head |
 | RecordDecoration | RectTransform | UIFlow/Canvas/Stage/Overlays/Journal/Details/RecordDecoration |
 | DetailScroll | ScrollRect | UIFlow/Canvas/Stage/Overlays/Journal/Details/DetailScroll |
+| CharacterPortrait | Image | UIFlow/Canvas/Stage/Overlays/Journal/CharacterPortrait |
 
 ## Acquire
 

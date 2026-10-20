@@ -13,9 +13,25 @@ namespace Castle.V24
         private void Explore()
         {
             var v=V("Explore"); Show(v,"RoomName",false);
+            if (S.Transcript.Count == 0) ClearDialogueCollectionHint();
+            v.Get<RectTransform>("DialoguePanel").GetComponent<V24LineHit>().Clicked = AdvanceDialogueFromPanel;
+            var dialogueScroll = v.Get<ScrollRect>("DialogueScroll");
+            dialogueScroll.GetComponent<V24DialogueScrollInput>().UserScrolled = OnDialogueUserScroll;
+            dialogueScroll.verticalScrollbar.GetComponent<V24DialogueScrollbarInput>().UserScrolled = OnDialogueUserScroll;
+            dialogueScroll.onValueChanged.RemoveListener(OnDialogueScrollChanged);
+            dialogueScroll.onValueChanged.AddListener(OnDialogueScrollChanged);
+            int lastPlot = S.Transcript.LastOrDefault()?.Plot ?? 0;
+            int lastChoice = S.Transcript.LastOrDefault()?.Choice ?? 0;
+            bool newText = _renderedDialogueCount != S.Transcript.Count || _renderedDialogueLastPlot != lastPlot || _renderedDialogueLastChoice != lastChoice;
+            if (!newText && _renderedDialogueCount > 0) S.DialogueScroll = dialogueScroll.verticalNormalizedPosition;
+            if (newText) { S.DialogueScroll = 0; _dialogueHistoryPaused = false; }
+            _renderedDialogueCount = S.Transcript.Count;
+            _renderedDialogueLastPlot = lastPlot;
+            _renderedDialogueLastChoice = lastChoice;
             SetChoiceSpace(v, false);
             // 仅替换有明确对应素材的场景，其他房间恢复原背景，避免沿用上一房间的图。
             bool talk=S.ActiveEvent!=0;
+            bool itemBlocked = UpdateDialogueItemHint();
             bool hasText=talk || S.Transcript.Count>0;
             var receptionGroups=_data.Event.Where(x=>x.Id==900059||x.Id==900060||x.Id==900061).Select(x=>x.Plot).ToArray();
             bool reception=S.Room==100002 && (talk?receptionGroups.Contains(_data.EventById(S.ActiveEvent).Plot):S.Transcript.Any(x=>x.Plot!=0&&receptionGroups.Contains(_data.Plot.First(p=>p.Id==x.Plot).Group)));
@@ -35,7 +51,7 @@ namespace Castle.V24
             if (_data.Formal && !talk && !ConversationAvailable())
             {
                 var activity = _data.DayActivities.FirstOrDefault(x => x.Id == S.Activity);
-                if (activity != null)
+                if (activity != null && !Engine.IsRoomBasedActivity)
                 {
                     foreach (int id in activity.Events.Where(Engine.CanSelectFormalEvent))
                     {
@@ -74,9 +90,9 @@ namespace Castle.V24
                 }
             }
             Clear(v.Get<RectTransform>("Choices"));
-            if(!talk){StartCoroutine(RestoreScroll(v.Get<ScrollRect>("DialogueScroll"),S.DialogueScroll));return;}
+            if(!talk){QueueDialogueScroll(S.DialogueScroll);return;}
             var active=_data.EventById(S.ActiveEvent); bool end=S.Line+1>=_data.Lines(active.Plot).Length;
-            bool choices=end && active.ChoiceGroup!=0 && S.QueuedItem==0;
+            bool choices=!itemBlocked && end && active.ChoiceGroup!=0 && S.QueuedItem==0;
             if(choices)
             {
                 S.Auto=false;
@@ -85,7 +101,7 @@ namespace Castle.V24
                 foreach(var choice in _data.PlotChoice.Where(x=>x.Group==active.ChoiceGroup).OrderBy(x=>x.Order))
                 {
                     int id=choice.Id;
-                    var button=Card(v.Get<RectTransform>("Choices"),choice.Text,"",()=>{Engine.Advance(id);Refresh();},template:DialogueChoicePrefab);
+                    var button=Card(v.Get<RectTransform>("Choices"),choice.Text,"",()=>ChooseDialogueOption(id),template:DialogueChoicePrefab);
                     if (DialogueChoicePrefab)
                     {
                         button.Get<Text>("Title").font=ReadingFont;
@@ -95,10 +111,108 @@ namespace Castle.V24
                 }
             }
             var requiredAction=Engine.RequiredAction();
-            Btn(v,"Continue",()=>{if(requiredAction==null)Next();else {string result=Engine.ExecuteAction(requiredAction.Id);if(result!="成功")Toast(result);Refresh();}},requiredAction!=null?"进入中控室":"继续 →",!choices);
-            Show(v,"Continue",!end||requiredAction!=null);
-            Btn(v,"Auto",()=>{S.Auto=!S.Auto;_nextAuto=Time.unscaledTime+S.AutoSeconds;Txt(v,"AutoLabel",S.Auto?"自动：开启":"自动：关闭");Save();},S.Auto?"自动：开启":"自动：关闭");
-            StartCoroutine(RestoreScroll(v.Get<ScrollRect>("DialogueScroll"),S.DialogueScroll));
+            Btn(v,"Continue",()=>{if(BlockDialogueAdvance())return;if(requiredAction==null)Next();else {string result=Engine.ExecuteAction(requiredAction.Id);if(result!="成功")Toast(result);Refresh();}},requiredAction!=null?"进入中控室":"继续 →",!choices);
+            Show(v,"Continue",itemBlocked||!end||requiredAction!=null||(_dialogueHistoryPaused&&!choices));
+            Btn(v,"Auto",()=>
+            {
+                if(BlockDialogueAdvance())return;
+                S.Auto=!S.Auto;
+                if (S.Auto) { _dialogueHistoryPaused = false; S.DialogueScroll = 0; QueueDialogueScroll(0); }
+                _nextAuto=Time.unscaledTime+S.AutoSeconds;
+                Txt(v,"AutoLabel",S.Auto?"自动：开启":"自动：关闭");Save();
+            },S.Auto?"自动：开启":"自动：关闭");
+            QueueDialogueScroll(S.DialogueScroll);
+        }
+        private void ChooseDialogueOption(int choiceId)
+        {
+            if (_page != "Explore" || _modal.Count > 0) return;
+            Engine.Advance(choiceId);
+            // Refresh 遇到奖励会直接打开弹窗；先刷新底层对白，移除旧选项并显示已选回复。
+            if (S.RewardPopups.Count > 0) Explore();
+            Refresh();
+        }
+        /// <summary>当前对白只保留最新一条收录结果，不参与存档或自动消失。</summary>
+        private void ShowDialogueCollectionHint(int entryId)
+        {
+            if (_page != "Explore" || S.Transcript.Count == 0) return;
+            var entry = _data.EntryById(entryId);
+            if (entry == null || entry.Type != "info" && entry.Type != "item" && entry.Type != "tape") return;
+            string name = Engine.IsCharacterProfile(entryId) && entry.Owner.Length > 0
+                ? Engine.CharacterName(entry.Owner[0]) : entry.Name;
+            string category = entry.Type == "info" ? "人物" : "道具";
+            var hint = V("Explore").Get<TextMeshProUGUI>("DialogueCollectionHint");
+            hint.text = name + "已收录进调查册·" + category;
+            hint.gameObject.SetActive(true);
+        }
+        private void ClearDialogueCollectionHint()
+        {
+            var hint = V("Explore").Get<TextMeshProUGUI>("DialogueCollectionHint");
+            hint.text = string.Empty;
+            hint.gameObject.SetActive(false);
+        }
+        private Coroutine _dialogueItemHintRoutine;
+        /// <summary>道具未收集时暂停推进；底部提示淡入淡出，不遮挡链接和其他按钮。</summary>
+        private bool UpdateDialogueItemHint()
+        {
+            int item = _page == "Explore" && S.ActiveEvent != 0 ? Engine.PendingDialogueItem() : 0;
+            bool canShow = item != 0 && _modal.Count == 0 && S.RewardPopups.Count == 0;
+            if (item != 0)
+            {
+                if (S.Auto) { S.Auto = false; Save(); }
+                _endingDialogue = 0;
+                Txt(V("Explore"), "AutoLabel", "自动：关闭");
+            }
+            if (canShow && _pendingDialogueItem != item)
+            {
+                _pendingDialogueItem = item;
+                ShowDialogueItemHint();
+            }
+            else if (!canShow && _pendingDialogueItem != 0)
+            {
+                _pendingDialogueItem = 0;
+                HideDialogueItemHint();
+            }
+            return item != 0;
+        }
+        private bool BlockDialogueAdvance()
+        {
+            if (!UpdateDialogueItemHint()) return false;
+            ShowDialogueItemHint();
+            return true;
+        }
+        private void ShowDialogueItemHint()
+        {
+            if (_dialogueItemHintRoutine != null) StopCoroutine(_dialogueItemHintRoutine);
+            V("Explore").Get<TextMeshProUGUI>("ItemLinkHintText").text = "似乎有什么信息需要注意……请先点击对白中的道具链接";
+            _dialogueItemHintRoutine = StartCoroutine(FadeDialogueItemHint());
+        }
+        private void HideDialogueItemHint()
+        {
+            if (_dialogueItemHintRoutine != null) StopCoroutine(_dialogueItemHintRoutine);
+            _dialogueItemHintRoutine = null;
+            var hint = V("Explore").Get<CanvasGroup>("ItemLinkHint");
+            hint.alpha = 0;
+            hint.gameObject.SetActive(false);
+        }
+        private IEnumerator FadeDialogueItemHint()
+        {
+            var hint = V("Explore").Get<CanvasGroup>("ItemLinkHint");
+            hint.gameObject.SetActive(true);
+            hint.alpha = 0;
+            // 秒；使用真实时间，暂停对白或降低游戏速度不影响提示动画。
+            const float fadeInSeconds = 0.25f, holdSeconds = 2.6f, fadeOutSeconds = 0.55f;
+            float elapsed = 0;
+            while (elapsed < fadeInSeconds + holdSeconds + fadeOutSeconds)
+            {
+                hint.alpha = elapsed < fadeInSeconds ? elapsed / fadeInSeconds
+                    : elapsed < fadeInSeconds + holdSeconds ? 1f
+                    : 1f - (elapsed - fadeInSeconds - holdSeconds) / fadeOutSeconds;
+                elapsed += Time.unscaledDeltaTime;
+                yield return null;
+            }
+            hint.alpha = 0;
+            hint.gameObject.SetActive(false);
+            _dialogueItemHintRoutine = null;
         }
         private void Portrait(int id)
         {
@@ -117,13 +231,70 @@ namespace Castle.V24
             }
             rect.sizeDelta = new Vector2(_dialogueScrollSize.x, choices ? 480 : _dialogueScrollSize.y);
             scroll.viewport.sizeDelta = new Vector2(_dialogueViewportSize.x, choices ? 480 : _dialogueViewportSize.y);
+            // 出现选项时轨道随正文区域缩短，保留顶部 80、底部 28 个画布单位的边距。
+            var barRect = (RectTransform)scroll.verticalScrollbar.transform;
+            barRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rect.rect.height - 108f);
         }
         private Sprite PortraitSprite(int id) => CharacterArt.FirstOrDefault(x => x.Character == id)?.Portrait;
-        private IEnumerator RestoreScroll(ScrollRect scroll,float position) { yield return null; Canvas.ForceUpdateCanvases();scroll.verticalNormalizedPosition=position; }
+        private Coroutine _dialogueScrollRoutine;
+        private bool _restoringDialogueScroll, _dialogueHistoryPaused;
+        private int _renderedDialogueCount, _renderedDialogueLastPlot, _renderedDialogueLastChoice;
+        private void QueueDialogueScroll(float position)
+        {
+            if (_dialogueScrollRoutine != null) StopCoroutine(_dialogueScrollRoutine);
+            _restoringDialogueScroll = true;
+            _dialogueScrollRoutine = StartCoroutine(RestoreDialogueScroll(Mathf.Clamp01(position)));
+        }
+        private IEnumerator RestoreDialogueScroll(float position)
+        {
+            // 等待旧行销毁及文本布局完成，避免在旧高度上定位后下一帧又跳回去。
+            yield return null;
+            var scroll = V("Explore").Get<ScrollRect>("DialogueScroll");
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(scroll.content);
+            scroll.Rebuild(CanvasUpdate.PostLayout);
+            scroll.StopMovement();
+            scroll.verticalNormalizedPosition = position;
+            S.DialogueScroll = position;
+            _restoringDialogueScroll = false;
+            _dialogueScrollRoutine = null;
+        }
+        private void OnDialogueScrollChanged(Vector2 position)
+        {
+            if (_page == "Explore" && !_restoringDialogueScroll && _renderedDialogueCount > 0)
+                S.DialogueScroll = Mathf.Clamp01(position.y);
+        }
+        private void OnDialogueUserScroll()
+        {
+            if (_page != "Explore" || _modal.Count > 0) return;
+            if (_dialogueScrollRoutine != null) StopCoroutine(_dialogueScrollRoutine);
+            _dialogueScrollRoutine = null;
+            _restoringDialogueScroll = false;
+            _dialogueHistoryPaused = true;
+            _endingDialogue = 0;
+            S.Auto = false;
+            var view = V("Explore");
+            S.DialogueScroll = Mathf.Clamp01(view.Get<ScrollRect>("DialogueScroll").verticalNormalizedPosition);
+            Txt(view, "AutoLabel", "自动：关闭");
+            var active = _data.EventById(S.ActiveEvent);
+            if (active != null && (active.ChoiceGroup == 0 || S.QueuedItem != 0)) Show(view, "Continue", true);
+            Save();
+        }
         private void Next()
         {
             var ev=_data.EventById(S.ActiveEvent);if(ev==null)return;
+            if (BlockDialogueAdvance()) return;
+            _dialogueHistoryPaused = false;
             S.DialogueScroll=0;Engine.Advance();_nextAuto=Time.unscaledTime+S.AutoSeconds;Refresh();
+        }
+        private void AdvanceDialogueFromPanel()
+        {
+            if (_page != "Explore" || _modal.Count > 0 || S.ActiveEvent == 0 || S.RewardPopups.Count > 0) return;
+            if (BlockDialogueAdvance()) return;
+            // 只复用可用的继续按钮；选项、结束状态和专用动作不能被背景点击跳过。
+            var button = V("Explore").Get<Button>("Continue");
+            if (!button.isActiveAndEnabled || !button.IsInteractable() || Engine.RequiredAction() != null) return;
+            button.onClick.Invoke();
         }
         private CastleUiView Line(Transform parent,V24Plot plot,bool recording)
         {
@@ -136,7 +307,12 @@ namespace Castle.V24
                 string target=plot.LinkTarget[i];
                 if(target.StartsWith("action:") && (recording || (_data.Formal ? !_data.DialogueActionConfig.Any(x=>x.SourcePlot==plot.Id&&x.SourceEvent==S.ActiveEvent&&!S.ConsumedActions.Contains(x.Id)) : Engine.RequiredAction()?.SourcePlot!=plot.Id)))continue;
                 if(target.StartsWith("character:")&&!CharacterUnlocked(int.Parse(target.Substring(10))))continue;
-                body=body.Replace(plot.LinkText[i],"<link=\""+plot.Id+";"+target+"\"><color=#E6BB68><u>"+plot.LinkText[i]+"</u></color></link>");
+                bool pendingItem = !recording && target.StartsWith("entry:")
+                    && int.TryParse(target.Substring(6), out int entryId)
+                    && (_data.EntryById(entryId)?.Type == "item" || _data.EntryById(entryId)?.Type == "tape")
+                    && !Engine.Has(entryId);
+                string linkText = pendingItem ? "<b>" + plot.LinkText[i] + "</b>" : plot.LinkText[i];
+                body=body.Replace(plot.LinkText[i],"<link=\""+plot.Id+";"+target+"\"><color="+(pendingItem?"#FFE09A":"#E6BB68")+"><u>"+linkText+"</u></color></link>");
             }
             var tmp=view.Get<TextMeshProUGUI>("Body");tmp.text=body;
             tmp.GetComponent<FlowTextLink>().Clicked=Link;
@@ -147,7 +323,15 @@ namespace Castle.V24
                 layout.preferredHeight = Mathf.Max(110, 65 + tmp.GetPreferredValues(body, 720, 0).y);
             }
             else SetInlineDialogue(view, speaker, body);
+            tmp.GetComponent<V24DialogueLinkFeedback>().Configure(recording ? Array.Empty<string>()
+                : plot.LinkTarget.Where(IsPersonNameLink).Select(target => plot.Id + ";" + target),
+                () => _page == "Explore" && _modal.Count == 0);
             return view;
+        }
+        private bool IsPersonNameLink(string target)
+        {
+            if (target.StartsWith("character:")) return true;
+            return target.StartsWith("entry:") && int.TryParse(target.Substring(6), out int id) && Engine.IsCharacterProfile(id);
         }
         private void SetInlineDialogue(CastleUiView view, string speakerName, string body)
         {
@@ -157,6 +341,7 @@ namespace Castle.V24
             speaker.enabled = false;
             // 稍微拉开同一条对白内的行距，后续首选高度计算同时包含新增间距。
             text.lineSpacing = 8f;
+            text.GetComponent<V24LineHit>().Clicked = AdvanceDialogueFromPanel;
 
             // 先处理正文链接，再拼姓名，避免姓名前缀被关键词替换成可点击链接。
             string color = ColorUtility.ToHtmlStringRGBA(speaker.color);
@@ -179,7 +364,8 @@ namespace Castle.V24
             var pair=key.Split(';');int line=int.Parse(pair[0]);var target=pair[1].Split(':');int id=int.Parse(target[1]);
             if(!S.Shown.Contains(line))return;
             if(target[0]=="room") {Map(id);return;}
-            if(target[0]=="action") { string result=Engine.ExecuteAction(id); if(result!="成功") { Confirm(result,()=>{}); return; } Refresh();return; }
+            // 正文中的中控室地址只打开地图；由末尾的独立按钮确认进入，避免点击地址直接转场。
+            if(target[0]=="action") {Map(_data.GameSettings.ControlRoom);return;}
             if(target[0]=="character") {if(CharacterUnlocked(id))Journal(0,id,true);return;}
             if(target[0]=="entry")
             {
@@ -192,6 +378,11 @@ namespace Castle.V24
         private void Rest()
         {
             if(Engine.Busy||S.Room!=_data.GameSettings.HomeRoom)return;
+            if (Engine.IsRoomBasedActivity)
+            {
+                Confirm("休息并等待晚宴？", () => { if (Engine.WaitForActivity()) Refresh(); });
+                return;
+            }
             string reason=Engine.SleepReason();if(reason!=""){Toast(reason);return;}
             Confirm("休息至下一调查日 10:00？未完成的当天剧情可能错过；将保留睡前恢复点。",()=>
             {

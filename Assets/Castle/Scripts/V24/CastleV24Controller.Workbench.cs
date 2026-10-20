@@ -9,6 +9,9 @@ namespace Castle.V24
     public sealed partial class CastleV24Controller
     {
         public Image PathLinePrefab;
+        // 锚点详情从出现到完全淡出的时长，单位为秒。
+        private const float AnchorDetailsFadeSeconds = 5f;
+        private float _anchorDetailsUntil;
         private bool SpaceAvailable => !Engine.IntroDone && Engine.Need(_data.PuzzleById(_data.GameSettings.IntroSoundPath).Need);
         private void OpenSpace(){if(SpaceAvailable){_puzzle=_data.GameSettings.IntroSoundPath;Page("Space");}}
         private void Tabs(CastleUiView v)
@@ -50,10 +53,15 @@ namespace Castle.V24
         }
         private Coroutine _tapeScrollRoutine;
         private int _tapeScrollRecord;
+        private int _recordingScrollRecord;
         private void PlaybackRender(bool revealLatest = false)
         {
             var v=V(_page=="Tape"?"Tape":"Recordings");
             var scroll = _page == "Tape" ? v.Get<ScrollRect>("LinesScroll") : null;
+            var recordingScroll = _page == "Recordings" ? v.Get<ScrollRect>("LinesScroll") : null;
+            float recordingScrollPosition = recordingScroll != null && _recordingScrollRecord == _record
+                ? recordingScroll.verticalNormalizedPosition : 1f;
+            if (recordingScroll != null) _recordingScrollRecord = _record;
             bool follow = false;
             Vector2 scrollPosition = Vector2.zero;
             if (scroll != null)
@@ -67,7 +75,12 @@ namespace Castle.V24
                 _tapeScrollRecord = _record;
             }
             Clear(v.Get<RectTransform>("Lines"));
-            if(_record==0){Txt(v,"FileInfo","暂无可访问录音");Btn(v,"Play",null,"播放",false);return;}
+            if(_record==0)
+            {
+                Txt(v,"FileInfo","暂无可访问录音");Btn(v,"Play",null,"播放",false);
+                if (recordingScroll != null) RestoreRecordingScroll(recordingScroll, 1f);
+                return;
+            }
             var record=_data.RecordById(_record);_position=Mathf.Clamp(_position,0,record.Duration);
             Txt(v,"FileInfo",record.Name+" · "+Engine.DeviceName(record.Device));
             foreach(var plot in _data.Lines(record.Plot).Where(x=>_page!="Tape" || x.At<=_position))
@@ -79,7 +92,18 @@ namespace Castle.V24
             Btn(v,"Play",()=>{if(_page=="Tape"||_data.Formal){if(_position>=record.Duration){_position=0;_heardPosition=0;_audioLine=0;if(_page=="Tape")PlaybackRender(true);}SetPlaybackPlaying(!_playing);}}," ");
             Slide(v,"Progress",0,record.Duration,_position,x=>{_position=x;_audioLine=0;if(Voice)Voice.Stop();if(Effects)Effects.Stop();if(_page=="Tape")PlaybackRender(true);else {HighlightRecording();PlaybackTick(false);Save();}});
             Show(v,"Extract",false);PlaybackTick(false);if(_page!="Tape")HighlightRecording();
+            if (recordingScroll != null) RestoreRecordingScroll(recordingScroll, recordingScrollPosition);
             if (scroll != null) _tapeScrollRoutine = StartCoroutine(RestoreTapeScroll(scroll, follow, scrollPosition, _record));
+        }
+        /// <summary>正文布局完成后恢复位置并重算滑块，避免旧文件的越界位置把滑块压缩为零。</summary>
+        private static void RestoreRecordingScroll(ScrollRect scroll, float position)
+        {
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(scroll.content);
+            scroll.StopMovement();
+            scroll.verticalNormalizedPosition = Mathf.Clamp01(position);
+            // 显式刷新缓存和滑块尺寸，不依赖玩家再次拖动来触发 ScrollRect 更新。
+            scroll.Rebuild(CanvasUpdate.PostLayout);
         }
         private IEnumerator RestoreTapeScroll(ScrollRect scroll, bool follow, Vector2 position, int recordId)
         {
@@ -144,8 +168,8 @@ namespace Castle.V24
             Clear(v.Get<RectTransform>("List"));Clear(v.Get<RectTransform>("Tracks"));
             foreach(int id in S.Marked)
             {
-                var plot=_data.Plot.First(x=>x.Id==id);var record=_data.Record.FirstOrDefault(x=>x.Plot==plot.Group);
-                var card=Card(v.Get<RectTransform>("List"),"锚点 "+(S.Marked.IndexOf(id)+1),plot.Text,()=>{_selectedLine=id;Toast(plot.Text+"\n"+Engine.DeviceName(record?.Device??0));},template:AnchorCardPrefab);
+                var plot=_data.Plot.First(x=>x.Id==id);
+                var card=Card(v.Get<RectTransform>("List"),"锚点 "+(S.Marked.IndexOf(id)+1),plot.Text,()=>{_selectedLine=id;ShowAnchorDetails(true);},template:AnchorCardPrefab);
                 var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="evidence";drag.Id=id.ToString();
                 drag.DragRoot=(RectTransform)v.transform;
             }
@@ -183,6 +207,42 @@ namespace Castle.V24
             Txt(v,"Status",S.Puzzles.Contains(_puzzle)?"已完成":Engine.Need(puzzle.Need)?"拖入片段后验证":"尚缺前置证据");
             Btn(v,"Check",()=>SubmitPuzzle("Anchors"),puzzle.Type=="anchor_align"?"检查对齐":"验证关联",draft.Values.Count==capacity&&Engine.Need(puzzle.Need));
             if(v.TryGet<Button>("Next",out _)){Show(v,"Next",SpaceAvailable);Btn(v,"Next",OpenSpace,"声音路径 →",SpaceAvailable);}
+            ShowAnchorDetails();
+        }
+        /// <summary>显示锚点正文和来源；只有主动点击才重置淡出，未知位置不提前揭晓。</summary>
+        private void ShowAnchorDetails(bool restartFade = false)
+        {
+            var view = V("Anchors");
+            bool selected = S.Marked.Contains(_selectedLine);
+            if (selected && restartFade) _anchorDetailsUntil = Time.unscaledTime + AnchorDetailsFadeSeconds;
+            bool visible = selected && _anchorDetailsUntil > Time.unscaledTime;
+            Show(view, "AnchorDetails", visible);
+            if (!visible) { _anchorDetailsUntil = 0f; return; }
+
+            var plot = _data.Plot.First(x => x.Id == _selectedLine);
+            var record = _data.Record.FirstOrDefault(x => x.Plot == plot.Group);
+            var device = record == null ? null : _data.DeviceConfig.FirstOrDefault(x => x.Id == record.Device);
+            string location = device != null && device.Room != 0 && S.KnownDevices.Contains(device.Id)
+                ? Engine.RoomName(device.Room) : "位置未知";
+            string deviceName = device?.Label ?? "未知设备";
+            // 单行宽度与省略规则保存在场景；先移除原文换行，避免挤占下方来源行。
+            view.Get<TMPro.TextMeshProUGUI>("AnchorDetailsText").text = plot.Text.Replace("\r", " ").Replace("\n", " ");
+            view.Get<TMPro.TextMeshProUGUI>("AnchorDetailsSource").text =
+                location + "(" + deviceName + ") " + (record?.Name ?? "录音文件未知");
+            UpdateAnchorDetailsFade();
+        }
+        private void UpdateAnchorDetailsFade()
+        {
+            if (_anchorDetailsUntil <= 0f) return;
+            var group = V("Anchors").Get<RectTransform>("AnchorDetails").GetComponent<CanvasGroup>();
+            if (_page != "Anchors" || !S.Marked.Contains(_selectedLine)) _anchorDetailsUntil = 0f;
+            float remaining = Mathf.Clamp01((_anchorDetailsUntil - Time.unscaledTime) / AnchorDetailsFadeSeconds);
+            group.alpha = Mathf.SmoothStep(0f, 1f, remaining);
+            if (remaining <= 0f)
+            {
+                _anchorDetailsUntil = 0f;
+                group.gameObject.SetActive(false);
+            }
         }
         private double AnchorSeconds(int id)
         {
@@ -291,7 +351,15 @@ namespace Castle.V24
             var note=v.Get<InputField>("Hypothesis");note.onValueChanged.RemoveAllListeners();note.SetTextWithoutNotify(draft.Hypothesis);note.onValueChanged.AddListener(text=>{draft.Hypothesis=text;Engine.Commit();});
             Btn(v,"ResetView",()=>{pan.Zoom=1;pan.Content.anchoredPosition=Vector2.zero;pan.Apply();},"复位视图");
             Txt(v,"Details",puzzle.Name+"\n标签按顺序连线；跨层路径见左侧楼层。\n滚轮缩放，右键平移。\n当前："+_floor+"F");
-            Btn(v,"Verify",()=>SubmitPuzzle(v.Id=="Path"?"Path":"Space"),v.Id=="Space"?"验证对齐":"提交路径",draft.Values.All(x=>x!=0)&&Engine.Need(puzzle.Need));
+            bool hasRequirements = Engine.Need(puzzle.Need);
+            bool canSubmit = draft.Values.All(x => x != 0) && hasRequirements && (v.Id != "Path" || !Engine.Busy);
+            Show(v,"Verify",v.Id != "Path" || hasRequirements);
+            Btn(v,"Verify",()=>
+            {
+                // 人物路径与时间线入口一样，点击时再次校验，避免旧按钮绕过前置。
+                if (v.Id == "Path" && (draft.Values.Any(x => x == 0) || !Engine.Need(puzzle.Need) || Engine.Busy)) return;
+                SubmitPuzzle(v.Id=="Path"?"Path":"Space");
+            },v.Id=="Space"?"验证对齐":"提交路径",canSubmit);
             if(v.Id=="Space")
             {
                 Txt(v,"Details","声源\n"+string.Join(" → ", draft.Values.Select(x=>map.Nodes.FirstOrDefault(n=>n.Id==x)).Select(x=>x==null?"待放置":Engine.RoomName(x.Room))));

@@ -11,6 +11,10 @@ namespace Castle.V24
         public V24State State;
         public Action Changed;
         public Action<int> PlotRevealed;
+        /// <summary>开启不保留上段文本的新对白时，清理界面的临时提示。</summary>
+        public Action DialogueStarted;
+        /// <summary>新条目或新磁带实例实际发放后通知界面；重复点击已有内容不通知。</summary>
+        public Action<int> EntryGranted;
         public Func<V24Event, bool> WaitForSelection;
         public V24Engine(V24Data data, V24State state) { Data = data; State = state; }
         public DateTime Now => new DateTime(State.Now);
@@ -121,7 +125,7 @@ namespace Castle.V24
         }
         public void Scan()
         {
-            if (Data.Formal) { ResumeFormal(); return; }
+            if (Data.Formal) { ResumeFormal(); TryStartRoomActivity(); return; }
             if (Busy || State.SleepPending || State.Finished || State.ActionPending != 0 || State.SleepStage != "") return;
             var ev = Data.Event.FirstOrDefault(x => x.Trigger == "auto" && Eligible(x))
                 ?? Data.Event.FirstOrDefault(x => x.Trigger == "interact" && Eligible(x));
@@ -131,7 +135,7 @@ namespace Castle.V24
         {
             var ev = Data.EventById(id);
             if (ev == null || (!validated && !Eligible(ev, direct))) return false;
-            if (!keepText) { State.Transcript.Clear(); State.DialogueScroll = 1; }
+            if (!keepText) { State.Transcript.Clear(); State.DialogueScroll = 1; DialogueStarted?.Invoke(); }
             State.ActiveEvent = id; State.Line = -1;
             if (ev.Record != 0 && State.Recordings.All(x => x.Id != ev.Record))
             {
@@ -152,20 +156,48 @@ namespace Castle.V24
             bool repeat = State.Line == 0 && State.Transcript.LastOrDefault()?.Reply == line.Text;
             if (!repeat) State.Transcript.Add(new V24Transcript { Plot = line.Id });
             if (!State.Shown.Contains(line.Id)) State.Shown.Add(line.Id);
+            if (PendingDialogueItem() != 0) State.Auto = false;
             PlotRevealed?.Invoke(line.Id);
             if (!Data.Formal && State.Line == lines.Length - 1 && ev.Record != 0) State.Recordings.First(x => x.Id == ev.Record).Complete = true;
             Commit();
         }
+        /// <summary>返回现场已显示但尚未收集的道具链接；人物、线索和录音回放不阻塞对白。</summary>
+        public int PendingDialogueItem()
+        {
+            if (State.ActiveEvent == 0) return 0;
+            foreach (var row in State.Transcript)
+            {
+                var line = Data.Plot.FirstOrDefault(x => x.Id == row.Plot);
+                if (line == null || line.LinkTarget == null || line.LinkText == null) continue;
+                for (int i = 0; i < line.LinkTarget.Length && i < line.LinkText.Length; i++)
+                {
+                    string target = line.LinkTarget[i];
+                    if (string.IsNullOrEmpty(line.LinkText[i]) || !line.Text.Contains(line.LinkText[i])
+                        || string.IsNullOrEmpty(target) || !target.StartsWith("entry:", StringComparison.Ordinal)
+                        || !int.TryParse(target.Substring(6), out int entryId)) continue;
+                    var entry = Data.EntryById(entryId);
+                    if (entry != null && (entry.Type == "item" || entry.Type == "tape") && !Has(entryId))
+                        return entryId;
+                }
+            }
+            return 0;
+        }
         public void Advance(int choice = 0)
         {
             var ev = Data.EventById(State.ActiveEvent); if (ev == null) return;
+            var lines = Data.Lines(ev.Plot);
+            // 仅当前对白末尾的有效选项可以提交，旧按钮的重复回调不能推进新分支。
+            if (choice != 0 && (State.Line + 1 < lines.Length
+                || !Data.PlotChoice.Any(x => x.Id == choice && x.Group == ev.ChoiceGroup))) return;
+            if (PendingDialogueItem() != 0) { State.Auto = false; return; }
             if (RequiredAction() != null) return;
             if (Data.Formal && State.Line >= 0)
             {
-                ApplyEffects("plot_complete", Data.Lines(ev.Plot)[State.Line].Id);
-                if (State.RewardPopups.Count > 0) { Commit(); return; }
+                ApplyEffects("plot_complete", lines[State.Line].Id);
+                // 已点击选项时先提交选择与后续分支，奖励弹窗只延后分支播放。
+                if (State.RewardPopups.Count > 0 && choice == 0) { Commit(); return; }
             }
-            if (State.Line + 1 < Data.Lines(ev.Plot).Length) { Reveal(); return; }
+            if (State.Line + 1 < lines.Length) { Reveal(); return; }
             if (ev.ChoiceGroup != 0 && State.QueuedItem == 0 && choice == 0) return;
             if (choice != 0)
             {
@@ -176,6 +208,7 @@ namespace Castle.V24
         }
         public void Finish(int choice = 0)
         {
+            if (PendingDialogueItem() != 0) { State.Auto = false; return; }
             if (Data.Formal) { FinishFormal(choice); return; }
             var ev = Data.EventById(State.ActiveEvent); if (ev == null) return;
             if (ev.Id == Data.GameSettings.TapeTutorialEvent && State.TutorialEvent == 0)
@@ -248,6 +281,7 @@ namespace Castle.V24
             if (entry.Type == "tape") State.Tapes.Add(new V24Tape { Instance = State.NextTape++, Entry = id, Record = entry.Record });
             if (popup && (Data.Formal || entry.Type == "item" || entry.Type == "tape") && (!owned || entry.Type == "tape")) State.RewardPopups.Add(id);
             RefreshUnlocks();
+            if (!owned || entry.Type == "tape") EntryGranted?.Invoke(id);
         }
         public void Claim(int lineId, int entryId)
         {

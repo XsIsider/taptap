@@ -68,7 +68,7 @@ namespace Castle.Editor
             PrefabUtility.SaveAsPrefabAsset(prefab, prefabPath); PrefabUtility.UnloadPrefabContents(prefab);
 
             game.RoomArt = new[] {
-                Room(100001,"客房"), Room(100002,"宴会大厅","夜晚"), Room(100003,"中控台"), Room(100005,"厨房"),
+                Room(100001,"客房"), Room(100002,"宴会大厅","夜晚"), Room(100003,"中控台",allowZoom:false), Room(100005,"厨房"),
                 Room(100006,"收藏厅"), Room(100023,"议会厅"), Room(100012,"客房"), Room(100013,"客房"),
                 Room(100015,"客房"), Room(100024,"客房"), Room(100025,"客房"), Room(100026,"客房"),
                 Room(100027,"客房"), Room(100028,"客房"), Room(100029,"客房"), Room(100030,"客房")
@@ -88,7 +88,7 @@ namespace Castle.Editor
             V24SceneSetup.ExportBindings(); V24SceneSetup.InstallValidateBuild();
         }
         private static V24ConversationChoice Choice(int ev, int character) => new V24ConversationChoice { Event = ev, Character = character };
-        private static V24RoomArt Room(int id, string name, string night = "黑夜") => new V24RoomArt { Room = id, Day = Texture(name == "中控台" ? "中控台白天.png" : name + " 白天.png"), Night = Texture(name + " " + night + ".png") };
+        private static V24RoomArt Room(int id, string name, string night = "黑夜", bool allowZoom = true) => new V24RoomArt { Room = id, Day = Texture(name == "中控台" ? "中控台白天.png" : name + " 白天.png"), Night = Texture(name + " " + night + ".png"), AllowZoom = allowZoom };
         private static Texture2D Texture(string name) => AssetDatabase.LoadAssetAtPath<Texture2D>(Art + "Scenes/" + name) ?? throw new Exception("Missing scene art: " + name);
         private static V24CharacterArt Character(int id, string name, float height, string extension = "png") => new V24CharacterArt { Character = id, Portrait = Sprite("character/character_" + name + "." + extension), Height = height };
         private static Sprite Sprite(string path)

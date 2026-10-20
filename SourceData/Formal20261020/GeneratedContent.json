@@ -35316,6 +35316,55 @@
       "RevealNeed": [
         "goal:1920017"
       ]
+    },
+    {
+      "Room": 100001,
+      "MapLabel": "你的房间",
+      "BeforeName": "你的房间",
+      "AfterName": "你的房间",
+      "RevealNeed": []
+    },
+    {
+      "Room": 100028,
+      "MapLabel": "科林客房",
+      "BeforeName": "科林客房",
+      "AfterName": "科林客房",
+      "RevealNeed": []
+    },
+    {
+      "Room": 100027,
+      "MapLabel": "回声蓝客房",
+      "BeforeName": "回声蓝客房",
+      "AfterName": "回声蓝客房",
+      "RevealNeed": []
+    },
+    {
+      "Room": 100015,
+      "MapLabel": "公爵夫人卧室",
+      "BeforeName": "公爵夫人卧室",
+      "AfterName": "公爵夫人卧室",
+      "RevealNeed": []
+    },
+    {
+      "Room": 100030,
+      "MapLabel": "卡德客房",
+      "BeforeName": "卡德客房",
+      "AfterName": "卡德客房",
+      "RevealNeed": []
+    },
+    {
+      "Room": 100012,
+      "MapLabel": "维里诺客房",
+      "BeforeName": "维里诺客房",
+      "AfterName": "维里诺客房",
+      "RevealNeed": []
+    },
+    {
+      "Room": 100013,
+      "MapLabel": "莫伊帕客房",
+      "BeforeName": "莫伊帕客房",
+      "AfterName": "莫伊帕客房",
+      "RevealNeed": []
     }
   ],
   "MapInteraction": {

@@ -18,6 +18,7 @@ namespace Castle.Editor
             Check(data.Room.All(x=>x.Floor>=1&&x.Floor<=2),"仅两层地图");
             Check(data.Plot.Length==1155,"1155句对白完整导入");
             ValidateProfileLinks(data);
+            ValidateDialogueItemLinks(data);
             foreach(var group in data.ConversationGroups)
                 Check(group.Events.All(id=>data.EventById(id)!=null),"选人事件存在："+group.Id);
             for(int branch=0;branch<8;branch++)Walk(data,branch);
@@ -53,10 +54,60 @@ namespace Castle.Editor
             for (int i=0; i<500 && engine.State.ActiveEvent==920003; i++)
             {
                 if (engine.State.RewardPopups.Count > 0) engine.CloseReward();
+                else if (engine.PendingDialogueItem() != 0)
+                {
+                    int item = engine.PendingDialogueItem();
+                    var line = data.Plot.First(x => engine.State.Transcript.Any(row => row.Plot == x.Id) && x.LinkTarget.Contains("entry:" + item));
+                    engine.Claim(line.Id, item);
+                }
                 else engine.Advance(0);
             }
             Check(engine.State.CompletedEvents.Contains(920003), "管家接待实际完成");
             Check(!engine.KnowsCharacter(200003), "接待结束不自动补领管家档案");
+        }
+        private static void ValidateDialogueItemLinks(V24Data data)
+        {
+            foreach (var line in data.Plot)
+            {
+                foreach (string target in line.LinkTarget.Where(x => x.StartsWith("entry:")))
+                {
+                    int id = int.Parse(target.Substring(6));
+                    var entry = data.EntryById(id);
+                    if (entry.Type != "item" && entry.Type != "tape") continue;
+                    var ev = data.Event.First(x => x.Plot == line.Group);
+                    var engine = new V24Engine(data, new V24State());
+                    engine.NewGame(); engine.Start(ev.Id, true, validated: true);
+                    var state = engine.State;
+                    state.Entries.Remove(id); state.Transcript.Clear(); state.Shown.Clear(); state.RewardPopups.Clear();
+                    state.Line = Array.FindIndex(data.Lines(ev.Plot), x => x.Id == line.Id) - 1;
+                    state.Auto = true; engine.Reveal();
+                    Check(engine.PendingDialogueItem() == id && !state.Auto, "新道具出现暂停自动：" + line.Id);
+                    int before = state.Line;
+                    engine.Advance(); engine.Finish();
+                    Check(state.Line == before && state.ActiveEvent == ev.Id && !engine.Has(id), "未收集道具不推进不补领：" + line.Id);
+                    Check(engine.ExecuteAction(0) != "成功" && state.ActionPending == 0, "动作不能跳过道具：" + line.Id);
+                    var restored = new V24Engine(data, JsonUtility.FromJson<V24State>(JsonUtility.ToJson(state)));
+                    Check(restored.PendingDialogueItem() == id, "读档保留道具阻塞：" + line.Id);
+                    engine.Claim(line.Id, id);
+                    Check(engine.Has(id) && engine.PendingDialogueItem() == 0, "点击领取后解除：" + line.Id);
+                    int rewards = state.RewardPopups.Count;
+                    engine.Claim(line.Id, id);
+                    Check(state.RewardPopups.Count == rewards, "重复点击不重复奖励：" + line.Id);
+                    state.Claims.Clear();
+                    Check(engine.PendingDialogueItem() == 0, "已有道具无需再次点击：" + line.Id);
+                }
+            }
+            var profileLine = data.Plot.First(x => x.LinkTarget.Any(target => target.StartsWith("entry:") && data.EntryById(int.Parse(target.Substring(6))).Type == "info"));
+            var profileEvent = data.Event.First(x => x.Plot == profileLine.Group);
+            var profileState = new V24State { ActiveEvent = profileEvent.Id };
+            profileState.Transcript.Add(new V24Transcript { Plot = profileLine.Id });
+            // 同一句可能同时含人物和道具链接，只领取道具以单独验证人物不会阻塞。
+            foreach (string target in profileLine.LinkTarget.Where(x => x.StartsWith("entry:")))
+            {
+                int id = int.Parse(target.Substring(6));
+                if (data.EntryById(id).Type == "item" || data.EntryById(id).Type == "tape") profileState.Entries.Add(id);
+            }
+            Check(new V24Engine(data, profileState).PendingDialogueItem() == 0, "人物信息不阻塞对白");
         }
         private static void Walk(V24Data data,int branch)
         {
@@ -113,6 +164,15 @@ namespace Castle.Editor
                 if(state.Activity!="")
                 {
                     var activity=data.DayActivities.First(x=>x.Id==state.Activity);
+                    if (engine.IsRoomBasedActivity)
+                    {
+                        int investigation = activity.Events.FirstOrDefault(id => !engine.Done(data.EventById(id)));
+                        int destination = investigation != 0 ? data.EventById(investigation).Room : data.GameSettings.HomeRoom;
+                        Check(engine.Move(destination), "下午调查通过地图到场：" + destination);
+                        if (investigation != 0) Check(state.ActiveEvent == investigation, "到场触发下午对白：" + investigation);
+                        else Check(engine.WaitForActivity(), "回房休息后进入晚宴");
+                        continue;
+                    }
                     int next=activity.Events.FirstOrDefault(engine.CanSelectFormalEvent);
                     if(next!=0){engine.SelectFormalEvent(next);continue;}
                     if(engine.WaitForActivity())continue;
