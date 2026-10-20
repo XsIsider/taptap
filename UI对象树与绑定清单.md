@@ -1,3 +1,10 @@
+## 2026-10-20 开场黑屏旁白
+
+- UIFlow/Canvas/Stage/Pages/Opening：固定 RectTransform + Image + Button + CastleUiView（Id=Opening），已登记 CastleFlowUi.Pages；黑底全屏，Surface 绑定根 Button，无按钮变色和导航选择效果。
+- Opening/Body：Body 绑定 Text，ReadingFont（I.Ming）30 号、纯白、居中、无富文本、无自动字号，不接收射线；锚点从 (0.15,0.3) 到 (0.85,0.7)，偏移为零，文本区域横向占画面 70%。
+- UIFlow/Canvas/Stage/OpeningTransition：固定全屏 Image + CanvasGroup，Opening 的 Transition 绑定指向此组。位于 Stage 最后、弹窗和提示层之上，黑底，初始隐藏且 alpha=0；blocksRaycasts=true、interactable=false，激活时拦截点击，负责单程 0.35 秒淡入淡出，结束后隐藏。
+- 运行时只更新文字、显隐和透明度，不创建页面或组件；原 Cutscene／Invitation 页面及绑定保留。
+
 ## 2026-10-20 人物路径悬浮引导
 
 - UIFlow/Canvas/Stage/FloatingHint：复用 AnchorDetails 的 RectTransform、Image、CanvasGroup 和 Body，删除来源行；新增 CastleUiView（Id=FloatingHint），Controls 的 Group 指向 CanvasGroup、Body 指向 TextMeshProUGUI，控制器 FloatingHint 字段指向该视图。

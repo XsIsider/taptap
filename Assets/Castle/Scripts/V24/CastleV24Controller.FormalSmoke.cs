@@ -20,12 +20,22 @@ namespace Castle.V24
             V("Credits").Get<Button>("Close").onClick.Invoke();yield return null;
             if (_modal.Count != 0 || !V("Title").gameObject.activeInHierarchy) throw new Exception("制作名单关闭未返回标题");
             StartNew();yield return null;
+            while (_openingTransition) yield return null;
+            foreach (var line in Engine.OpeningLines)
+            {
+                if (_page != "Opening" || V("Opening").Get<Text>("Body").text != line.Text || Ui.Hud.gameObject.activeSelf)
+                    throw new Exception("黑屏开场旁白显示错误");
+                V("Opening").Get<Button>("Surface").onClick.Invoke();
+                while (_openingTransition) yield return null;
+            }
+            if (_page != "Invitation") throw new Exception("开场旁白未衔接邀请函");
             foreach(var view in Ui.GetComponentsInChildren<CastleUiView>(true))view.ValidateBindings();
             if(PlotAudio.Length!=153||PlotAudio.Any(x=>!x.Clip))throw new Exception("正式音频绑定不完整");
             V("Invitation").Get<Button>("Surface").onClick.Invoke();yield return null;
             V("Invitation").Get<Button>("Surface").onClick.Invoke();yield return null;
             while(S.RewardPopups.Count>0){V("Acquire").Get<Button>("Confirm").onClick.Invoke();yield return null;}
             if(S.ActiveEvent!=920001)throw new Exception("正式开场入口错误");
+            if (S.Transcript.Count != 1 || S.Transcript[0].Plot != 520003) throw new Exception("开场旁白重复进入普通对白");
             Capture("formal-opening");yield return null;
             var first=JsonUtility.ToJson(S);
             var choiceEvent = _data.Event.First(x => x.ChoiceGroup != 0 && _data.PlotChoice.Count(c => c.Group == x.ChoiceGroup) == 3);

@@ -22,6 +22,10 @@ namespace Castle.V24
         public DateTime Cutoff => BaseDate.AddDays(1).Add(TimeSpan.Parse(Data.GameSettings.ForceSleepTime));
         public bool Busy => State.ActiveEvent != 0 || State.PendingPuzzle != 0 || State.RewardPopups.Count > 0 || State.TutorialEvent != 0 || State.PlaybackGate != 0;
         public bool IntroDone => State.Puzzles.Contains(Data.GameSettings.IntroSoundPath);
+        /// <summary>正式开场前两句旁白由黑屏页展示，原始剧情与录音数据保留。</summary>
+        public V24Plot[] OpeningLines => Data.Formal
+            ? Data.Lines(Data.EventById(Data.GameSettings.ArrivalEvent).Plot).Take(2).Where(x => x.SpeakerId == 0).ToArray()
+            : Array.Empty<V24Plot>();
         public void Commit() { RefreshUnlocks(); Changed?.Invoke(); }
         public void NewGame()
         {
@@ -137,6 +141,7 @@ namespace Castle.V24
             if (ev == null || (!validated && !Eligible(ev, direct))) return false;
             if (!keepText) { State.Transcript.Clear(); State.DialogueScroll = 1; DialogueStarted?.Invoke(); }
             State.ActiveEvent = id; State.Line = -1;
+            if (Data.Formal && id == Data.GameSettings.ArrivalEvent) State.Line = OpeningLines.Length - 1;
             if (ev.Record != 0 && State.Recordings.All(x => x.Id != ev.Record))
             {
                 var record = Data.RecordById(ev.Record); int offset = Offset(record.Device);

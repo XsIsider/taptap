@@ -65,12 +65,18 @@ namespace Castle.V24
         private void Update()
         {
             if (Ui.Toast.gameObject.activeSelf && Time.unscaledTime > _toastUntil) Ui.Toast.gameObject.SetActive(false);
+            if (_openingTransition) return;
             UpdateAnchorDetailsFade();
             UpdatePersonPathCompletionHint();
             UpdateFloatingHintFade();
             bool itemBlocked = UpdateDialogueItemHint();
             if (_modal.Count > 0) { if (Input.GetKeyDown(KeyCode.Escape) && _modal.Last() != "Acquire") Pop(); return; }
             if (Input.GetKeyDown(KeyCode.Escape)) { Settings(); return; }
+            if (_page == "Opening")
+            {
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) NextOpening();
+                return;
+            }
             bool zoomReset = SceneZoomInput();
             if (S.ActiveEvent != 0 && _page == "Explore")
             {
@@ -148,7 +154,7 @@ namespace Castle.V24
             foreach (var v in Ui.Modals) v.gameObject.SetActive(_modal.Count > 0 && v.Id == _modal.Last());
             bool mapOpen=_modal.Contains("Map");
             foreach(var v in Ui.Pages)v.gameObject.SetActive(!mapOpen&&v.Id==_page);
-            Ui.Hud.gameObject.SetActive(!mapOpen&&_page!="Title"&&_page!="Invitation"&&_page!="Cutscene"&&_page!="EndCard"&&!(_page=="Timeline"&&S.Ending));
+            Ui.Hud.gameObject.SetActive(!mapOpen&&_page!="Title"&&_page!="Opening"&&_page!="Invitation"&&_page!="Cutscene"&&_page!="EndCard"&&!(_page=="Timeline"&&S.Ending));
         }
         private void CloseAll() { _modal.Clear(); _returns.Clear(); ModalVisibility(); }
         private void Confirm(string text, Action yes)
@@ -157,16 +163,17 @@ namespace Castle.V24
         }
         private void Page(string id)
         {
-            if (id == "Title" || id == "Invitation" || id == "Cutscene" || id == "EndCard") HideFloatingHint();
+            if (id == "Title" || id == "Opening" || id == "Invitation" || id == "Cutscene" || id == "EndCard") HideFloatingHint();
             if (id != "Tape") _tapeScrollRecord = 0;
             _page = id; if(!Music.isPlaying)Music.Play(); if (id != "Title") S.Page = id;
             UpdateFormalMusic();
             foreach (var v in Ui.Pages) v.gameObject.SetActive(v.Id == id);
-            Ui.Hud.gameObject.SetActive(id != "Title" && id != "Invitation" && id != "Cutscene" && id != "EndCard" && !(id=="Timeline"&&S.Ending));
+            Ui.Hud.gameObject.SetActive(id != "Title" && id != "Opening" && id != "Invitation" && id != "Cutscene" && id != "EndCard" && !(id=="Timeline"&&S.Ending));
             Hud();
             switch (id)
             {
                 case "Title": Title(); break;
+                case "Opening": Opening(); break;
                 case "Invitation": Invitation(); break;
                 case "Explore": Explore(); break;
                 case "Recordings": Recordings(); break;
@@ -214,7 +221,7 @@ namespace Castle.V24
             Btn(v,"Settings",Settings); Btn(v,"Credits",()=>{Push("Credits");Btn(V("Credits"),"Close",Pop);});
             Btn(v,"Quit",RequestQuit);
         }
-        private void StartNew() { ClearDialogueCollectionHint(); _presentationRoom=0;_sceneZoom=1;_avatarsExpanded=false;_playing=false;_playTape=0;_record=0;_position=0;_blocked=false; CloseAll(); float music=S.Volume, effects=S.EffectsVolume; Engine.NewGame(); S.Volume=music;S.EffectsVolume=effects;ApplyAudioSettings(); Page("Invitation"); }
+        private void StartNew() { ClearDialogueCollectionHint(); _presentationRoom=0;_sceneZoom=1;_avatarsExpanded=false;_playing=false;_playTape=0;_record=0;_position=0;_blocked=false; CloseAll(); float music=S.Volume, effects=S.EffectsVolume; Engine.NewGame(); S.Volume=music;S.EffectsVolume=effects;ApplyAudioSettings(); BeginOpening(); }
         private void Invitation()
         {
             var v=V("Invitation"); var entry=_data.EntryById(_data.InvitationEntry);
@@ -234,6 +241,7 @@ namespace Castle.V24
             CloseAll();
             if(S.Finished){Page("EndCard");return;}
             if(S.SleepStage!=""){Page("Cutscene");return;}
+            if(S.Page=="Opening"){Page("Opening");return;}
             if (_data.Formal && S.PlaybackGate != 0) { OpenGate(); return; }
             if (_data.Formal && S.Ending && !S.HeardRecords.Contains(620025)) { Page("Timeline"); return; }
             if(S.SleepPending&&!Engine.Busy)Toast(Engine.SleepReason());

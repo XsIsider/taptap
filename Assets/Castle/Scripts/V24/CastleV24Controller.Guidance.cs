@@ -49,7 +49,7 @@ namespace Castle.V24
         private void UpdatePersonPathCompletionHint()
         {
             if (!_data.Formal || !S.Started || S.PathCompleteNotice || Engine.Busy || _modal.Count > 0
-                || _page == "Title" || _page == "Invitation" || _page == "Cutscene" || _page == "EndCard") return;
+                || _page == "Title" || _page == "Opening" || _page == "Invitation" || _page == "Cutscene" || _page == "EndCard") return;
 
             var puzzle = _data.PuzzleById(_data.PersonPathPolicy.Puzzle);
             if (!S.Puzzles.Contains(puzzle.Id)) return;
