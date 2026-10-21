@@ -59,6 +59,8 @@ namespace Castle.Editor
         }
         private static void Timeline(CastleUiView view,CastleV24Controller game)
         {
+            var referenceWave=view.transform.Find("TimelineArt/ReferenceWave");
+            if(referenceWave)referenceWave.GetComponent<Image>().material=Resources.Load<Material>("Castle/V24WaveScroll");
             var reveal=view.Get<RectTransform>("RevealRoot");
             foreach(var image in view.GetComponentsInChildren<RawImage>(true)) if(image.transform.parent==view.transform)image.texture=game.CorridorDay;
             var back=Image(reveal,"SceneBackdrop",0,0,1600,900);back.sprite=Sprite(Art+"Scenes/走廊.png");
@@ -67,6 +69,9 @@ namespace Castle.Editor
             var heroine=Image(reveal,"Heroine",0,115,520,785);Bind(view,"Heroine",heroine);
             var partner=Image(reveal,"Partner",1150,110,450,790);Bind(view,"Partner",partner);
             var panel=Image(reveal,"DialogueArt",270,560,1050,320);panel.sprite=Sprite(Art+"UI/结局/组 3.png");panel.color=new Color(1,1,1,.65f);
+            // 对白框先绘制，让两侧人物立绘显示在框的前方。
+            int portraitIndex=Mathf.Min(heroine.transform.GetSiblingIndex(),partner.transform.GetSiblingIndex());
+            if(panel.transform.GetSiblingIndex()>portraitIndex)panel.transform.SetSiblingIndex(portraitIndex);
             var name=Image(reveal,"NameArt",350,570,280,65);name.sprite=Sprite(Art+"UI/结局/图层 35.png");
             foreach(string id in new[]{"EndingStatus","EndingText"})
             {

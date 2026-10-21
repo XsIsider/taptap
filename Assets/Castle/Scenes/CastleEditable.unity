@@ -31305,8 +31305,8 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: aa497b94bf0baa34e8433d3d1bab1e7b, type: 3}
     m_FontSize: 22
     m_FontStyle: 0
-    m_BestFit: 1
-    m_MinSize: 2
+    m_BestFit: 0
+    m_MinSize: 22
     m_MaxSize: 22
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -61267,9 +61267,9 @@ RectTransform:
   - {fileID: 1512475859}
   - {fileID: 740988338}
   - {fileID: 1406847526}
+  - {fileID: 1666179468}
   - {fileID: 78983382}
   - {fileID: 164385093}
-  - {fileID: 1666179468}
   - {fileID: 1652728820}
   - {fileID: 643134525}
   - {fileID: 1521324279}
@@ -160038,7 +160038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 905c72b15b384e7483cb9a94631de9cb, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}

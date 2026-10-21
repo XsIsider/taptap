@@ -43,8 +43,8 @@ namespace Castle.Editor
                 Place(letterArt.rectTransform, 385, 195, 390, 390);
                 Place(body.rectTransform, 800, 185, 410, 460);
                 body.fontSize = 22;
-                body.resizeTextForBestFit = true;
-                body.resizeTextMinSize = 16;
+                body.resizeTextForBestFit = false;
+                body.resizeTextMinSize = 22;
                 body.resizeTextMaxSize = 22;
                 foreach (var view in game.Ui.GetComponentsInChildren<CastleUiView>(true)) view.ValidateBindings();
                 EditorUtility.SetDirty(game);
