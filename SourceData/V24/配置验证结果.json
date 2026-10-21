@@ -1,0 +1,113 @@
+{
+  "status": "PASS",
+  "checks": 8455,
+  "rows": {
+    "Character": 18,
+    "Room": 22,
+    "Entry": 59,
+    "Plot": 741,
+    "Plot_Choice": 9,
+    "Event": 104,
+    "Record": 77,
+    "Puzzle": 12
+  },
+  "branch_cases": [
+    {
+      "report": true,
+      "accept_food": true,
+      "art_choice": 1,
+      "events": 95,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": true,
+      "accept_food": true,
+      "art_choice": 2,
+      "events": 95,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": true,
+      "accept_food": true,
+      "art_choice": 3,
+      "events": 95,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": true,
+      "accept_food": false,
+      "art_choice": 1,
+      "events": 95,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": true,
+      "accept_food": false,
+      "art_choice": 2,
+      "events": 95,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": true,
+      "accept_food": false,
+      "art_choice": 3,
+      "events": 95,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": false,
+      "accept_food": true,
+      "art_choice": 1,
+      "events": 91,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": false,
+      "accept_food": true,
+      "art_choice": 2,
+      "events": 91,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": false,
+      "accept_food": true,
+      "art_choice": 3,
+      "events": 91,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": false,
+      "accept_food": false,
+      "art_choice": 1,
+      "events": 91,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": false,
+      "accept_food": false,
+      "art_choice": 2,
+      "events": 91,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    },
+    {
+      "report": false,
+      "accept_food": false,
+      "art_choice": 3,
+      "events": 91,
+      "puzzles": 12,
+      "final_time": "D7 10:15"
+    }
+  ],
+  "scope": "配置级静态校验与12种分支路线模拟；未进行Unity实测。"
+}

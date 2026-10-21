@@ -1,0 +1,1109 @@
+{
+  "说明": "全部为联调配置。八张表按2.4读取；本JSON承接既有Unity绑定。测试日期1951-12-01为占位，不代表故事定稿。mode等是绑定实现约定，不新增业务表字段。",
+  "GameSettings": {
+    "initial_time": "1951-12-01 17:55:00",
+    "initial_items": [],
+    "title_scene": "TestTitle",
+    "exterior_scene": "TestExterior",
+    "arrival_room": 100004,
+    "arrival_event": 900059,
+    "tape_tutorial_event": 900013,
+    "home_room": 100001,
+    "control_room": 100003,
+    "map_entry": 300020,
+    "wake_time": "10:00",
+    "control_minutes": 60,
+    "keep_records": true,
+    "control_intro_event": 900016,
+    "intro_sound_path": 700001,
+    "force_sleep_time": "01:30"
+  },
+  "DeviceConfig": [
+    {
+      "id": 1100001,
+      "channel": "CH-01",
+      "label": "设备01",
+      "room": 100001,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100002,
+      "channel": "CH-02",
+      "label": "设备02",
+      "room": 100002,
+      "offset": 0,
+      "location_need": [
+        "entry:300060"
+      ]
+    },
+    {
+      "id": 1100003,
+      "channel": "CH-03",
+      "label": "设备03",
+      "room": 100003,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100004,
+      "channel": "CH-04",
+      "label": "设备04",
+      "room": 100004,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100005,
+      "channel": "CH-05",
+      "label": "设备05",
+      "room": 100005,
+      "offset": 0,
+      "location_need": [
+        "entry:300061"
+      ]
+    },
+    {
+      "id": 1100006,
+      "channel": "CH-06",
+      "label": "设备06",
+      "room": 100006,
+      "offset": 0,
+      "location_need": [
+        "entry:300063"
+      ]
+    },
+    {
+      "id": 1100007,
+      "channel": "CH-07",
+      "label": "设备07",
+      "room": 100007,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100008,
+      "channel": "CH-08",
+      "label": "设备08",
+      "room": 100008,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100009,
+      "channel": "CH-09",
+      "label": "设备09",
+      "room": 100009,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100010,
+      "channel": "CH-10",
+      "label": "设备10",
+      "room": 100010,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100011,
+      "channel": "CH-11",
+      "label": "设备11",
+      "room": 100011,
+      "offset": -180,
+      "location_need": [
+        "entry:300062"
+      ]
+    },
+    {
+      "id": 1100012,
+      "channel": "CH-12",
+      "label": "设备12",
+      "room": 100012,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100013,
+      "channel": "CH-13",
+      "label": "设备13",
+      "room": 100013,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100014,
+      "channel": "CH-14",
+      "label": "设备14",
+      "room": 100014,
+      "offset": 0,
+      "location_need": [
+        "entry:300064"
+      ]
+    },
+    {
+      "id": 1100015,
+      "channel": "CH-15",
+      "label": "设备15",
+      "room": 100015,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100016,
+      "channel": "CH-16",
+      "label": "设备16",
+      "room": 100016,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100017,
+      "channel": "CH-17",
+      "label": "设备17",
+      "room": 100017,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100018,
+      "channel": "CH-18",
+      "label": "设备18",
+      "room": 100018,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100019,
+      "channel": "CH-19",
+      "label": "设备19",
+      "room": 100019,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100020,
+      "channel": "CH-20",
+      "label": "设备20",
+      "room": 100020,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100021,
+      "channel": "CH-21",
+      "label": "设备21",
+      "room": 100021,
+      "offset": 0,
+      "location_need": []
+    },
+    {
+      "id": 1100022,
+      "channel": "CH-22",
+      "label": "设备22",
+      "room": 100022,
+      "offset": 0,
+      "location_need": []
+    }
+  ],
+  "MapConfig": [
+    {
+      "id": 1200001,
+      "background": "test_map",
+      "nodes": [
+        {
+          "id": 1300001,
+          "room": 100001,
+          "floor": 1,
+          "position": [
+            0.12,
+            0.15
+          ]
+        },
+        {
+          "id": 1300002,
+          "room": 100002,
+          "floor": 1,
+          "position": [
+            0.29,
+            0.15
+          ]
+        },
+        {
+          "id": 1300003,
+          "room": 100003,
+          "floor": 2,
+          "position": [
+            0.46,
+            0.15
+          ]
+        },
+        {
+          "id": 1300004,
+          "room": 100004,
+          "floor": 1,
+          "position": [
+            0.63,
+            0.15
+          ]
+        },
+        {
+          "id": 1300005,
+          "room": 100005,
+          "floor": 2,
+          "position": [
+            0.8,
+            0.15
+          ]
+        },
+        {
+          "id": 1300006,
+          "room": 100006,
+          "floor": 1,
+          "position": [
+            0.12,
+            0.31
+          ]
+        },
+        {
+          "id": 1300007,
+          "room": 100007,
+          "floor": 1,
+          "position": [
+            0.29,
+            0.31
+          ]
+        },
+        {
+          "id": 1300008,
+          "room": 100008,
+          "floor": 1,
+          "position": [
+            0.46,
+            0.31
+          ]
+        },
+        {
+          "id": 1300009,
+          "room": 100009,
+          "floor": 1,
+          "position": [
+            0.63,
+            0.31
+          ]
+        },
+        {
+          "id": 1300010,
+          "room": 100010,
+          "floor": 1,
+          "position": [
+            0.8,
+            0.31
+          ]
+        },
+        {
+          "id": 1300011,
+          "room": 100011,
+          "floor": 2,
+          "position": [
+            0.12,
+            0.47
+          ]
+        },
+        {
+          "id": 1300012,
+          "room": 100012,
+          "floor": 2,
+          "position": [
+            0.29,
+            0.47
+          ]
+        },
+        {
+          "id": 1300013,
+          "room": 100013,
+          "floor": 2,
+          "position": [
+            0.46,
+            0.47
+          ]
+        },
+        {
+          "id": 1300014,
+          "room": 100014,
+          "floor": 2,
+          "position": [
+            0.63,
+            0.47
+          ]
+        },
+        {
+          "id": 1300015,
+          "room": 100015,
+          "floor": 2,
+          "position": [
+            0.8,
+            0.47
+          ]
+        },
+        {
+          "id": 1300016,
+          "room": 100016,
+          "floor": 2,
+          "position": [
+            0.12,
+            0.63
+          ]
+        },
+        {
+          "id": 1300017,
+          "room": 100017,
+          "floor": 3,
+          "position": [
+            0.29,
+            0.63
+          ]
+        },
+        {
+          "id": 1300018,
+          "room": 100018,
+          "floor": 3,
+          "position": [
+            0.46,
+            0.63
+          ]
+        },
+        {
+          "id": 1300019,
+          "room": 100019,
+          "floor": 3,
+          "position": [
+            0.63,
+            0.63
+          ]
+        },
+        {
+          "id": 1300020,
+          "room": 100020,
+          "floor": 3,
+          "position": [
+            0.8,
+            0.63
+          ]
+        },
+        {
+          "id": 1300021,
+          "room": 100021,
+          "floor": 3,
+          "position": [
+            0.12,
+            0.79
+          ]
+        },
+        {
+          "id": 1300022,
+          "room": 100022,
+          "floor": 2,
+          "position": [
+            0.29,
+            0.79
+          ]
+        }
+      ]
+    }
+  ],
+  "HotspotBinding": [
+    {
+      "id": 1400001,
+      "key": "real2_1",
+      "room": 100001,
+      "mode": "character",
+      "character": 200002,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400002,
+      "key": "real3_1",
+      "room": 100007,
+      "mode": "character",
+      "character": 200004,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400003,
+      "key": "real4_1",
+      "room": 100002,
+      "mode": "character",
+      "character": 200004,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400004,
+      "key": "inspect_clock",
+      "room": 100011,
+      "mode": "interact",
+      "character": 0,
+      "day": 1,
+      "start": "",
+      "end": "",
+      "need": [
+        "goal:1900014"
+      ],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400005,
+      "key": "painter_meet",
+      "room": 100011,
+      "mode": "character",
+      "character": 200006,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400006,
+      "key": "gallery_day2",
+      "room": 100006,
+      "mode": "character",
+      "character": 200006,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400007,
+      "key": "afternoon",
+      "room": 100001,
+      "mode": "interact",
+      "character": 0,
+      "day": 2,
+      "start": "",
+      "end": "",
+      "need": [
+        "goal:1900020"
+      ],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400008,
+      "key": "dinner",
+      "room": 100002,
+      "mode": "character",
+      "character": 200008,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400009,
+      "key": "assembly",
+      "room": 100006,
+      "mode": "character",
+      "character": 200008,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400010,
+      "key": "kitchen_food",
+      "room": 100005,
+      "mode": "character",
+      "character": 200011,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400011,
+      "key": "painter_talk",
+      "room": 100012,
+      "mode": "character",
+      "character": 200006,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400012,
+      "key": "doctor_day3",
+      "room": 100016,
+      "mode": "character",
+      "character": 200005,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400013,
+      "key": "ghost3",
+      "room": 100011,
+      "mode": "interact",
+      "character": 0,
+      "day": 3,
+      "start": "23:00",
+      "end": "01:30",
+      "need": [
+        "goal:1900011"
+      ],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400014,
+      "key": "breakfast4",
+      "room": 100001,
+      "mode": "interact",
+      "character": 0,
+      "day": 4,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400015,
+      "key": "summons4",
+      "room": 100001,
+      "mode": "character",
+      "character": 200003,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400016,
+      "key": "lady4",
+      "room": 100015,
+      "mode": "character",
+      "character": 200008,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400017,
+      "key": "archive4",
+      "room": 100018,
+      "mode": "interact",
+      "character": 0,
+      "day": 4,
+      "start": "",
+      "end": "",
+      "need": [
+        "goal:1900038"
+      ],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400018,
+      "key": "optional_visit",
+      "room": 100009,
+      "mode": "character",
+      "character": 200011,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400019,
+      "key": "family_find",
+      "room": 100018,
+      "mode": "interact",
+      "character": 0,
+      "day": 5,
+      "start": "",
+      "end": "",
+      "need": [
+        "goal:1900046"
+      ],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400020,
+      "key": "exit6",
+      "room": 100014,
+      "mode": "interact",
+      "character": 0,
+      "day": 6,
+      "start": "",
+      "end": "",
+      "need": [
+        "goal:1900051"
+      ],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400021,
+      "key": "late6",
+      "room": 100001,
+      "mode": "interact",
+      "character": 0,
+      "day": 6,
+      "start": "23:00",
+      "end": "01:30",
+      "need": [
+        "goal:1900052"
+      ],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400022,
+      "key": "found7",
+      "room": 100022,
+      "mode": "character",
+      "character": 200009,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400023,
+      "key": "silent_mia",
+      "room": 100012,
+      "mode": "character",
+      "character": 200002,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400024,
+      "key": "rest",
+      "room": 100001,
+      "mode": "rest",
+      "character": 0,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400025,
+      "key": "tapeplayer",
+      "room": 100001,
+      "mode": "tape_player",
+      "character": 0,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400026,
+      "key": "control_console",
+      "room": 100003,
+      "mode": "control_console",
+      "character": 0,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400027,
+      "key": "shot_butler_hall",
+      "room": 100002,
+      "mode": "character",
+      "character": 200003,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400028,
+      "key": "blue_review2",
+      "room": 100003,
+      "mode": "interact",
+      "character": 0,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400029,
+      "key": "shot_kitchen_meet",
+      "room": 100005,
+      "mode": "character",
+      "character": 200002,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400030,
+      "key": "shot_banquet_painter",
+      "room": 100002,
+      "mode": "character",
+      "character": 200006,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400031,
+      "key": "shot_banquet_doctor",
+      "room": 100002,
+      "mode": "character",
+      "character": 200005,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400032,
+      "key": "shot_banquet_wine",
+      "room": 100002,
+      "mode": "character",
+      "character": 200007,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400033,
+      "key": "shot_banquet_tailor",
+      "room": 100002,
+      "mode": "character",
+      "character": 200014,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400034,
+      "key": "shot_conceal_home",
+      "room": 100001,
+      "mode": "character",
+      "character": 200006,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400035,
+      "key": "shot_report_butler",
+      "room": 100015,
+      "mode": "character",
+      "character": 200003,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400036,
+      "key": "shot_assembly_wine",
+      "room": 100006,
+      "mode": "character",
+      "character": 200007,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400037,
+      "key": "shot_assembly_doctor",
+      "room": 100006,
+      "mode": "character",
+      "character": 200005,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    },
+    {
+      "id": 1400038,
+      "key": "shot_lunch_leave",
+      "room": 100006,
+      "mode": "interact",
+      "character": 0,
+      "day": 0,
+      "start": "",
+      "end": "",
+      "need": [],
+      "puzzle_id": 0
+    }
+  ],
+  "场景组件绑定": [
+    {
+      "component": "邀请函展开与收录",
+      "entry": 300019
+    },
+    {
+      "component": "首次磁带引导",
+      "room": 100001,
+      "event": 900013,
+      "entry": 300016,
+      "start_after_goal": 1900063,
+      "complete_when": "指定磁带完整播放；不是退出播放器"
+    },
+    {
+      "component": "最终时间线",
+      "puzzle": 700012,
+      "entry_point": "调查册事件页",
+      "after_success": "竖框转声纹，再播放success事件；现有程序最后仍显示未完待续"
+    }
+  ],
+  "资源占位": [
+    "TestTitle",
+    "TestExterior",
+    "TestRoom",
+    "test_portrait",
+    "test_avatar",
+    "test_invitation",
+    "test_map"
+  ],
+  "说明_资源": "接入时可把全部房间映射到同一个测试场景，用Room.name区分；立绘和地图可用现有占位资源。未提供真实配音，按2.4播放文本化录音。",
+  "截图接入说明": {
+    "源DAY与调查日": "DAY3凌晨00:40/01:00/01:20仍填Event.day=2；睡醒才是3。",
+    "总览结构": "以场景色条、时间和分支横向位置定位，非按截图上传顺序。",
+    "起床": "统一10:00，11:00才醒的原句留核对清单。",
+    "第一天校时": "保留D1 22:00蓝色引导；D2首次发现旧稿保留Plot核对，不挂入口。",
+    "地图": "Room.start配置13:00—01:30开放，先有便笺解锁；D2补充地图不重新发旧地图。",
+    "版本": "总览对应彩色画板稿为运行稿，另两张灰表格稿仅核对。",
+    "对白切片": "内心话、舞台提示单独record=0；可听音效随所在设备文件保存。",
+    "无文字交互": "地图定位、获得道具、档案更新沿用2.4绑定，不把编辑备注当对白。"
+  },
+  "测试事件别名": {
+    "arrival": [
+      900059
+    ],
+    "invitation_use": [
+      900060,
+      900061
+    ],
+    "home_welcome": [
+      900062
+    ],
+    "home_radio": [
+      900063
+    ],
+    "dinner_delivery": [
+      900064,
+      900065,
+      900066
+    ],
+    "colin_first": [
+      900067,
+      900068,
+      900069,
+      900070,
+      900071
+    ],
+    "butler_hall": [
+      900072
+    ],
+    "gift": [
+      900075,
+      900076,
+      900077
+    ],
+    "gift_open": [
+      900078
+    ],
+    "corridor_meet": [
+      900080
+    ],
+    "kitchen_meet": [
+      900081,
+      900082,
+      900083
+    ],
+    "banquet": [
+      900085
+    ],
+    "banquet_lady": [
+      900086
+    ],
+    "banquet_painter": [
+      900087
+    ],
+    "banquet_doctor": [
+      900088,
+      900089,
+      900090,
+      900091,
+      900092
+    ],
+    "banquet_wine": [
+      900093
+    ],
+    "banquet_tailor": [
+      900094
+    ],
+    "banquet_colin": [
+      900095,
+      900096,
+      900097
+    ],
+    "gallery_chat": [
+      900100
+    ],
+    "gallery_a": [
+      900101
+    ],
+    "gallery_b": [
+      900102
+    ],
+    "gallery_c": [
+      900103
+    ],
+    "gallery_common": [
+      900104
+    ],
+    "body": [
+      900105
+    ],
+    "conceal": [
+      900106
+    ],
+    "report": [
+      900107
+    ],
+    "conceal_home": [
+      900108
+    ],
+    "report_lady": [
+      900109,
+      900110
+    ],
+    "report_doctor": [
+      900111,
+      900112
+    ],
+    "report_butler": [
+      900113
+    ],
+    "morning_conceal": [
+      900114
+    ],
+    "morning_report": [
+      900115
+    ],
+    "assembly": [
+      900116,
+      900117
+    ],
+    "assembly_lady": [
+      900118
+    ],
+    "assembly_wine": [
+      900119
+    ],
+    "assembly_painter": [
+      900120
+    ],
+    "assembly_doctor": [
+      900121
+    ],
+    "lunch_leave": [
+      900122
+    ],
+    "kitchen_ghost": [
+      900123,
+      900124
+    ],
+    "kitchen_food": [
+      900125
+    ],
+    "food_accept": [
+      900126
+    ]
+  },
+  "未接入对白组": [
+    {
+      "group": 510145,
+      "原因": "原稿冲突/另一版本，仅核对"
+    },
+    {
+      "group": 510146,
+      "原因": "原稿冲突/另一版本，仅核对"
+    },
+    {
+      "group": 510147,
+      "原因": "原稿冲突/另一版本，仅核对"
+    },
+    {
+      "group": 510148,
+      "原因": "原稿冲突/另一版本，仅核对"
+    },
+    {
+      "group": 510149,
+      "原因": "原稿冲突/另一版本，仅核对"
+    }
+  ],
+  "说明_存档": "本包替换了前三日剧情分组。请新建测试存档；旧存档含旧group/goal，不能直接继续。",
+  "DeviceLocationRules": {
+    "unknown_location_text": "位置未知",
+    "condition_field": "location_need",
+    "empty_condition_means": "初始已知位置；本轮未设计辨认关卡的设备沿用已知房间",
+    "check": "沿用need的entry:/goal:/puzzle:条件，数组全部满足；满足后记为永久已知",
+    "display": "未知显示label＋位置未知，不显示room、对应楼层或地图定位；已知显示label＋Room.name。所有设备列表、录音详情、来源、刻录列表和磁带使用同一显示规则。",
+    "file_access": "是否知道位置不参与Record.need或列表访问判定；不得形成先知道位置才能听到定位线索的循环",
+    "click": "已展示且当前有访问权限的Plot行，点击entry:位置线索ID后按Plot.id＋Entry.id去重收录。暂停回放并打开线索详情，关闭后回原进度。未点击不自动领取。",
+    "other_room_mentions": "“去某处”“从某方向传来”等仅能说明目的地或声源方向，不自动确认当前设备位置；room:链接仍只定位地图。",
+    "save": "保存已获Entry、关键词领取、已确认设备ID；读档由location_need复核并恢复。位置确认不修改DeviceConfig.room、offset或录音时间快照。",
+    "implementation": "新增的DeviceConfig.location_need与本规则需Unity接入；八张业务表无新增列或枚举。"
+  },
+  "说明_地点解锁": "设备02、05、06、11、14初始位置未知。02与14可通过前一天新增测试录音点击确认；05通过银盘录音点击确认；11与06通过声音路径奖励确认。其余设备沿用初始已知。"
+}

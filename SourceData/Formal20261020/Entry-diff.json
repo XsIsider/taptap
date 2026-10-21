@@ -1,0 +1,254 @@
+[
+  {
+    "row": 6,
+    "column": "source",
+    "old": "event:920003",
+    "new": "plot:520005"
+  },
+  {
+    "row": 6,
+    "column": "##",
+    "old": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句",
+    "new": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句；初始资料由对白姓名点击发放；重复点击不重复弹窗"
+  },
+  {
+    "row": 12,
+    "column": "source",
+    "old": "event:920004",
+    "new": "plot:520031"
+  },
+  {
+    "row": 12,
+    "column": "##",
+    "old": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句",
+    "new": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句；初始资料由对白姓名点击发放；重复点击不重复弹窗"
+  },
+  {
+    "row": 17,
+    "column": "source",
+    "old": "event:920035",
+    "new": "plot:520041"
+  },
+  {
+    "row": 17,
+    "column": "##",
+    "old": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句",
+    "new": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句；初始资料由对白姓名点击发放；重复点击不重复弹窗"
+  },
+  {
+    "row": 22,
+    "column": "source",
+    "old": "event:920036",
+    "new": "plot:520231"
+  },
+  {
+    "row": 22,
+    "column": "##",
+    "old": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句",
+    "new": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句；初始资料由对白姓名点击发放；重复点击不重复弹窗"
+  },
+  {
+    "row": 28,
+    "column": "source",
+    "old": "event:920028",
+    "new": "plot:520117"
+  },
+  {
+    "row": 28,
+    "column": "##",
+    "old": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句",
+    "new": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句；初始资料由对白姓名点击发放；重复点击不重复弹窗"
+  },
+  {
+    "row": 33,
+    "column": "source",
+    "old": "event:920012",
+    "new": "plot:520140"
+  },
+  {
+    "row": 33,
+    "column": "##",
+    "old": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句",
+    "new": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句；初始资料由对白姓名点击发放；重复点击不重复弹窗"
+  },
+  {
+    "row": 39,
+    "column": "source",
+    "old": "event:920028",
+    "new": "plot:520205"
+  },
+  {
+    "row": 39,
+    "column": "##",
+    "old": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句",
+    "new": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句；初始资料由对白姓名点击发放；重复点击不重复弹窗"
+  },
+  {
+    "row": 50,
+    "column": "source",
+    "old": "event:920039",
+    "new": "plot:520003"
+  },
+  {
+    "row": 50,
+    "column": "##",
+    "old": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句",
+    "new": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句；初始资料由对白姓名点击发放；重复点击不重复弹窗"
+  },
+  {
+    "row": 58,
+    "column": "source",
+    "old": "event:920039",
+    "new": "plot:520172"
+  },
+  {
+    "row": 58,
+    "column": "##",
+    "old": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句",
+    "new": "系统文案需求表(4) 人物页面（详情页）；原字段组合排版，非单段原句；初始资料由对白姓名点击发放；重复点击不重复弹窗"
+  },
+  {
+    "row": 81,
+    "column": "icon",
+    "old": null,
+    "new": "icon_02"
+  },
+  {
+    "row": 81,
+    "column": "detail_image",
+    "old": "文案原图/道具描述_第2行.png",
+    "new": "icon_02"
+  },
+  {
+    "row": 82,
+    "column": "icon",
+    "old": null,
+    "new": "icon_01"
+  },
+  {
+    "row": 82,
+    "column": "detail_image",
+    "old": "文案原图/道具描述_第4行.png",
+    "new": "icon_03"
+  },
+  {
+    "row": 83,
+    "column": "icon",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 83,
+    "column": "detail_image",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 84,
+    "column": "icon",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 84,
+    "column": "detail_image",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 85,
+    "column": "icon",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 85,
+    "column": "detail_image",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 86,
+    "column": "icon",
+    "old": null,
+    "new": "icon_06"
+  },
+  {
+    "row": 86,
+    "column": "detail_image",
+    "old": null,
+    "new": "icon_06"
+  },
+  {
+    "row": 87,
+    "column": "icon",
+    "old": null,
+    "new": "icon_07"
+  },
+  {
+    "row": 87,
+    "column": "detail_image",
+    "old": null,
+    "new": "icon_07"
+  },
+  {
+    "row": 88,
+    "column": "icon",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 88,
+    "column": "detail_image",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 89,
+    "column": "icon",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 89,
+    "column": "detail_image",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 90,
+    "column": "icon",
+    "old": null,
+    "new": "icon_01"
+  },
+  {
+    "row": 90,
+    "column": "detail_image",
+    "old": "文案原图/道具描述_第14行.png",
+    "new": "icon_04"
+  },
+  {
+    "row": 92,
+    "column": "icon",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 92,
+    "column": "detail_image",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 93,
+    "column": "icon",
+    "old": null,
+    "new": "icon_05"
+  },
+  {
+    "row": 93,
+    "column": "detail_image",
+    "old": null,
+    "new": "icon_05"
+  }
+]

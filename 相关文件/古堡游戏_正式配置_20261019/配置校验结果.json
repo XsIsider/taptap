@@ -1,0 +1,206 @@
+{
+  "validation": "静态数据检查与配置分支模拟；未运行 Unity 客户端",
+  "counts": {
+    "Plot": 1155,
+    "Character": 23,
+    "Record": 96,
+    "Plot_Choice": 17,
+    "Puzzle": 11,
+    "Event": 91,
+    "Room": 18,
+    "Entry": 94
+  },
+  "checks": [
+    "Plot ID 唯一",
+    "Character ID 唯一",
+    "Record ID 唯一",
+    "Plot_Choice ID 唯一",
+    "Puzzle ID 唯一",
+    "Event ID 唯一",
+    "Room ID 唯一",
+    "Entry ID 唯一",
+    "字段引用、组内顺序、时长、锚点、链接与奖励引用完整",
+    "Room 仅两层 18 个正式地图区域",
+    "连廊仅为地图通行节点，不新增房间",
+    "时间线顺序与最新文案一致",
+    "人物路径使用后半部条件 1 3 4 任一7及8",
+    "人物奖励原句完整且指定排末",
+    "人物路径不形成真相录音的循环前置",
+    "剧情事件均可由流程、分支、活动或睡眠路由到达 []",
+    "16 组主要分支组合均可收齐时间线，人物路径在时间线成功并取得灵感8后解锁",
+    "声音路径门状态 开 关 关",
+    "遇鬼中文黑底白字，无立绘",
+    "23点前可避开遇鬼；23点后含强制睡眠进入过场",
+    "已生成的 Excel 回读字段和值与构建数据一致"
+  ],
+  "branch_cases": [
+    {
+      "报告尸体": false,
+      "送松饼": false,
+      "听可选磁带": false,
+      "遇鬼": false,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": false,
+      "送松饼": false,
+      "听可选磁带": false,
+      "遇鬼": true,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": false,
+      "送松饼": false,
+      "听可选磁带": true,
+      "遇鬼": false,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": false,
+      "送松饼": false,
+      "听可选磁带": true,
+      "遇鬼": true,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": false,
+      "送松饼": true,
+      "听可选磁带": false,
+      "遇鬼": false,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": false,
+      "送松饼": true,
+      "听可选磁带": false,
+      "遇鬼": true,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": false,
+      "送松饼": true,
+      "听可选磁带": true,
+      "遇鬼": false,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "已知"
+    },
+    {
+      "报告尸体": false,
+      "送松饼": true,
+      "听可选磁带": true,
+      "遇鬼": true,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "已知"
+    },
+    {
+      "报告尸体": true,
+      "送松饼": false,
+      "听可选磁带": false,
+      "遇鬼": false,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": true,
+      "送松饼": false,
+      "听可选磁带": false,
+      "遇鬼": true,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": true,
+      "送松饼": false,
+      "听可选磁带": true,
+      "遇鬼": false,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": true,
+      "送松饼": false,
+      "听可选磁带": true,
+      "遇鬼": true,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": true,
+      "送松饼": true,
+      "听可选磁带": false,
+      "遇鬼": false,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": true,
+      "送松饼": true,
+      "听可选磁带": false,
+      "遇鬼": true,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "现场得知"
+    },
+    {
+      "报告尸体": true,
+      "送松饼": true,
+      "听可选磁带": true,
+      "遇鬼": false,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "已知"
+    },
+    {
+      "报告尸体": true,
+      "送松饼": true,
+      "听可选磁带": true,
+      "遇鬼": true,
+      "时间线可完成": true,
+      "时间线成功后人物路径可解锁": true,
+      "母亲身份分支": "已知"
+    }
+  ],
+  "interaction_fix_checks": [
+    "Plot IDs/rows unchanged",
+    "Character IDs/rows unchanged",
+    "Record IDs/rows unchanged",
+    "Plot_Choice IDs/rows unchanged",
+    "Puzzle IDs/rows unchanged",
+    "Event IDs/rows unchanged",
+    "Room IDs/rows unchanged",
+    "Entry IDs/rows unchanged",
+    "Only Plot520156 text cleaned; all existing audio, timing, speakers, anchors preserved",
+    "No production labels in dialogue text",
+    "All 9 character profiles linked and removed from end-of-event automatic grants",
+    "Butler and Mia example name clicks bound",
+    "Policy model: unknown → name known → clicked profile, repeated click idempotent",
+    "7 programmer-named images byte-identical to source; 12 item/tape entries resolve, map excluded as missing",
+    "Both playback gates allow return/end and continue once",
+    "Seek, return, final truth configured without full-listen requirement",
+    "All 8 exports preserve headers, native styles, filters, validations, panes; 4 unchanged files byte-identical"
+  ],
+  "remaining": [
+    "需程序接入新绑定事件、当前姓名刷新、人物点击发奖和播放器规则；未运行Unity",
+    "古堡地图300006图片未提供，保持空字段",
+    "此前5个裁缝音频仍缺失，保留原缺失清单"
+  ]
+}
