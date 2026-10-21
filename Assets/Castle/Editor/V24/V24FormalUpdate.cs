@@ -60,7 +60,13 @@ namespace Castle.Editor
         private static void Timeline(CastleUiView view,CastleV24Controller game)
         {
             var referenceWave=view.transform.Find("TimelineArt/ReferenceWave");
-            if(referenceWave)referenceWave.GetComponent<Image>().material=Resources.Load<Material>("Castle/V24WaveScroll");
+            if(referenceWave)
+            {
+                var referenceRect=(RectTransform)referenceWave;
+                referenceRect.anchoredPosition=new Vector2(0,referenceRect.anchoredPosition.y);
+                referenceRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,1600);
+                referenceWave.GetComponent<Image>().material=Resources.Load<Material>("Castle/V24WaveScroll");
+            }
             var reveal=view.Get<RectTransform>("RevealRoot");
             foreach(var image in view.GetComponentsInChildren<RawImage>(true)) if(image.transform.parent==view.transform)image.texture=game.CorridorDay;
             var back=Image(reveal,"SceneBackdrop",0,0,1600,900);back.sprite=Sprite(Art+"Scenes/走廊.png");

@@ -1,3 +1,9 @@
+## 2026-10-21 全屏固定 16:9 与黑边
+
+- 正式 UIFlow/Canvas 保留 Overlay、CanvasScaler=ScaleWithScreenSize、referenceResolution=(1600,900)、screenMatchMode=Expand；Stage 保持居中锚点／轴心(0.5,0.5)、位置(0,0)、尺寸1600×900、单位缩放。
+- Canvas 最后新增 AspectFrame（拉伸铺满、零偏移、轴心0.5），挂 V24AspectFrame；_stage 引用同 Canvas 下的 Stage，_left／_right／_top／_bottom 依次引用 AspectFrame/Left／Right／Top／Bottom 的 RectTransform，不新增 CastleUiView.Controls 键。
+- 四个子对象均为 RectTransform＋CanvasRenderer＋Image，锚点／轴心0.5，黑色不透明、无 Sprite、raycastTarget=true、maskable=false。脚本在每次画布渲染前按实际 Stage 外围计算位置与尺寸，无面积时隐藏；AspectFrame 保持 Canvas 最后一个子对象。所有对象已固定保存进场景，不在运行时创建。
+
 ## 2026-10-21 空间推演门状态标题
 
 - 新增 UIFlow/Canvas/Stage/Pages/Space/DoorOpen/DoorStateTitle（RectTransform＋Image），左上锚点与轴心，相对位置(-28,47)、尺寸82×27.5、单位缩放，Sprite 使用 UI整理/中控/空间推演/按钮底图.png。
