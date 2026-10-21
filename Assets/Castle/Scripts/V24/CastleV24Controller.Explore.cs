@@ -183,8 +183,10 @@ namespace Castle.V24
         private void ShowDialogueItemHint()
         {
             if (_dialogueItemHintRoutine != null) StopCoroutine(_dialogueItemHintRoutine);
+            HideToast();
             V("Explore").Get<TextMeshProUGUI>("ItemLinkHintText").text = "似乎有什么信息需要注意……请先点击对白中的道具链接";
-            _dialogueItemHintRoutine = StartCoroutine(FadeDialogueItemHint());
+            _dialogueItemHintRoutine = StartCoroutine(FadeHint(V("Explore").Get<CanvasGroup>("ItemLinkHint"),
+                () => _dialogueItemHintRoutine = null));
         }
         private void HideDialogueItemHint()
         {
@@ -193,26 +195,6 @@ namespace Castle.V24
             var hint = V("Explore").Get<CanvasGroup>("ItemLinkHint");
             hint.alpha = 0;
             hint.gameObject.SetActive(false);
-        }
-        private IEnumerator FadeDialogueItemHint()
-        {
-            var hint = V("Explore").Get<CanvasGroup>("ItemLinkHint");
-            hint.gameObject.SetActive(true);
-            hint.alpha = 0;
-            // 秒；使用真实时间，暂停对白或降低游戏速度不影响提示动画。
-            const float fadeInSeconds = 0.25f, holdSeconds = 2.6f, fadeOutSeconds = 0.55f;
-            float elapsed = 0;
-            while (elapsed < fadeInSeconds + holdSeconds + fadeOutSeconds)
-            {
-                hint.alpha = elapsed < fadeInSeconds ? elapsed / fadeInSeconds
-                    : elapsed < fadeInSeconds + holdSeconds ? 1f
-                    : 1f - (elapsed - fadeInSeconds - holdSeconds) / fadeOutSeconds;
-                elapsed += Time.unscaledDeltaTime;
-                yield return null;
-            }
-            hint.alpha = 0;
-            hint.gameObject.SetActive(false);
-            _dialogueItemHintRoutine = null;
         }
         private void Portrait(int id)
         {
@@ -388,7 +370,7 @@ namespace Castle.V24
         private void Rest()
         {
             if(Engine.Busy||S.Room!=_data.GameSettings.HomeRoom)return;
-            if (Engine.IsRoomBasedActivity)
+            if (Engine.IsRoomBasedActivity && _data.DayActivities.Any(x => x.Id == S.Activity && x.AllowWaitToFinish))
             {
                 Confirm("休息并等待晚宴？", () => { if (Engine.WaitForActivity()) Refresh(); });
                 return;
@@ -427,6 +409,7 @@ namespace Castle.V24
                 if(room.Id==_data.GameSettings.ControlRoom)open=unlocked&&Engine.ControlMapOpen();
                 var card=Card(root,(S.Room==room.Id?"◆ ":"")+(unlocked?Engine.RoomName(room.Id):"未解锁"),"",()=>
                 {
+                    if (BlockMapRoomEntry(room.Id)) return;
                     _selectedRoom=room.Id;
                     if (Engine.SelectInteractionRoom(room.Id)) {Pop();Refresh();return;}
                     if (Engine.PendingInteraction != null && Engine.PendingInteraction.CompletionConditions.Any(x=>x.StartsWith("player_selected_room:")))
@@ -444,7 +427,14 @@ namespace Castle.V24
             foreach(var hidden in new[]{"Heading","Details","Enter"})Show(v,hidden,false);
             Txt(v,"Details",_selectedRoom==0?"请选择地点":RoomDetail(_selectedRoom));
             Show(v,"Hint",true);Txt(v,"Hint","点击空白处关闭——");
-            Btn(v,"Enter",()=>{if(Engine.Move(_selectedRoom)){Pop();Refresh();}},enabled:_selectedRoom!=0&&Engine.CanEnter(_selectedRoom));
+            Btn(v,"Enter",()=>{if(BlockMapRoomEntry(_selectedRoom))return;if(Engine.Move(_selectedRoom)){Pop();Refresh();}},enabled:_selectedRoom!=0&&Engine.CanEnter(_selectedRoom));
+        }
+        /// <summary>地图中的书房只可查看；拦截发生在房间交互、移动和关闭地图之前。</summary>
+        private bool BlockMapRoomEntry(int room)
+        {
+            if (room != 100014) return false;
+            Toast("不可进入书房");
+            return true;
         }
         private string RoomDetail(int id)
         {

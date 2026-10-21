@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -10,6 +11,43 @@ namespace Castle.V24
         {
             FloatingHint.Get<CanvasGroup>("Group").alpha = 0f;
             FloatingHint.gameObject.SetActive(false);
+        }
+
+        /// <summary>所有悬浮提示共用动画；秒为真实时间，只替换文案，保持淡入、停留和淡出一致。</summary>
+        private IEnumerator FadeHint(CanvasGroup hint, System.Action onFinished)
+        {
+            hint.gameObject.SetActive(true);
+            hint.alpha = 0;
+            const float fadeInSeconds = 0.25f, holdSeconds = 3.5f, fadeOutSeconds = 1f;
+            float elapsed = 0;
+            while (elapsed < fadeInSeconds + holdSeconds + fadeOutSeconds)
+            {
+                hint.alpha = elapsed < fadeInSeconds ? elapsed / fadeInSeconds
+                    : elapsed < fadeInSeconds + holdSeconds ? 1f
+                    : 1f - (elapsed - fadeInSeconds - holdSeconds) / fadeOutSeconds;
+                elapsed += Time.unscaledDeltaTime;
+                yield return null;
+            }
+            hint.alpha = 0;
+            hint.gameObject.SetActive(false);
+            onFinished();
+        }
+
+        private void UpdateTimelineReadyHint()
+        {
+            if (!_data.Formal || !S.Started || S.TimelineReadyNotice || S.Ending || S.Finished
+                || Engine.Busy || _modal.Count > 0 || _toastRoutine != null
+                || _page == "Title" || _page == "Opening" || _page == "Invitation" || _page == "Cutscene" || _page == "EndCard") return;
+
+            var comparisons = _data.Puzzle.Where(x => x.Type == "logic_match");
+            if (!comparisons.Any() || !comparisons.All(x => S.Puzzles.Contains(x.Id))) return;
+            var timeline = _data.Puzzle.FirstOrDefault(x => x.Type == "timeline");
+            if (timeline == null || S.Puzzles.Contains(timeline.Id)) return;
+
+            // 等最后一题奖励和当前提示结束后再显示；人物路径不属于文本对照题。
+            Toast("请重构时间线");
+            S.TimelineReadyNotice = true;
+            Save();
         }
 
         private void UpdatePersonPathReadyHint()

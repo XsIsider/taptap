@@ -50,13 +50,13 @@ namespace Castle.V24
             Show(view,"Category",false);
             bool isCharacter = S.JournalCategory == 0;
             var title = view.Get<Text>("DetailTitle").rectTransform;
-            JournalPlace(title,isCharacter?1120:1125,isCharacter?190:112,260,70);
+            JournalPlace(title,isCharacter?1068:1125,isCharacter?186:112,260,70);
             title.localRotation = Quaternion.identity;
-            JournalPlace(view.Get<ScrollRect>("DetailScroll").transform,915,isCharacter?375:355,455,isCharacter?360:380);
+            JournalPlace(view.Get<ScrollRect>("DetailScroll").transform,isCharacter?955:915,isCharacter?380:355,455,isCharacter?360:380);
             var body = view.Get<Text>("DetailBody");
             body.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,445);
-            // 人物资料统一加大行距，贴合便笺横线；切换记录页时恢复原间距。
-            body.lineSpacing = isCharacter ? 1.4f : 1f;
+            // 人物资料保持首行位置，24号字的原1.4倍行距减小0.75个画布单位；记录页恢复原间距。
+            body.lineSpacing = isCharacter ? 1.36875f : 1f;
             view.Get<ScrollRect>("DetailScroll").verticalNormalizedPosition=1;
             JournalPlace(view.Get<RectTransform>("LeftCards"),isCharacter?226.667f:S.JournalCategory==1?233:225,isCharacter?111.667f:S.JournalCategory==1?155:158,530,680);
             JournalPlace(view.Get<RectTransform>("RightCards"),865,130,530,680);

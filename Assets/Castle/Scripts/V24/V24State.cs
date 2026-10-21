@@ -36,6 +36,7 @@ namespace Castle.V24
         public string Activity = "", SceneContext = "";
         public bool PathReadyNotice;
         public bool PathCompleteNotice;
+        public bool TimelineReadyNotice;
         public List<int> HeardRecords = new List<int>(), ImportedRecords = new List<int>();
         public int Version = 26, Day = 1, Room, ActiveEvent, Line, QueuedItem, PendingPuzzle, TutorialEvent;
         public int ActionPending, SessionAction;

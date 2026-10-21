@@ -32,7 +32,8 @@ namespace Castle.V24
         private readonly List<string> _modal = new List<string>();
         private readonly List<Action> _returns = new List<Action>();
         private string _page = "Title";
-        private float _nextAuto, _toastUntil;
+        private float _nextAuto;
+        private Coroutine _toastRoutine;
         private bool _blocked, _test, _playing;
         private int _floor = 1, _selectedRoom, _selectedEntry, _selectedTape, _selectedCharacter, _puzzle, _selectedLine, _slot, _record, _playTape, _burnRecord;
         private float _position;
@@ -71,10 +72,10 @@ namespace Castle.V24
         private void Update()
         {
             UpdatePageCursor();
-            if (Ui.Toast.gameObject.activeSelf && Time.unscaledTime >= _toastUntil) Ui.Toast.gameObject.SetActive(false);
             if (_openingTransition) return;
             UpdateAnchorDetailsFade();
             UpdatePersonPathCompletionHint();
+            UpdateTimelineReadyHint();
             bool itemBlocked = UpdateDialogueItemHint();
             if (_modal.Count > 0) { if (Input.GetKeyDown(KeyCode.Escape) && _modal.Last() != "Acquire") Pop(); return; }
             if (Input.GetKeyDown(KeyCode.Escape)) { Settings(); return; }
@@ -97,7 +98,7 @@ namespace Castle.V24
                 else _endingDialogue = 0;
                 if ((!zoomReset && Input.GetKeyDown(KeyCode.Space)) || (!itemBlocked && S.Auto && Time.unscaledTime >= _nextAuto)) Next();
             }
-            if (_playing && (_page == "Tape" || _data.Formal && (_page == "Recordings" || _page == "Timeline" && S.Ending)))
+            if (_playing && (_page == "Tape" || _data.Formal && _page == "Recordings"))
             {
                 UpdatePlaybackAudio();
                 if (_playTape != 0)
@@ -113,9 +114,9 @@ namespace Castle.V24
                 {
                     _position = record.Duration; _playing = false;
                     if (_data.Formal && _heardPosition + .2f >= record.Duration) Engine.CompleteRecord(record.Id);
-                    if (_data.Formal && (_page == "Timeline" || S.DeferredEvent != 0)) { Refresh(); return; }
+                    if (_data.Formal && S.DeferredEvent != 0) { Refresh(); return; }
                 }
-                if (_page == "Timeline") TimelinePlayback(); else PlaybackTick();
+                PlaybackTick();
             }
             if (S.Ending && _page == "Timeline")
                 foreach (Transform bar in V("Timeline").Get<RectTransform>("Wave"))
@@ -143,12 +144,25 @@ namespace Castle.V24
         private void Toast(string text)
         {
             HideFloatingHint();
+            HideDialogueItemHint();
+            HideToast();
             _anchorDetailsUntil = 0f;
             Show(V("Anchors"), "AnchorDetails", false);
-            Txt(Ui.Toast, "Body", text);
-            _toastUntil = Time.unscaledTime + 5f;
+            Ui.Toast.Get<TextMeshProUGUI>("Body").text = text;
             Ui.Toast.transform.SetAsLastSibling();
             Ui.Toast.gameObject.SetActive(true);
+            _toastRoutine = StartCoroutine(FadeHint(Ui.Toast.Get<CanvasGroup>("Group"), () =>
+            {
+                _toastRoutine = null;
+                Ui.Toast.gameObject.SetActive(false);
+            }));
+        }
+        private void HideToast()
+        {
+            if (_toastRoutine != null) StopCoroutine(_toastRoutine);
+            _toastRoutine = null;
+            Ui.Toast.Get<CanvasGroup>("Group").alpha = 0f;
+            Ui.Toast.gameObject.SetActive(false);
         }
         private void Push(string id, Action close = null)
         {

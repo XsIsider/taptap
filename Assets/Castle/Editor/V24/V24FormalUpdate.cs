@@ -41,6 +41,13 @@ namespace Castle.Editor
             }).ToArray();
             var space=game.Ui.View("Space");
             Button(space,"DoorOpen","打开",1265,570,95,34);Button(space,"DoorClosed","关闭",1365,570,95,34);
+            // 标题随开门按钮显隐，仅用于说明，不接收点击。
+            var doorStateTitle=Image(space.Get<Button>("DoorOpen").transform,"DoorStateTitle",-28,-47,82,27.5f);
+            doorStateTitle.sprite=Sprite(Art+"UI整理/中控/空间推演/按钮底图.png");
+            var doorStateLabel=Rect(doorStateTitle.transform,"Text",0,0,82,27.5f);
+            var doorStateText=doorStateLabel.GetComponent<Text>()??doorStateLabel.gameObject.AddComponent<Text>();
+            doorStateText.font=game.WorkbenchFont;doorStateText.text="门状态";doorStateText.fontSize=20;
+            doorStateText.color=Color.white;doorStateText.alignment=TextAnchor.MiddleCenter;doorStateText.raycastTarget=false;
             Timeline(game.Ui.View("Timeline"),game);
             foreach(var view in game.Ui.GetComponentsInChildren<CastleUiView>(true))view.ValidateBindings();
             EditorUtility.SetDirty(game);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();
@@ -71,7 +78,11 @@ namespace Castle.Editor
             Place(view.Get<Text>("EndingText").rectTransform,365,655,850,170);view.Get<Text>("EndingText").fontSize=28;view.Get<Text>("EndingText").transform.SetAsLastSibling();
             view.Get<RectTransform>("Wave").gameObject.SetActive(false);
             var waveRect=Rect(reveal,"SoundWave",60,200,1480,330);if(!waveRect.GetComponent<CanvasRenderer>())waveRect.gameObject.AddComponent<CanvasRenderer>();var wave=waveRect.GetComponent<V24EndingWave>()??waveRect.gameObject.AddComponent<V24EndingWave>();wave.color=Color.white;wave.raycastTarget=false;Bind(view,"SoundWave",wave);
-            Place(view.Get<Button>("Play").transform as RectTransform,720,830,150,45);view.Get<Button>("Play").transform.SetAsLastSibling();
+            var play=reveal.Find("Play");if(play)UnityEngine.Object.DestroyImmediate(play.gameObject);
+            view.Controls.RemoveAll(x=>x.Id=="Play"||x.Id=="PlayLabel");
+            panel.raycastTarget=true;
+            var dialogueContinue=panel.GetComponent<V24LineHit>()??panel.gameObject.AddComponent<V24LineHit>();
+            Bind(view,"DialogueContinue",dialogueContinue);
             var slots=view.Get<RectTransform>("Slots");
             var oldLayout=slots.GetComponent<HorizontalLayoutGroup>();if(oldLayout)UnityEngine.Object.DestroyImmediate(oldLayout);
             Place(slots,630,290,850,420);var grid=slots.GetComponent<GridLayoutGroup>()??slots.gameObject.AddComponent<GridLayoutGroup>();grid.constraint=GridLayoutGroup.Constraint.FixedColumnCount;grid.constraintCount=5;grid.cellSize=new Vector2(154,185);grid.spacing=new Vector2(12,20);

@@ -101,7 +101,7 @@ namespace Castle.V24
             // 注入下一版顺序示例，验证错误角色不推进；并非正式剧情顺序。
             var savedOrder=ConversationOrder;ConversationOrder=new[]{900086};
             ChooseConversation(ConversationChoices.First(x=>x.Event==900087));
-            if(S.ActiveEvent!=0 || Ui.Toast.Get<Text>("Body").text!="ta好像正在忙")throw new Exception("Wrong character order");
+            if(S.ActiveEvent!=0 || Ui.Toast.Get<TMPro.TextMeshProUGUI>("Body").text!="ta好像正在忙")throw new Exception("Wrong character order");
             ConversationOrder=savedOrder;
             ChooseConversation(ConversationChoices.First(x=>x.Event==900086));
             if(S.ActiveEvent!=900086 || _avatarsExpanded || !V("Explore").Get<RectTransform>("DialoguePanel").gameObject.activeSelf)throw new Exception("Group selection did not start dialogue");

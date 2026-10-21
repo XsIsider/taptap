@@ -10,6 +10,13 @@ namespace Castle.V24
         {
             var view = V("Timeline");
             if (_record != 620025) { _record = 620025; _position = 0; _heardPosition = 0; }
+            SetPlaybackPlaying(false);
+            _playTape = 0;
+            S.Auto = false;
+            S.RecordId = _record;
+            S.RecordPosition = _position;
+            S.PlaybackHeard = _heardPosition;
+            S.PlayingTape = 0;
             var record = _data.RecordById(620025);
             var line = _data.Lines(record.Plot).LastOrDefault(x => x.At <= _position);
             Txt(view,"EndingStatus",line == null ? "真相正在显现" : SpeakerName(line,true));
@@ -21,8 +28,32 @@ namespace Castle.V24
                 partner.sprite=PortraitSprite(npc?.SpeakerId??200006); partner.preserveAspect=true;partner.enabled=partner.sprite!=null;
             }
             if (view.TryGet<V24EndingWave>("SoundWave",out var wave)) wave.Playing=_playing;
-            Show(view,"Progress",false);Show(view,"Replay",false);Show(view,"Play",S.EndingTransitionDone);
-            Btn(view,"Play",()=>{SetPlaybackPlaying(!_playing);TimelinePlayback();},_playing?"暂停":"播放");
+            Show(view,"Progress",false);Show(view,"Replay",false);
+            view.Get<V24LineHit>("DialogueContinue").Clicked = AdvanceTimelineDialogue;
+        }
+
+        /// <summary>真相对白每次点击只前进一句；复用录音时刻保存位置，兼容已有存档。</summary>
+        private void AdvanceTimelineDialogue()
+        {
+            if (!_data.Formal || _page != "Timeline" || !S.Ending || !S.EndingTransitionDone
+                || _modal.Count > 0 || S.HeardRecords.Contains(620025)) return;
+
+            var record = _data.RecordById(620025);
+            var next = _data.Lines(record.Plot).FirstOrDefault(x => x.At > _position);
+            _position = next == null ? record.Duration : (float)next.At;
+            _heardPosition = _position;
+            S.RecordId = record.Id;
+            S.RecordPosition = _position;
+            S.PlaybackHeard = _heardPosition;
+            if (next == null)
+            {
+                // 最后一句仍须玩家点击确认，再按原流程结算时间线和奖励。
+                Engine.CompleteRecord(record.Id);
+                Refresh();
+                return;
+            }
+            Engine.Commit();
+            TimelinePlayback();
         }
         private string NodeName(V24Node node) => node.Room == 0 ? "连廊" : Engine.RoomName(node.Room);
         private Vector2 NodePoint(V24Node node) => node.Room == 0 ? new Vector2(.34f,.55f) : MapPoint(node.Room);

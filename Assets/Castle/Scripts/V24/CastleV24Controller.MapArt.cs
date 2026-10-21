@@ -21,6 +21,7 @@ namespace Castle.V24
             image.texture = floor == 1 ? Floor1Background : Floor2Background;
             var c = _mapLayout.Crop;
             image.uvRect = new Rect(c[0], 1-c[1]-c[3], c[2], c[3]); image.color = Color.white;
+            if (view.Id == "Path") FitPathMap(view, image);
             if (!view.TryGet<RectTransform>("CurrentLocationMarker",out var marker)) return;
             bool onFloor = _data.Room.Any(x=>x.Id==S.Room && x.Floor==floor) && _mapLayout.Regions.Any(x=>x.Room==S.Room);
             marker.gameObject.SetActive(onFloor);
@@ -38,6 +39,22 @@ namespace Castle.V24
                 marker.SetAsLastSibling();
             }
         }
+
+        private void FitPathMap(CastleUiView view, RawImage image)
+        {
+            var pan = view.Get<V24MapPan>("MapPan");
+            var viewportSize = ((RectTransform)pan.transform).rect.size;
+            float aspect = image.texture.width * image.uvRect.width / (image.texture.height * image.uvRect.height);
+            float width = Mathf.Min(viewportSize.x, viewportSize.y * aspect);
+            // 底图和房间热区共用等比内容区域，保持标记、连线和点击位置对齐。
+            pan.Content.sizeDelta = new Vector2(width, width / aspect);
+            var rooms = view.Get<RectTransform>("Rooms");
+            rooms.anchorMin = Vector2.zero;
+            rooms.anchorMax = Vector2.one;
+            rooms.offsetMin = rooms.offsetMax = Vector2.zero;
+            pan.ClampToContent = true;
+        }
+
         private void SetMapPaperFloor(CastleUiView view, int floor)
         {
             var paper = view.Get<Image>("Paper");
@@ -72,14 +89,25 @@ namespace Castle.V24
         }
         private void ShowRoomTooltip(CastleUiView view, int cardRoom, string extra = "")
         {
-            var panel = view.Get<RectTransform>("TooltipPanel");
             var rooms = view.Get<RectTransform>("Rooms");
             var bounds = _mapLayout.Regions.First(x => x.Room == cardRoom).Bounds;
             var crop = _mapLayout.Crop;
             // 从同一房间区域换算到弹窗父坐标，确保两层地图的说明都跟随房间。
             var point = new Vector3(MapPoint(cardRoom).x * rooms.rect.width,
                 -(bounds[1] - crop[1]) / crop[3] * rooms.rect.height + 8f, 0);
-            var local = (Vector2)panel.parent.InverseTransformPoint(rooms.TransformPoint(point));
+            ShowMapTooltip(view, rooms.TransformPoint(point), RoomDetail(cardRoom)+(string.IsNullOrEmpty(extra)?"":"\n"+extra));
+        }
+
+        private void ShowCorridorTooltip(CastleUiView view, RectTransform hotspot)
+        {
+            var point = new Vector3(hotspot.rect.center.x, hotspot.rect.yMax + 8f, 0);
+            ShowMapTooltip(view, hotspot.TransformPoint(point), "连廊\n常开");
+        }
+
+        private void ShowMapTooltip(CastleUiView view, Vector3 worldPoint, string text)
+        {
+            var panel = view.Get<RectTransform>("TooltipPanel");
+            var local = (Vector2)panel.parent.InverseTransformPoint(worldPoint);
             var parent = (RectTransform)panel.parent;
             panel.anchorMin = panel.anchorMax = new Vector2(0, 1);
             panel.pivot = new Vector2(.5f, 0);
@@ -89,7 +117,7 @@ namespace Castle.V24
             panel.anchoredPosition = local;
             panel.SetAsLastSibling();
             Show(view,"TooltipPanel",true);
-            Txt(view,"Tooltip",RoomDetail(cardRoom)+(string.IsNullOrEmpty(extra)?"":"\n"+extra));
+            Txt(view,"Tooltip",text);
         }
         private void PlaceMapRegion(CastleUiView card, RectTransform root, int room)
         {

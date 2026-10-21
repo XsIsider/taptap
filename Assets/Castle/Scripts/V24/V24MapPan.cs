@@ -8,6 +8,8 @@ namespace Castle.V24
         public RectTransform Content;
         public Action<float,Vector2> Changed;
         public float Zoom=1;
+        /// <summary>等比留白地图按实际内容尺寸限制平移，避免拖出可见区域。</summary>
+        public bool ClampToContent { get; set; }
         public void OnScroll(PointerEventData e)
         {
             if(Castle.Flow.FlowDrag.PathDragging)return;
@@ -31,7 +33,10 @@ namespace Castle.V24
         {
             Content.localScale=Vector3.one*Zoom;
             Vector2 size=((RectTransform)transform).rect.size;
-            var p=Content.anchoredPosition;p.x=Mathf.Clamp(p.x,-size.x*(Zoom-1)/2,size.x*(Zoom-1)/2);p.y=Mathf.Clamp(p.y,-size.y*(Zoom-1)/2,size.y*(Zoom-1)/2);Content.anchoredPosition=p;
+            var limit = ClampToContent
+                ? Vector2.Max(Vector2.zero, (Content.rect.size * Zoom - size) / 2)
+                : size * (Zoom - 1) / 2;
+            var p=Content.anchoredPosition;p.x=Mathf.Clamp(p.x,-limit.x,limit.x);p.y=Mathf.Clamp(p.y,-limit.y,limit.y);Content.anchoredPosition=p;
             // 房间热区与地图同比缩放，不能把热区缩回原尺寸导致点击范围脱离房间。
             Changed?.Invoke(Zoom,p);
         }

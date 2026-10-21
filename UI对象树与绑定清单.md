@@ -1,3 +1,49 @@
+## 2026-10-21 空间推演门状态标题
+
+- 新增 UIFlow/Canvas/Stage/Pages/Space/DoorOpen/DoorStateTitle（RectTransform＋Image），左上锚点与轴心，相对位置(-28,47)、尺寸82×27.5、单位缩放，Sprite 使用 UI整理/中控/空间推演/按钮底图.png。
+- DoorStateTitle/Text 使用同尺寸矩形、20号 WorkbenchFont、白色居中，固定文案“门状态”。Image／Text 的 raycastTarget=false，无 Button；作为 DoorOpen 原 Label 后的子对象，随父按钮显隐，不新增 Controls 绑定。
+
+## 2026-10-21 人物路径拖放反馈与连廊介绍
+
+- PersonPathLabel.prefab 保留原160×78、图标及 Title／Body 绑定。Title 左上锚点，位置(70,-3)、尺寸78×36、字号12～18自适应；Body 启用并改为固定左上锚点，位置(70,-41)、尺寸78×34、字号12～16自适应，显示“待放置”或“在＋地点”。两项均居中、允许换行。
+- Path 的 TooltipPanel／Tooltip 沿用现有绑定；运行时 Node1300092（连廊）的 Pointer.Enter 显示“连廊\n常开”，Exit 隐藏，无设备行。共用房间弹窗定位及画面边界限制，无新增场景对象或静态绑定。
+
+## 2026-10-21 人物路径地图比例修复
+
+- Path 的 MapViewport 保留1140×416，运行时按纹理 Crop 比例将其居中的 MapContent 适配为约641.33×416；Rooms 改为拉伸跟随 MapContent，底图与动态热区、标记和连线共用该区域。
+- 原 FloorImage／Rooms／MapPan 引用及场景层级不变，不新增对象或组件；Path 渲染时启用 MapPan.ClampToContent，按实际地图大小限制平移。
+
+## 2026-10-21 重构成功后隐藏红线与线索槽
+
+- Timeline.Controls 新增 Connection1～9，分别绑定 Timeline/TimelineArt 下同名对象的 RectTransform，原对象位置、层级和素材保留。Slots 沿用 Timeline/TimelineArt/Slots 的固定绑定。
+- RenderTimelineSlots 按 !S.Ending 同步显隐九段红线及 Slots 整组；成功后槽框、名称和 PlacedClue 一并隐藏，ReferenceWave、WavePoint0～9 及 RevealRoot 不受影响。
+
+## 2026-10-21 时间线槽内线索卡
+
+- Timeline/TimelineArt/Slots/Slot0～9 保留现有绑定；占用时运行时创建并复用 SlotN/PlacedClue（TimelineCluePrefab），铺满槽位显示完整卡面。原槽位 Title／Body 留空；清空槽位时隐藏 PlacedClue。
+- PlacedClue 的 FlowDrag、Select/Button 关闭，CanvasGroup.blocksRaycasts=false；点击与拖放仍由原 Slot 处理，无新增静态对象或绑定。
+
+## 2026-10-21 真相对白点击范围
+
+- 删除 Timeline/RevealRoot/Play 对象及 Play、PlayLabel 绑定；新增 DialogueContinue→Timeline/RevealRoot/DialogueArt 的 V24LineHit，背景 Image 开启 raycastTarget。EndingStatus、EndingText 和 NameArt 保持射线穿透，点击正文、姓名和框内空白均由同一背景推进一次；对白框原位置、尺寸和美术不变。
+- 控制器及 V24FormalUpdate 编辑器接线同步，取消该真相段自动播放；全部 UI 绑定及18句手动推进隔离核对通过，未进入 Play。
+
+## 2026-10-21 悬浮提示统一样式与动画
+
+- 保留 UIFlow/Canvas/Stage/Toast 根对象及 CastleFlowUi.Toast 引用；原 Back、Body 由 Hint/Body 替代，完整复制 Explore/ItemLinkHint 的图像、字体与布局。
+- Toast/Hint：CanvasGroup + Image，底部中心锚点、轴心(0.5,0)，位置(0,28)、尺寸1120×70；Body 使用 V24Reading 24号 TMP，位置(0,-12)、尺寸偏移(-28,-36)。图片与文字均不拦截射线。
+- Toast.Controls：Body→Hint/Body 的 TextMeshProUGUI，新增 Group→Hint 的 CanvasGroup；Explore 原 ItemLinkHint 与 ItemLinkHintText 绑定保留。两者共用 FadeHint（0.25秒淡入、3.5秒停留、1秒淡出）。
+
+## 2026-10-21 调查册人物页对齐
+
+- 现有 BookPersonCard.prefab/Head：anchoredPosition=(24,-23)，统一上移20；Title 下移5至(18,-278)，原尺寸和绑定保留。
+- Journal/Details 的 DetailTitle、DetailScroll 位置分别为(1068,-186)、(955,-380)，JournalAppearance 的人物分支同步使用；DetailBody 行距由1.4收紧至1.36875，保持首行位置，相邻行距按减少0.75设置。
+- CharacterDecoration/DetailHead 沿自身左方向移动8，位置约(879.067,-203.031)，原7.405°旋转和142×162尺寸保留；无新增对象或绑定。
+
+## 2026-10-21 刻录文件列表滑块修复
+
+- Burn/FilesScroll/Scrollbar/Handle：anchoredPosition=(13,0)、sizeDelta=(-22.535675,0)、localScale=(1,1,1)，显示宽度约25.5；原父级、锚点、素材、handleRect/targetGraphic 与 AutoHide 规则保留。仅更新现有布局，无新增对象或绑定。
+
 ## 2026-10-21 地图热区绑定与楼层文字修复
 
 - 校正 Map 的 FloorImage 控件误绑到 Rooms/RawImage：现在固定绑定真正 FloorImage 的 RawImage，Rooms 绑定其 RectTransform。保存的场景中 Rooms 对象存在，已恢复核对绑定。
@@ -314,7 +360,8 @@
 | SortRoot | RectTransform | UIFlow/Canvas/Stage/Pages/Timeline/SortRoot |
 | Clues | RectTransform | UIFlow/Canvas/Stage/Pages/Timeline/SortRoot/CluesScroll/Viewport/Clues |
 | CluesScroll | ScrollRect | UIFlow/Canvas/Stage/Pages/Timeline/SortRoot/CluesScroll |
-| Slots | RectTransform | UIFlow/Canvas/Stage/Pages/Timeline/SortRoot/Slots |
+| Slots | RectTransform | UIFlow/Canvas/Stage/Pages/Timeline/TimelineArt/Slots |
+| Connection1～9 | RectTransform | UIFlow/Canvas/Stage/Pages/Timeline/TimelineArt/Connection1～9 |
 | Hint | Text | UIFlow/Canvas/Stage/Pages/Timeline/SortRoot/Hint |
 | Submit | Button | UIFlow/Canvas/Stage/Pages/Timeline/SortRoot/Submit |
 | SubmitLabel | Text | UIFlow/Canvas/Stage/Pages/Timeline/SortRoot/Submit/SubmitLabel |
@@ -323,8 +370,7 @@
 | EndingStatus | Text | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/EndingStatus |
 | EndingText | Text | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/EndingText |
 | Progress | Slider | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/Progress |
-| Play | Button | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/Play |
-| PlayLabel | Text | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/Play/PlayLabel |
+| DialogueContinue | V24LineHit | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/DialogueArt |
 | Replay | Button | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/Replay |
 | ReplayLabel | Text | UIFlow/Canvas/Stage/Pages/Timeline/RevealRoot/Replay/ReplayLabel |
 | Requirements | Text | UIFlow/Canvas/Stage/Pages/Timeline/Requirements |

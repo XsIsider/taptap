@@ -132,8 +132,9 @@ namespace Castle.V24
             x.Day == State.Day && State.CompletedEvents.Contains(x.AfterEvent) &&
             (x.RequiredEvent == 0 || State.CompletedEvents.Contains(x.RequiredEvent)) && x.Events.Any(id => !Done(Data.EventById(id))));
 
-        /// <summary>第二天下午通过地图到场调查，回自己房间休息后进入晚宴。</summary>
-        public bool IsRoomBasedActivity => Data.Formal && State.Activity == "day2_afternoon";
+        /// <summary>第二、三天下午通过地图到达对应房间后触发调查，不使用跨房间快捷入口。</summary>
+        public bool IsRoomBasedActivity => Data.Formal
+            && (State.Activity == "day2_afternoon" || State.Activity == "day3_afternoon");
 
         public bool CanSelectFormalEvent(int id)
         {
@@ -195,8 +196,9 @@ namespace Castle.V24
             {
                 if (activity.Events.Contains(last) && activity.TimePerEvent > 0 && Data.EventById(last).Time == 0)
                 { AdvanceTime(Now.AddMinutes(activity.TimePerEvent).Ticks); State.LastCompletedEvent = 0; }
-                // 地点调查全部结束后仍保留自由探索，统一由回房休息推进至晚宴。
-                if (!IsRoomBasedActivity && activity.Events.Where(ActivityEventAvailable).All(x => Done(Data.EventById(x)))) FinishActivity(activity);
+                // 允许回房等待的活动保留探索；其余活动仍按原条件自动结算。
+                bool waitForRest = IsRoomBasedActivity && activity.AllowWaitToFinish;
+                if (!waitForRest && activity.Events.Where(ActivityEventAvailable).All(x => Done(Data.EventById(x)))) FinishActivity(activity);
             }
             else
             {

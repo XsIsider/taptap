@@ -267,7 +267,7 @@ namespace Castle.V24
         private IEnumerator RevealEnding()
         {
             for(float t=0;t<1.6f;){if(_modal.Count==0&&_page=="Timeline")t+=Time.unscaledDeltaTime;yield return null;}
-            if (_data.Formal) { S.EndingTransitionDone=true;_record=620025;_position=0;_heardPosition=0;_playing=true;Engine.Commit();Timeline();yield break; }
+            if (_data.Formal) { S.EndingTransitionDone=true;_record=620025;_position=0;_heardPosition=0;_playing=false;Engine.Commit();Timeline();yield break; }
             S.EndingTransitionDone=true;Engine.Commit();Engine.ContinuePuzzleReward();Refresh();
         }
         private void PathPage(){if(!SpaceAvailable){Page("Recordings");return;}_puzzle=_data.GameSettings.IntroSoundPath;Tabs(V("Space"));PathRender(V("Space"));}
@@ -287,7 +287,15 @@ namespace Castle.V24
             {
                 int slot=i;int value=draft.Values[i];var node=map.Nodes.FirstOrDefault(x=>x.Id==value);
                 var card=Card(list,labels[i],node==null?"拖到地图地点":NodeName(node)+" "+node.Floor+"F",()=>{_slot=slot;Txt(v,"Details","已选择标签 "+labels[slot]+"，点击或拖放到地点。");BindDoors(v,draft);},template:v.Id=="Space"?SpaceCardPrefab:PathLabelPrefab);
-                if(puzzle.Type=="person_path") {var title=card.Get<Text>("Title");title.font=WorkbenchFont;title.resizeTextForBestFit=true;title.resizeTextMinSize=12;title.resizeTextMaxSize=20;title.horizontalOverflow=HorizontalWrapMode.Overflow;}
+                if(puzzle.Type=="person_path")
+                {
+                    var title=card.Get<Text>("Title");title.font=WorkbenchFont;
+                    title.resizeTextForBestFit=true;title.resizeTextMinSize=12;title.resizeTextMaxSize=18;
+                    title.horizontalOverflow=HorizontalWrapMode.Wrap;
+                    var location=card.Get<Text>("Body");location.font=WorkbenchFont;
+                    location.text=node==null?"待放置":"在"+NodeName(node);
+                    location.gameObject.SetActive(true);
+                }
                 var drag=card.Get<FlowDrag>("Drag");drag.CanDrag=true;drag.Kind="path";drag.Id=slot.ToString();
                 drag.DragRoot=(RectTransform)v.transform;
             }
@@ -306,7 +314,7 @@ namespace Castle.V24
                 else {var rect=(RectTransform)card.transform;var point=NodePoint(node);rect.anchorMin=rect.anchorMax=new Vector2(point.x,1-point.y);rect.anchoredPosition=Vector2.zero;rect.sizeDelta=new Vector2(95,160);}
                 card.Get<Image>("Background").color=Color.clear;
                 card.Get<FlowDrag>("Drag").Dropped=drag=>{if(drag.Kind=="path"){draft.Values[int.Parse(drag.Id)]=node.Id;Engine.Commit();PathRender(v);}};
-                card.Get<FlowPointer>("Pointer").Enter=()=>{if(v.Id=="Space")Txt(v,"Details",NodeName(node)+"\n"+placed);else if(node.Room!=0)ShowRoomTooltip(v,node.Room);if(FlowDrag.PathDragging)card.Get<Image>("Background").color=new Color(.5f,.4f,.15f);};
+                card.Get<FlowPointer>("Pointer").Enter=()=>{if(v.Id=="Space")Txt(v,"Details",NodeName(node)+"\n"+placed);else if(node.Room!=0)ShowRoomTooltip(v,node.Room);else ShowCorridorTooltip(v,(RectTransform)card.transform);if(FlowDrag.PathDragging)card.Get<Image>("Background").color=new Color(.5f,.4f,.15f);};
                 card.Get<FlowPointer>("Pointer").Exit=()=>{card.Get<Image>("Background").color=Color.clear;if(v.Id=="Path")Show(v,"TooltipPanel",false);};
                 Show(card,"Title",false);
                 int order=0;
@@ -381,7 +389,7 @@ namespace Castle.V24
             if(S.Ending)
             {
                 if (_data.Formal) { TimelinePlayback(); return; }
-                Txt(v,"EndingStatus",S.Finished?"未完待续":"真相正在显现");Txt(v,"EndingText",S.Finished?"本次调查告一段落。":"事件时间线已还原……");Show(v,"Progress",false);Show(v,"Play",false);Show(v,"Replay",false);return;
+                Txt(v,"EndingStatus",S.Finished?"未完待续":"真相正在显现");Txt(v,"EndingText",S.Finished?"本次调查告一段落。":"事件时间线已还原……");Show(v,"Progress",false);Show(v,"Replay",false);return;
             }
             Clear(v.Get<RectTransform>("Clues"));
             foreach(int id in TimelineClueOrder(puzzle.Candidates.Where(Engine.Has).Select(Engine.BestEntry).Distinct().ToArray()))
