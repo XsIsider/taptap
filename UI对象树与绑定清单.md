@@ -1,3 +1,9 @@
+## 2026-11-02 隐藏测试存档面板（仅运行时）
+
+- 用户明确指定此调试界面由程序生成：`CastleV24Controller.DebugCheckpoints.cs` 首次打开时在 `UIFlow/Canvas/Stage/Pages/Title` 下建立 `CheckpointDebug`；不保存至场景、不挂新 MonoBehaviour、不新增 CastleUiView.Controls 键。原场景及 Prefab 保持原样。
+- 运行时层级：`CheckpointDebug`（铺满 Title 的半透明 Image，拦截射线）→ `Panel` → `Heading`、`Instructions`、`Close/Label`、`Viewport/Content/{23 个节点 ID}/Label`、`Scrollbar/Handle`、`Status`。Viewport 带 RectMask2D＋ScrollRect；三列按钮、文字用现有 ReadingFont，滚动条及右上返回均运行时接线。
+- 入口仅标题无弹窗时 0.8 秒内三次独立 D，离开标题自动隐藏；返回／Escape／再次 D 关闭。点击节点留在标题并刷新原 Continue；全屏遮罩与关闭／恢复流程已在 Play 验证，截图已检查。
+
 ## 2026-10-21 全屏固定 16:9 与黑边
 
 - 正式 UIFlow/Canvas 保留 Overlay、CanvasScaler=ScaleWithScreenSize、referenceResolution=(1600,900)、screenMatchMode=Expand；Stage 保持居中锚点／轴心(0.5,0.5)、位置(0,0)、尺寸1600×900、单位缩放。

@@ -72,6 +72,7 @@ namespace Castle.V24
         private void Update()
         {
             UpdatePageCursor();
+            if (UpdateCheckpointDebugInput()) return;
             if (_openingTransition) return;
             UpdateAnchorDetailsFade();
             UpdatePersonPathCompletionHint();
@@ -192,6 +193,7 @@ namespace Castle.V24
         }
         private void Page(string id)
         {
+            if (id != "Title") CloseCheckpointDebug();
             if (id=="Timeline" && _page!="Timeline") { _timelineClueOrder=null;_selectedEntry=0; }
             if (id != "Tape") _tapeScrollRecord = 0;
             _page = id; if(!Music.isPlaying)Music.Play(); if (id != "Title") S.Page = id;
